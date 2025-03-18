@@ -1,6 +1,12 @@
 import { Cookie } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Cookies } from "react-cookie";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookF } from '@fortawesome/free-brands-svg-icons'; 
+import { faGooglePlusG } from '@fortawesome/free-brands-svg-icons'; // Correct import from brands
+ 
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
+import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons'; 
 
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.jpeg"
