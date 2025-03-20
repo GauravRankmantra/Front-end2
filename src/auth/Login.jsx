@@ -7,8 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useDispatch } from "react-redux"; 
-import { setUser } from "../features/userSlice"; 
+import { useDispatch } from "react-redux";
+import { setUser } from "../features/userSlice";
 
 const Login = () => {
   const [data, setData] = useState({
@@ -20,7 +20,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +38,7 @@ const Login = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        "https://backend-music-xg6e.onrender.com/api/v1/auth/login",
         {
           email: email.toLowerCase(),
           password,
@@ -46,7 +46,7 @@ const Login = () => {
       );
 
       if (response.data) {
-        dispatch(setUser(response.data.user)); 
+        dispatch(setUser(response.data.user));
         notify("You logged into your account successfully", "success");
         navigate("/profile");
       } else {

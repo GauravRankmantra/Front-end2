@@ -3,7 +3,7 @@ import SongCard from "../components/SongCard";
 import owner from "../assets/img/frame.jpeg";
 import AlbumCard from "../components/AlbumCard";
 import WeeklyTop15 from "../components/WeeklyTop15";
-import img728 from "../assets/img/dummy.png"
+import img728 from "../assets/img/dummy.png";
 import NewReleases from "../components/NewReleases";
 
 const Home = () => {
@@ -58,29 +58,29 @@ const Home = () => {
         <div className="my-4">
           <SongCard
             heading={"Top 15 Songs"}
-            link={"http://localhost:5000/api/v1/song/top15"}
+            link={"https://backend-music-xg6e.onrender.com/api/v1/song/top15"}
           />
         </div>
       </div>
       <div className="mb-4">
         <WeeklyTop15
           heading={"Weekly top 15"}
-          link={"http://localhost:5000/api/v1/song/top15"}
+          link={"https://backend-music-xg6e.onrender.com/api/v1/song/top15"}
         />
       </div>
       <div className="my-10">
         <AlbumCard
           heading={"Feature Albums"}
-          link={"http://localhost:5000/api/v1/albums/featureAlbums"}
-     
+          link={
+            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+          }
         />
       </div>
       <div className="flex justify-center my-4">
-        <img src={img728} className="w-6/12  h-20 object-cover">
-        </img>
+        <img src={img728} className="w-6/12  h-20 object-cover"></img>
       </div>
       <div>
-        <NewReleases/>
+        <NewReleases />
       </div>
     </>
   );

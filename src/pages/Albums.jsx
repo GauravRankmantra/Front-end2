@@ -8,11 +8,15 @@ const Albums = () => {
       <div className="mt-14">
         <AlbumCard
           heading={"Featured Albums"}
-          link={"http://localhost:5000/api/v1/albums/featureAlbums"}
+          link={
+            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+          }
         />
         <AlbumCard
           heading={"Trending Albums"}
-          link={"http://localhost:5000/api/v1/albums/trendingAlbums"}
+          link={
+            "https://backend-music-xg6e.onrender.com/api/v1/albums/trendingAlbums"
+          }
           type={"album"}
         />
         {/* Top 15 Albums */}

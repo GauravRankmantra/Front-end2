@@ -25,7 +25,7 @@ const AlbumInfo = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/v1/albums/${id}`
+          `https://backend-music-xg6e.onrender.com/api/v1/albums/${id}`
         );
         setAlbum(res.data.data);
       } catch (err) {
@@ -53,19 +53,23 @@ const AlbumInfo = () => {
     const totalSeconds = Math.round(durationInMinutes * 60);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return  <>
-    {minutes}:
-    {seconds}
-  </>
+    return (
+      <>
+        {minutes}:{seconds}
+      </>
+    );
   };
 
   const handleAddToFavourites = async (songId) => {
     try {
-      await axios.post(`http://localhost:5000/api/v1/favourites`, {
-        userId: currentUserId,
-        albumId: id,
-        songId,
-      });
+      await axios.post(
+        `https://backend-music-xg6e.onrender.com/api/v1/favourites`,
+        {
+          userId: currentUserId,
+          albumId: id,
+          songId,
+        }
+      );
       alert("Song added to favourites!");
     } catch (error) {
       console.error("Error adding song to favourites", error);
