@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const WeeklyTop15 = ({ link }) => {
+const WeeklyTop15 = ({ link,heading }) => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,9 +28,14 @@ const WeeklyTop15 = ({ link }) => {
   }, [link]);
 
   return (
-    <div className="bg-gray-900 text-gray-300 min-h-screen px-4 sm:px-10 lg:px-36">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Weekly Top 15</h1>
+    <div className="bg-gray-900 text-gray-300  px-4 ">
+      <div className="container mx-auto px-4">
+      <div className="w-full mb-6">
+        <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
+          {heading}
+          <div className="absolute bottom-0 left-[-15px] w-[100px] h-[5px] bg-gradient-to-r from-[#3bc8e7] to-transparent"></div>
+        </h1>
+      </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {loading && (
             <p className="text-white text-center">Loading songs...</p>

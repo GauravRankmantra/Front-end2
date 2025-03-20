@@ -6,10 +6,11 @@ import { notify } from "./toast";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Cookies } from "react-cookie";
-import ReCAPTCHA from "react-google-recaptcha"; // Import ReCAPTCHA
+import ReCAPTCHA from "react-google-recaptcha";
+import { useDispatch } from "react-redux"; 
+import { setUser } from "../features/userSlice"; 
 
-const Login = ({ setUser }) => {
+const Login = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -17,8 +18,9 @@ const Login = ({ setUser }) => {
   const [touched, setTouched] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [captchaValid, setCaptchaValid] = useState(false); // Manage captcha state
+  const [captchaValid, setCaptchaValid] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch(); 
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,29 +38,17 @@ const Login = ({ setUser }) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "https://backend-music-xg6e.onrender.com/api/v1/auth/login",
+        "http://localhost:5000/api/v1/auth/login",
         {
           email: email.toLowerCase(),
           password,
         }
       );
 
-      console.log("Response from server:", response);
-
       if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        const cookies = new Cookies();
-        cookies.set("user", response.data.user, {
-          path: "/",
-          maxAge: 1 * 24 * 60 * 60,
-        });
-        setUser(response.data.user);
-
+        dispatch(setUser(response.data.user)); 
         notify("You logged into your account successfully", "success");
-
-    
-          navigate("/profile");
-    
+        navigate("/profile");
       } else {
         notify("Your password or email is incorrect", "error");
       }
@@ -69,7 +59,7 @@ const Login = ({ setUser }) => {
         notify(
           error.response.data.message ||
             "Something went wrong, please try again",
-          "error"
+          error
         );
       } else {
         notify("Something went wrong, please try again", "error");
@@ -96,12 +86,10 @@ const Login = ({ setUser }) => {
     }
   };
 
-  // Handle reCAPTCHA verification success
-  const onRecaptchaSuccess = (token) => {
+  const onRecaptchaSuccess = () => {
     setCaptchaValid(true);
   };
 
-  // Handle reCAPTCHA verification expiration
   const onRecaptchaExpired = () => {
     setCaptchaValid(false);
     notify("Captcha expired, please verify again", "error");
@@ -136,7 +124,6 @@ const Login = ({ setUser }) => {
             onFocus={focusHandler}
             style={{ paddingRight: "40px" }}
           />
-
           <div
             onClick={() => setPasswordVisible(!passwordVisible)}
             style={{
@@ -156,7 +143,7 @@ const Login = ({ setUser }) => {
         {/* reCAPTCHA component */}
         <div style={{ margin: "20px 0" }}>
           <ReCAPTCHA
-           sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}  
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
             onChange={onRecaptchaSuccess}
             onExpired={onRecaptchaExpired}
           />
@@ -165,7 +152,7 @@ const Login = ({ setUser }) => {
         <div>
           <button
             type="submit"
-            disabled={!captchaValid} // Disable the button until captcha is valid
+            disabled={!captchaValid}
             style={{
               fontSize: "20px",
               backgroundColor: captchaValid ? "#000" : "#ccc",

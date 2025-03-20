@@ -1,5 +1,18 @@
-import React, { useState } from "react";
-import { FaAngleRight, FaHome, FaMusic, FaHeadphones, FaUser, FaDownload, FaShoppingCart, FaHeart, FaHistory, FaListAlt, FaPlusCircle } from "react-icons/fa";
+import React, { useState, useCallback,useEffect } from "react";
+import { Link } from "react-router-dom"; // Import Link
+import {
+  FaAngleRight,
+  FaHome,
+  FaMusic,
+  FaHeadphones,
+  FaUser,
+  FaDownload,
+  FaShoppingCart,
+  FaHeart,
+  FaHistory,
+  FaListAlt,
+  FaPlusCircle,
+} from "react-icons/fa";
 import { RiBaseStationLine } from "react-icons/ri";
 
 import logo from "../assets/img/logo.jpeg";
@@ -7,17 +20,47 @@ import logo from "../assets/img/logo.jpeg";
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
-  const toggleSidebar = () => {
-    setOpenMenu(!openMenu);
-  };
+ 
+  const toggleSidebar = useCallback(() => {
+   
+    setOpenMenu((prevOpenMenu) => !prevOpenMenu);
+  }, []);
+
+  useEffect(() => {
+    
+    localStorage.setItem("navOpen", String(openMenu)); 
+  }, [openMenu]);
+
+  const navItems = [
+    { to: "/", icon: <FaHome />, text: "discover" },
+    { to: "/albums", icon: <FaMusic />, text: "albums" },
+    { to: "/artists", icon: <FaUser />, text: "artists" },
+    { to: "/genres", icon: <FaHeadphones />, text: "genres" },
+    { to: "/stations", icon: <RiBaseStationLine />, text: "Stations" },
+  ];
+
+  const secondaryNavItems = [
+    { to: "/downloads", icon: <FaDownload />, text: "downloads" },
+    { to: "/purchased", icon: <FaShoppingCart />, text: "purchased" },
+    { to: "/favourites", icon: <FaHeart />, text: "favourites" },
+    { to: "/history", icon: <FaHistory />, text: "history" },
+  ];
+
+  const playlistNavItems = [
+    {
+      to: "/featured-playlist",
+      icon: <FaListAlt />,
+      text: "featured playlist",
+    },
+    { to: "/create-playlist", icon: <FaPlusCircle />, text: "create playlist" },
+  ];
 
   return (
     <div
-  className={`fixed top-0 bottom-0 z-50 bg-[#1b2039] ${
-    openMenu ? "w-[200px]" : "w-[80px]"
-  } transition-all duration-300 shadow-lg 
-    hidden lg:block`}
->
+      className={`fixed top-5 bottom-0 z-50 bg-[#1b2039] ${
+        openMenu ? "w-[200px]" : "w-[80px]"
+      } transition-all duration-300 shadow-lg hidden lg:block`}
+    >
       <div
         onClick={toggleSidebar}
         className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full text-center flex items-center justify-center"
@@ -34,162 +77,80 @@ const Sidebar = () => {
           <div
             className={`${openMenu ? "hidden" : "block"} text-center w-full`}
           >
-            <a href="/">
-              <img
-                src={logo}
-                alt="logo"
-                className="img-fluid"
-              />
-            </a>
+            <Link to="/">
+              <img src={logo} alt="logo" className="img-fluid" />
+            </Link>
           </div>
           <div
             className={`${openMenu ? "block" : "hidden"} text-center w-full`}
           >
-            <a href="/">
-              <img
-                src={logo}
-                alt="logo"
-                className="img-fluid"
-              />
-            </a>
+            <Link to="/">
+              <img src={logo} alt="logo" className="img-fluid" />
+            </Link>
           </div>
         </div>
 
         <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen custom-scrollbar">
           <ul className="space-y-2">
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaHome className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  discover
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaMusic className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  albums
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaUser className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  artists
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaHeadphones className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  genres
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <RiBaseStationLine className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  Stations
-                </span>
-              </a>
-            </li>
+            {navItems.map((item, index) => (
+              <li key={index}>
+                <Link
+                  to={item.to}
+                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                >
+                  {React.cloneElement(item.icon, {
+                    className:
+                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                  })}
+                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                    {item.text}
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <ul className="mt-10 space-y-2">
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaDownload className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  downloads
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaShoppingCart className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  purchased
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaHeart className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  favourites
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaHistory className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  history
-                </span>
-              </a>
-            </li>
+            {secondaryNavItems.map((item, index) => (
+              <li key={index}>
+                <Link
+                  to={item.to}
+                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                >
+                  {React.cloneElement(item.icon, {
+                    className:
+                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                  })}
+                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                    {item.text}
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <ul className="mt-10 space-y-2">
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaListAlt className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  featured playlist
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="/"
-                className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
-              >
-                <FaPlusCircle className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate" />
-                <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
-                  create playlist
-                </span>
-              </a>
-            </li>
+            {playlistNavItems.map((item, index) => (
+              <li key={index}>
+                <Link
+                  to={item.to}
+                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                >
+                  {React.cloneElement(item.icon, {
+                    className:
+                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                  })}
+                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                    {item.text}
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
 
       <style jsx>{`
-        
         .custom-scrollbar::-webkit-scrollbar {
           width: 2px;
           background-color: transparent;
@@ -204,7 +165,6 @@ const Sidebar = () => {
           background-color: transparent;
         }
 
-       
         .icon-rotate {
           transition: transform 0.4s ease;
         }
@@ -218,6 +178,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-

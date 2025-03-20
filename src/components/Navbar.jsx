@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaSearch, FaGlobe, FaUserAlt, FaUserPlus,FaUser,FaHome,FaMusic,FaHeadphones, FaAngleRight } from 'react-icons/fa';
 import logo from '../assets/img/logo.jpeg'; 
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +25,7 @@ const Navbar = () => {
   };
 
   // Check if user is authenticated
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = useSelector((state)=>state.user.user)
 
   return (
     <div>
