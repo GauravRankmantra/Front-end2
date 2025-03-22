@@ -47,7 +47,7 @@ const Recently = ({ heading, link }) => {
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           {heading}
-          <div className="absolute bottom-0 left-[-15px] w-[100px] h-[5px] bg-gradient-to-r from-[#3bc8e7] to-transparent"></div>
+          <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
       </div>
 

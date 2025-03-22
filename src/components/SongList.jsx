@@ -1,11 +1,13 @@
-import React from 'react';
-import "../assets/css/style.css";
+import React, { useState } from "react";
+import style from "../assets/css/Style.module.css";
 
-const SongList = () => {
+const SongList = ({songs ,artist}) => {
+
+    
   return (
     <>
-      <div className="ms_album_single_wrapper">
-        <div className="album_single_data">
+      <div className={style.ms_album_single_wrapper}>
+        {/* <div className="album_single_data">
           <div className="album_single_img">
             <img src="https://dummyimage.com/240x240" alt="" className="img-fluid" />
           </div>
@@ -44,12 +46,12 @@ const SongList = () => {
             <li><a href="#"><span className="opt_icon"><span className="icon icon_playlst"></span></span>Add To Playlist</a></li>
             <li><a href="#"><span className="opt_icon"><span className="icon icon_share"></span></span>Share</a></li>
           </ul>
-        </div>
+        </div> */}
 
         {/* Song List */}
-        <div className="album_inner_list">
-          <div className="album_list_wrapper">
-            <ul className="album_list_name">
+        <div className={style.album_inner_list}>
+          <div className={style.album_list_wrapper}>
+            <ul className={style.album_list_name}>
               <li>#</li>
               <li>Song Title</li>
               <li>Artist</li>
@@ -58,7 +60,7 @@ const SongList = () => {
               <li className="text-center">More</li>
             </ul>
             {/* Example Song List */}
-            {renderSongs()}
+            {renderSongs(songs,artist)}
           </div>
         </div>
       </div>
@@ -67,39 +69,76 @@ const SongList = () => {
 };
 
 // Helper function to render song items dynamically
-const renderSongs = () => {
-  const songs = [
-    { id: 1, title: "Bloodlust", artist: "Ava Cornish & Brian Hill", duration: "5:26" },
-    { id: 2, title: "Desired Games", artist: "Ava Cornish & Brian Hill", duration: "5:26" },
-    { id: 3, title: "Until I Met You", artist: "Ava Cornish & Brian Hill", duration: "5:26" },
-    { id: 4, title: "Dark Alley Acoustic", artist: "Ava Cornish & Brian Hill", duration: "5:26" },
-    { id: 5, title: "Cloud nine", artist: "Ava Cornish & Brian Hill", duration: "5:26" },
-  ];
+const renderSongs = (songs,artist) => {
+
 
   return songs.map((song, index) => (
-    <ul key={song.id}>
+    <ul key={song.id} >
       <li>
         <a href="#">
-          <span className="play_no">{`0${index + 1}`}</span>
-          <span className="play_hover"></span>
+          <span className={style.play_no}>{`0${index + 1}`}</span>
+          <span className={style.play_hover}></span>
         </a>
       </li>
-      <li><a href="#">{song.title}</a></li>
-      <li><a href="#">{song.artist}</a></li>
-      <li className="text-center"><a href="#">{song.duration}</a></li>
+      <li>
+        <a href="#">{song.title}</a>
+      </li>
+      <li>
+        <a href="#">{artist}</a>
+      </li>
       <li className="text-center">
-        <a href="#"><span className="ms_icon1 ms_fav_icon"></span></a>
+        <a href="#">{song.duration}</a>
+      </li>
+      <li className="text-center">
+        <a href="#">
+          <span className={`${style.ms_icon1} ${style.ms_fav_icon}`}></span>
+        </a>
       </li>
       <li className="text-center ms_more_icon">
         <a href="#">
           <span className="ms_icon1 ms_active_icon"></span>
         </a>
-        <ul className="more_option">
-          <li><a href="#"><span className="opt_icon"><span className="icon icon_fav"></span></span>Add To Favourites</a></li>
-          <li><a href="#"><span className="opt_icon"><span className="icon icon_queue"></span></span>Add To Queue</a></li>
-          <li><a href="#"><span className="opt_icon"><span className="icon icon_dwn"></span></span>Download Now</a></li>
-          <li><a href="#"><span className="opt_icon"><span className="icon icon_playlst"></span></span>Add To Playlist</a></li>
-          <li><a href="#"><span className="opt_icon"><span className="icon icon_share"></span></span>Share</a></li>
+        <ul className={style.more_option}>
+          <li>
+            <a href="#">
+              <span className={style.opt_icon}>
+                <span className={`${style.icon} ${style.icon_fav}`}></span>
+              </span>
+              Add To Favourites
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className={style.opt_icon}>
+                <span className={`${style.icon} ${style.icon_queue}`}></span>
+              </span>
+              Add To Queue
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className={style.opt_icon}>
+                <span className={`${style.icon} ${style.icon_dwn}`}></span>
+              </span>
+              Download Now
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className={style.opt_icon}>
+                <span className={`${style.icon} ${style.icon_playlst}`}></span>
+              </span>
+              Add To Playlist
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className={style.opt_icon}>
+                <span className={`${style.icon} ${style.icon_share}`}></span>
+              </span>
+              Share
+            </a>
+          </li>
         </ul>
       </li>
     </ul>

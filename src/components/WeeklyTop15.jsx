@@ -28,12 +28,12 @@ const WeeklyTop15 = ({ link,heading }) => {
   }, [link]);
 
   return (
-    <div className="bg-gray-900 text-gray-300  px-4 ">
-      <div className="container mx-auto px-4">
+    <div className="bg-gray-900 text-gray-300 mx-4 sm:mx-10 lg:mx-10">
+      <div className="container mx-auto">
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           {heading}
-          <div className="absolute bottom-0 left-[-15px] w-[100px] h-[5px] bg-gradient-to-r from-[#3bc8e7] to-transparent"></div>
+          <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
       </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
