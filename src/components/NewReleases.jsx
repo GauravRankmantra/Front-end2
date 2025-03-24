@@ -23,7 +23,7 @@ const NewReleases = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900 w-full mx-4 sm:mx-10 lg:mx-10">
+    <div className="bg-gray-900  mx-4 sm:mx-10 lg:mx-10">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-4">
           <div className="w-full mb-6">

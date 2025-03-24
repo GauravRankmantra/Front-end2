@@ -3,11 +3,12 @@ import React, { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import SongList from "./SongList";
-import style from "../assets/css/Style.module.css";
+
 import CommentSlider from "./CommentSlider";
 import AlbumCard from "./AlbumCard";
-import NewReleases from "./NewReleases"
-import Test from "./Test";
+import NewReleases from "./NewReleases";
+import { useDispatch } from "react-redux";
+import { addPlaylistToQueue } from "../features/musicSlice";
 
 const AlbumInfo = () => {
   const { id } = useParams();
@@ -18,15 +19,14 @@ const AlbumInfo = () => {
   const [menu, setMenu] = useState(false);
   const [error, setError] = useState(null);
   const [songs, setSongs] = useState([]);
+  const [disableBtn, setDisableBtn] = useState(false);
   const [artist, setArtist] = useState("");
   const [activePopup, setActivePopup] = useState(null);
+  const dispatch = useDispatch();
 
   const handelMenu = () => {
     setMenu(!menu);
   };
-  useEffect(() => {
-    console.log("Artist has been updated:", artist);
-  }, [artist]);
 
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -50,6 +50,11 @@ const AlbumInfo = () => {
 
     fetchAlbum();
   }, [id]);
+
+  const handelPlayAll = () => {
+    dispatch(addPlaylistToQueue(songs));
+    setDisableBtn(!disableBtn);
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -160,7 +165,7 @@ const AlbumInfo = () => {
 
   return (
     <div className="shadow-2xl rounded-lg">
-      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8 min-h-screen text-white font-sans">
+      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8 min-h-screen text-white w-full font-sans">
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
             <img
@@ -182,7 +187,11 @@ const AlbumInfo = () => {
             </p>
 
             <div className="mt-4 flex flex-col sm:flex-row gap-4">
-              <button className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center">
+              <button
+                disabled={disableBtn}
+                onClick={handelPlayAll}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center"
+              >
                 <svg
                   className="w-5 h-5 mr-2"
                   fill="currentColor"
@@ -253,88 +262,7 @@ const AlbumInfo = () => {
             )}
           </div>
         </div>
-        {/* <div className="overflow-x-auto">
-        <table className="w-full mt-8 text-left border-collapse border-none">
-          <thead>
-            <tr className="border-b border-gray-600 md:text-lg text-xs">
-              <th className="py-2">#</th>
-              <th>Song Title</th>
-              <th>Artist</th>
-              <th>Duration</th>
-              <th>Add To Favourites</th>
-              <th>More</th>
-            </tr>
-          </thead>
-          <tbody className="border-collapse border-none md:text-sm text-xs">
-            {album.songs.map((song, index) => (
-              <tr key={song._id} className="border-b p-2 border-gray-700">
-                <td className="">{index + 1}</td>
-                <td>{song.title}</td>
-                <td>{album.artistDetails.fullName}</td>
-                <td>{formatDuration(song.duration)}</td>
-                <td>
-                  <button
-                    className="text-gray-400 hover:text-red-500"
-                    onClick={() => handleAddToFavourites(song._id)}
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                      />
-                    </svg>
-                  </button>
-                </td>
-                <td className="">
-                  <button
-                    className="text-gray-400 hover:text-gray-200"
-                    onClick={() => togglePopup(song._id)}
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle cx="12" cy="12" r="2" />
-                      <circle cx="12" cy="5" r="2" />
-                      <circle cx="12" cy="19" r="2" />
-                    </svg>
-                  </button>
-                  {activePopup === song._id && (
-                    <div className="absolute right-0 bg-white text-black rounded shadow-lg p-2 text-sm">
-                      <a href="#" className="block px-4 py-2">
-                        Add To Favourites
-                      </a>
-                      <a href="#" className="block px-4 py-2">
-                        Download
-                      </a>
-                      <a href="#" className="block px-4 py-2">
-                        Add To Queue
-                      </a>
-                      <a href="#" className="block px-4 py-2">
-                        Add To Playlist
-                      </a>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */}
+
         <div className="mt-20">
           {songs && songs.length > 0 ? (
             <SongList songs={songs} artist={artist} />
@@ -345,10 +273,10 @@ const AlbumInfo = () => {
       </div>
 
       <div>
-        <CommentSlider comments={commentsData} />
+        <CommentSlider comments={commentsData} albumId={album._id} />
       </div>
       <div className="mt-10">
-      <AlbumCard
+        <AlbumCard
           heading={"You May Also Like"}
           link={
             "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
@@ -356,12 +284,10 @@ const AlbumInfo = () => {
         />
       </div>
       <div className="mt-5">
-        <NewReleases/>
+        <NewReleases />
       </div>
-      <div className="mt-24">
-    
-      </div>
-  </div>
+      <div className="mt-24"></div>
+    </div>
   );
 };
 

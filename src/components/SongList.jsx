@@ -1,148 +1,77 @@
-import React, { useState } from "react";
-import style from "../assets/css/Style.module.css";
+import React, { useContext, useState } from "react";
+import { PlayCircle, Heart, MoreHorizontal } from "lucide-react"; // Lucide-react icons
+import { useDispatch } from "react-redux";
+import {addSongToQueue, setIsPlaying} from "../features/musicSlice"
 
-const SongList = ({songs ,artist}) => {
+const SongList = ({ songs, artist }) => {
+  const [hoveredSongIndex, setHoveredSongIndex] = useState(null);
 
-    
+
+  const dispatch = useDispatch();
+
+  const handleMouseEnter = (index) => {
+    setHoveredSongIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredSongIndex(null);
+  };
+  function formatDuration(seconds) {
+    const totalSeconds = Math.floor(seconds);
+    const minutes = Math.floor(totalSeconds / 60);
+    const remainingSeconds = totalSeconds % 60;
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+    return `${formattedMinutes}:${formattedSeconds}`;
+  }
+
   return (
-    <>
-      <div className={style.ms_album_single_wrapper}>
-        {/* <div className="album_single_data">
-          <div className="album_single_img">
-            <img src="https://dummyimage.com/240x240" alt="" className="img-fluid" />
-          </div>
-          <div className="album_single_text">
-            <h2>Dream Your Moments</h2>
-            <p className="singer_name">By - Ava Cornish, Brian Hill</p>
-            <div className="album_feature">
-              <a href="#" className="album_date">5 song | 25:10</a>
-              <a href="#" className="album_date">Released March 23, 2022 | Abc Music Company</a>
-            </div>
-            <div className="album_btn">
-              <a href="#" className="ms_btn play_btn">
-                <span className="play_all">
-                  <img src="assets/images/svg/play_all.svg" alt="" /> Play All
-                </span>
-                <span className="pause_all">
-                  <img src="assets/images/svg/pause_all.svg" alt="" /> Pause
-                </span>
-              </a>
-              <a href="#" className="ms_btn">
-                <span className="play_all">
-                  <img src="assets/images/svg/add_q.svg" alt="" /> Add To Queue
-                </span>
-              </a>
-            </div>
-          </div>
-          <div className="album_more_optn ms_more_icon">
-            <span>
-              <img src="assets/images/svg/more.svg" alt="" />
-            </span>
-          </div>
-          <ul className="more_option">
-            <li><a href="#"><span className="opt_icon"><span className="icon icon_fav"></span></span>Add To Favourites</a></li>
-            <li><a href="#"><span className="opt_icon"><span className="icon icon_queue"></span></span>Add To Queue</a></li>
-            <li><a href="#"><span className="opt_icon"><span className="icon icon_dwn"></span></span>Download Now</a></li>
-            <li><a href="#"><span className="opt_icon"><span className="icon icon_playlst"></span></span>Add To Playlist</a></li>
-            <li><a href="#"><span className="opt_icon"><span className="icon icon_share"></span></span>Share</a></li>
-          </ul>
-        </div> */}
-
-        {/* Song List */}
-        <div className={style.album_inner_list}>
-          <div className={style.album_list_wrapper}>
-            <ul className={style.album_list_name}>
-              <li>#</li>
-              <li>Song Title</li>
-              <li>Artist</li>
-              <li className="text-center">Duration</li>
-              <li className="text-center">Add To Favourites</li>
-              <li className="text-center">More</li>
-            </ul>
-            {/* Example Song List */}
-            {renderSongs(songs,artist)}
-          </div>
-        </div>
-      </div>
-    </>
+    <div className="overflow-x-auto">
+      <table className="table-auto w-full text-left text-sm text-gray-400">
+        <thead className="text-xs uppercase text-gray-500">
+          <tr>
+            <th className="p-4 w-10">#</th> {/* Fixed width for the number column */}
+            <th className="p-4">Song Title</th>
+            <th className="p-4">Artist</th>
+            <th className="p-4">Duration</th>
+            <th className="p-4">Add To Favourites</th>
+            <th className="p-4">More</th>
+          </tr>
+        </thead>
+        <tbody>
+          {songs.map((song, index) => (
+            <tr
+              key={index}
+              className={`border-b border-gray-700 hover:bg-gray-800 transition-colors duration-300 ${
+                hoveredSongIndex === index ? "text-teal-400" : ""
+              }`}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <td className="p-4 w-10"> {/* Fixed width to prevent shifting */}
+                <div onClick={() => dispatch(addSongToQueue(song), setIsPlaying(true))} className="flex items-center justify-center">
+                  {hoveredSongIndex === index ? (
+                    <PlayCircle className="text-teal-400 w-5 h-5" />
+                  ) : (
+                    index + 1
+                  )}
+                </div>
+              </td>
+              <td className="p-4">{song.title}</td>
+              <td className="p-4">{artist}</td>
+              <td className="p-4">{formatDuration(song.duration)}</td>
+              <td className="p-4">
+                <Heart className="w-5 h-5 hover:text-teal-400 transition-colors duration-300" />
+              </td>
+              <td className="p-4">
+                <MoreHorizontal className="w-5 h-5 hover:text-teal-400 transition-colors duration-300" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
-};
-
-// Helper function to render song items dynamically
-const renderSongs = (songs,artist) => {
-
-
-  return songs.map((song, index) => (
-    <ul key={song.id} >
-      <li>
-        <a href="#">
-          <span className={style.play_no}>{`0${index + 1}`}</span>
-          <span className={style.play_hover}></span>
-        </a>
-      </li>
-      <li>
-        <a href="#">{song.title}</a>
-      </li>
-      <li>
-        <a href="#">{artist}</a>
-      </li>
-      <li className="text-center">
-        <a href="#">{song.duration}</a>
-      </li>
-      <li className="text-center">
-        <a href="#">
-          <span className={`${style.ms_icon1} ${style.ms_fav_icon}`}></span>
-        </a>
-      </li>
-      <li className="text-center ms_more_icon">
-        <a href="#">
-          <span className="ms_icon1 ms_active_icon"></span>
-        </a>
-        <ul className={style.more_option}>
-          <li>
-            <a href="#">
-              <span className={style.opt_icon}>
-                <span className={`${style.icon} ${style.icon_fav}`}></span>
-              </span>
-              Add To Favourites
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span className={style.opt_icon}>
-                <span className={`${style.icon} ${style.icon_queue}`}></span>
-              </span>
-              Add To Queue
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span className={style.opt_icon}>
-                <span className={`${style.icon} ${style.icon_dwn}`}></span>
-              </span>
-              Download Now
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span className={style.opt_icon}>
-                <span className={`${style.icon} ${style.icon_playlst}`}></span>
-              </span>
-              Add To Playlist
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <span className={style.opt_icon}>
-                <span className={`${style.icon} ${style.icon_share}`}></span>
-              </span>
-              Share
-            </a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  ));
 };
 
 export default SongList;

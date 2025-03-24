@@ -13,6 +13,8 @@ import {
   FaListAlt,
   FaPlusCircle,
 } from "react-icons/fa";
+import { IoDiamondOutline } from "react-icons/io5";
+
 import { RiBaseStationLine } from "react-icons/ri";
 
 import logo from "../assets/img/logo.jpeg";
@@ -36,6 +38,7 @@ const Sidebar = () => {
     { to: "/albums", icon: <FaMusic />, text: "albums" },
     { to: "/artists", icon: <FaUser />, text: "artists" },
     { to: "/genres", icon: <FaHeadphones />, text: "genres" },
+    { to: "/top_track", icon: <IoDiamondOutline  />, text: "top_tracks" },
     { to: "/stations", icon: <RiBaseStationLine />, text: "Stations" },
   ];
 

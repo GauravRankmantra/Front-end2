@@ -10,7 +10,7 @@ import TopGenres from "../components/TopGenres";
 const Home = () => {
   return (
     <>
-      <div className="py-6 lg:py-16  bg-[#14182A]">
+      <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth no-scrollbar">
         <div className="">
           <div className="flex flex-wrap justify-center lg:justify-start">
             <div className="w-full sm:w-[90%] lg:w-[511px] mx-auto text-center lg:text-left">

@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
+
 // Check if there's a user saved in localStorage
 const savedUser = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
