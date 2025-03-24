@@ -43,7 +43,7 @@ const musicSlice = createSlice({
     },
     addPlaylistToQueue: (state, action) => {
       if (state.playlist.length === 0 && action.payload.length > 0) {
-        console.log("Action payload at addPlaylistToQueue ",action.payload)
+       
         state.currentSong = action.payload[0];
         state.currentSongIndex = 0;
       }

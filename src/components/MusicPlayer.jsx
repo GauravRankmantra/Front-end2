@@ -117,11 +117,11 @@ const MusicPlayer = () => {
     >
       <div className="flex w-full md:pr-16 pr-10">
         <div className="flex w-[15%] justify-center items-center">
-          <div className="w-24">
+          <div className="w-24 md:block hidden">
             <img className="object-cover" src={currentSong.coverImage} alt="" />
           </div>
-          <div className="flex flex-col items-center justify-center">
-            <h3 className="text-white text-sm md:text-xl font-semibold">
+          <div className="flex flex-col content-start justify-items-start justify-start items-start ">
+            <h3 className="text-white text-sm md:text-xl font-semibold ">
               {currentSong.title}
             </h3>
             <p className="text-gray-400 md:text-sm text-xs">
@@ -210,7 +210,7 @@ const MusicPlayer = () => {
           isPlaylistOpen ? "translate-x-0" : "translate-x-full"
         } w-80 h-3/4 z-50 overflow-y-auto rounded-lg`}
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className=" sticky flex justify-between items-center mb-4">
           <h4 className="text-white text-lg font-semibold">Queue</h4>
           <button className="text-yellow-400" onClick={togglePlaylist}>
             Close
@@ -221,7 +221,7 @@ const MusicPlayer = () => {
           {playlist.map((song, index) => (
             <li
               key={index}
-              className={`flex items-center gap-4 p-2 rounded-md cursor-pointer ${
+              className={`flex items-center justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex
                   ? "bg-yellow-400 text-black"
                   : "bg-gray-700"
@@ -232,7 +232,7 @@ const MusicPlayer = () => {
                 alt={song.title}
                 className="w-12 h-12 rounded-md object-cover"
               />
-              <div>
+              <div className="flex flex-col justify-start items-start">
                 <h5 className="text-lg font-semibold">{song.title}</h5>
                 <p className="text-sm">{song.artist}</p>
               </div>

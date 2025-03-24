@@ -8,7 +8,7 @@ import CommentSlider from "./CommentSlider";
 import AlbumCard from "./AlbumCard";
 import NewReleases from "./NewReleases";
 import { useDispatch } from "react-redux";
-import { addPlaylistToQueue } from "../features/musicSlice";
+import { addPlaylistToQueue,clearQueue } from "../features/musicSlice";
 
 const AlbumInfo = () => {
   const { id } = useParams();
@@ -52,6 +52,7 @@ const AlbumInfo = () => {
   }, [id]);
 
   const handelPlayAll = () => {
+    dispatch(clearQueue())
     dispatch(addPlaylistToQueue(songs));
     setDisableBtn(!disableBtn);
   };
