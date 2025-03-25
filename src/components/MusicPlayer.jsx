@@ -33,7 +33,7 @@ const MusicSidebar = ({ song }) => {
 
   return (
     <div
-      className={`transition-all py-2 absolute rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+      className={`transition-all py-2 absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
         expand ? "w-max" : "w-2/12"
       }`}
     >
@@ -201,7 +201,7 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 w-full bg-gray-600  flex justify-between items-center text-white z-50 text-center"
+      className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600  flex justify-between items-center text-white z-50 text-center"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`, // Add linear gradient for black overlay
         backgroundSize: "cover",
@@ -211,7 +211,7 @@ const MusicPlayer = () => {
       <div className="relative flex w-full items-center md:pr-16 pr-10">
         <MusicSidebar song={currentSong} />
 
-        <div className="w-full flex justify-between items-center ml-[20%] px-8 py-4 rounded-lg shadow-md">
+        <div className="w-full flex justify-between items-center ml-[20%] md:px-8 md:py-4 rounded-lg shadow-md">
           {/* Controls (Previous, Play/Pause, Next) */}
           <div className="flex justify-center items-center md:space-x-4">
             <button
@@ -278,7 +278,7 @@ const MusicPlayer = () => {
           </div>
         </div>
         <div className="md:flex space-x-3 hidden ">
-          <div className="rounded-full p-1 border">
+          <div className="rounded-full p-1 border ">
             <IoShuffleOutline className="w-5 h-5" />
           </div>
           <div className="rounded-full p-1 border">

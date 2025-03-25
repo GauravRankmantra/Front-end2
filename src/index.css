@@ -60,18 +60,8 @@
   }
 
   
-  *, *:before, *:after {
-    border: 0;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    outline: 0;
-    user-select: none;
-  }
+
   
-  body {
-    background-color: #ecf0f1;
-  }
   
   .debug {
     color: #9b59b6;
