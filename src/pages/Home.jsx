@@ -6,6 +6,7 @@ import WeeklyTop15 from "../components/WeeklyTop15";
 import img728 from "../assets/img/dummy.png";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
+import RadialRangeSlider from "../components/RadialRangeSlider";
 
 const Home = () => {
   return (
@@ -86,6 +87,9 @@ const Home = () => {
       <div  className="my-10">
         <TopGenres/>
         </div>
+       
+    
+    
     </>
   );
 };

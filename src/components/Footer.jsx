@@ -13,7 +13,7 @@ import {
 const Footer = () => {
 
   return (
-       <footer className="bg-gradient-to-b from-gray-900 mt-24 to-gray-400 text-gray-400 py-12 lg:px-36 px-12">
+       <footer className="bg-gradient-to-b from-gray-900 my-20 to-gray-400 text-gray-400 py-12 lg:px-36 px-12">
             <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               <div>
                 <img src={logo} className="w-28 h-24" />

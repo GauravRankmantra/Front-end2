@@ -1,5 +1,5 @@
-import React, { useState, useCallback,useEffect } from "react";
-import { Link } from "react-router-dom"; // Import Link
+import React, { useState, useCallback, useEffect } from "react";
+import { NavLink } from "react-router-dom"; // Use NavLink instead of Link for active highlighting
 import {
   FaAngleRight,
   FaHome,
@@ -14,32 +14,21 @@ import {
   FaPlusCircle,
 } from "react-icons/fa";
 import { IoDiamondOutline } from "react-icons/io5";
-
-import { RiBaseStationLine } from "react-icons/ri";
-
 import logo from "../assets/img/logo.jpeg";
 
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
- 
   const toggleSidebar = useCallback(() => {
-   
     setOpenMenu((prevOpenMenu) => !prevOpenMenu);
   }, []);
-
-  useEffect(() => {
-    
-    localStorage.setItem("navOpen", String(openMenu)); 
-  }, [openMenu]);
 
   const navItems = [
     { to: "/", icon: <FaHome />, text: "discover" },
     { to: "/albums", icon: <FaMusic />, text: "albums" },
     { to: "/artists", icon: <FaUser />, text: "artists" },
     { to: "/genres", icon: <FaHeadphones />, text: "genres" },
-    { to: "/top_track", icon: <IoDiamondOutline  />, text: "top_tracks" },
-    { to: "/stations", icon: <RiBaseStationLine />, text: "Stations" },
+    { to: "/top_track", icon: <IoDiamondOutline />, text: "top_tracks" },
   ];
 
   const secondaryNavItems = [
@@ -80,73 +69,97 @@ const Sidebar = () => {
           <div
             className={`${openMenu ? "hidden" : "block"} text-center w-full`}
           >
-            <Link to="/">
+            <NavLink to="/">
               <img src={logo} alt="logo" className="img-fluid" />
-            </Link>
+            </NavLink>
           </div>
           <div
             className={`${openMenu ? "block" : "hidden"} text-center w-full`}
           >
-            <Link to="/">
+            <NavLink to="/">
               <img src={logo} alt="logo" className="img-fluid" />
-            </Link>
+            </NavLink>
           </div>
         </div>
 
-        <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen custom-scrollbar">
-          <ul className="space-y-2">
+        <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
+          <ul className="space-y-3">
             {navItems.map((item, index) => (
               <li key={index}>
-                <Link
+                <NavLink
                   to={item.to}
-                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                  className={({ isActive }) =>
+                    `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                      isActive ? "bg-[#2cc8e5] text-white" : ""
+                    }`
+                  }
                 >
                   {React.cloneElement(item.icon, {
                     className:
                       "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
                   })}
-                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                  <span
+                    className={`${
+                      openMenu ? "block" : "hidden"
+                    } flex-grow nav_text`}
+                  >
                     {item.text}
                   </span>
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>
 
-          <ul className="mt-10 space-y-2">
+          <ul className="mt-10 space-y-3">
             {secondaryNavItems.map((item, index) => (
               <li key={index}>
-                <Link
+                <NavLink
                   to={item.to}
-                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                  className={({ isActive }) =>
+                    `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                      isActive ? "bg-[#2cc8e5] text-white" : ""
+                    }`
+                  }
                 >
                   {React.cloneElement(item.icon, {
                     className:
                       "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
                   })}
-                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                  <span
+                    className={`${
+                      openMenu ? "block" : "hidden"
+                    } flex-grow nav_text`}
+                  >
                     {item.text}
                   </span>
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>
 
-          <ul className="mt-10 space-y-2">
+          <ul className="mt-10 space-y-3">
             {playlistNavItems.map((item, index) => (
               <li key={index}>
-                <Link
+                <NavLink
                   to={item.to}
-                  className="flex justify-center items-center text-[#cdcdcd] text-sm py-2 px-0 w-full hover:bg-[#2cc8e5] hover:text-white relative group"
+                  className={({ isActive }) =>
+                    `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                      isActive ? "bg-[#2cc8e5] text-white" : ""
+                    }`
+                  }
                 >
                   {React.cloneElement(item.icon, {
                     className:
                       "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
                   })}
-                  <span className={`${openMenu ? "block" : "hidden"} nav_text`}>
+                  <span
+                    className={`${
+                      openMenu ? "block" : "hidden"
+                    } flex-grow nav_text`}
+                  >
                     {item.text}
                   </span>
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>

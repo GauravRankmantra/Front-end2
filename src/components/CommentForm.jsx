@@ -40,7 +40,7 @@ const CommentForm = ({ albumId }) => {
       );
 
       // Handle the success response (e.g., show a success message or reset form)
-      console.log(response.data);
+ 
       alert("Comment submitted successfully!");
 
       // Clear the form after successful submission

@@ -20,6 +20,7 @@ import ArtistInfo from "./components/ArtistInfo";
 import Artist from "./pages/Artist";
 import Genre from "./pages/Genre";
 import TopTrack from "./pages/TopTrack";
+import ForgetPass from "./auth/ForgetPass";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -45,6 +46,7 @@ const App = () => {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
+        <Route path="/forget_pass" element={<ForgetPass />} />
 
       </Routes>
     </Router>

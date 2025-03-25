@@ -58,3 +58,66 @@
     src: url(../fonts/JosefinSans-Bold.woff) format('woff'),
          url(../fonts/JosefinSans-Bold.woff2) format('woff2');
   }
+
+  
+  *, *:before, *:after {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: 0;
+    user-select: none;
+  }
+  
+  body {
+    background-color: #ecf0f1;
+  }
+  
+  .debug {
+    color: #9b59b6;
+    font-family: monospace;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+    z-index: 100;
+    font-size: 2vw; /* Slightly reduced font size */
+  }
+  
+
+  
+  .circle:before {
+    content: "";
+    position: absolute;
+    width: 90%; /* Keeps inner circle proportionate */
+    height: 90%;
+    border-radius: 50%;
+    top: 5%;
+    left: 5%;
+   
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .dot {
+    position: absolute;
+    width: 8px; /* Reduced size for the dot */
+    height: 50px; /* Adjust height relative to smaller circle */
+    left: 50%;
+    top: 50%;
+    transform-origin: center bottom;
+  }
+  
+  .dot:before {
+    content: "";
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 0 5px #000; /* Reduced shadow for the dot */
+    width: 20px; /* Smaller dot size */
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate3d(-50%, -50%, 0); /* Centers the dot properly */
+  }
+  

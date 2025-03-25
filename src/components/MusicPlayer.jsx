@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import "../index.css"; 
 import {
   FaPlay,
   FaPause,
@@ -8,20 +9,110 @@ import {
   FaList,
   FaVolumeUp,
 } from "react-icons/fa"; // Import icons
+import { IoCloudDownloadOutline } from "react-icons/io5";
+import { MdOutlineExpandCircleDown } from "react-icons/md";
+import { CiHeart } from "react-icons/ci";
+import { MdOutlinePlaylistAdd } from "react-icons/md";
+import playIcon from "../assets/svg/play_icon.svg";
+import { GoPlay } from "react-icons/go";
+import { IoPauseCircleOutline } from "react-icons/io5";
+import { FaChevronUp } from "react-icons/fa6";
+import { FaChevronCircleUp } from "react-icons/fa";
+import { IoShuffleOutline } from "react-icons/io5";
+import { IoIosRepeat } from "react-icons/io";
+
 import {
   playNextSong,
   playPrevSong,
   setIsPlaying,
   seek,
-} from "../features/musicSlice"; // Import the needed actions
+} from "../features/musicSlice";
 
+const MusicSidebar = ({ song }) => {
+  const [expand, setExpand] = useState(false);
+
+  return (
+    <div
+      className={`transition-all py-2 absolute rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+        expand ? "w-max" : "w-2/12"
+      }`}
+    >
+      {/* Sidebar Left Section: Cover Image and Basic Info */}
+      <div className="flex-shrink-0 flex items-center space-x-4">
+        <img
+          className="w-12 h-12 md:w-16 md:h-16   rounded-lg object-cover shadow-lg"
+          src={song.coverImage}
+          alt={song.title}
+        />
+
+        {/* Hide title and artist on mobile */}
+        <div className="hidden md:flex flex-col space-y-1 overflow-hidden">
+          <h1 className="text-lg font-semibold  whitespace-nowrap text-ellipsis">
+            {song.title}
+          </h1>
+          <h2 className="text-sm  whitespace-nowrap text-ellipsis ">
+            {song.artist}
+          </h2>
+        </div>
+      </div>
+
+      {/* Expanded content */}
+      <div
+        className={`flex-grow overflow-scroll no-scrollbar hidden md:flex justify-around items-center ml-10 space-x-6 transition-opacity duration-300 ${
+          expand ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        {/* First button without border */}
+        <button className="flex items-center space-x-2 text-sm">
+          <IoCloudDownloadOutline className="w-5 h-5" />
+          <span className="text-lg">Download</span>
+        </button>
+
+        {/* Vertical line applied to remaining buttons */}
+        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <CiHeart className="w-5 h-5" />
+          <span className="text-lg">Favorite</span>
+        </button>
+
+        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <MdOutlinePlaylistAdd className="w-5 h-5" />
+          <span className="text-lg">Add to playlist</span>
+        </button>
+
+        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <IoCloudDownloadOutline className="w-5 h-5" />
+          <span className="text-lg">Share</span>
+        </button>
+      </div>
+
+      {/* Expand/Collapse Button */}
+      <button
+        onClick={() => setExpand(!expand)}
+        className="ml-auto hidden  w-24 h-10 bg-cyan-500  rounded-full md:flex justify-center items-center "
+      >
+        {expand ? (
+          <MdOutlineExpandCircleDown className="rotate-90 w-6 h-6" />
+        ) : (
+          <MdOutlineExpandCircleDown className="-rotate-90  w-6 h-6" />
+        )}
+      </button>
+    </div>
+  );
+};
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+};
 const MusicPlayer = () => {
   const dispatch = useDispatch();
-  const audioRef = useRef(null); // Reference to the audio element
-  const [progress, setProgress] = useState(0); // State for the progress bar
-  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); // State for playlist visibility
-  const [volume, setVolume] = useState(50); // State for volume control
+  const audioRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
+  const [volume, setVolume] = useState(50);
   const [showSlider, setShowSlider] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0); // State for current time
+  const [duration, setDuration] = useState(0);
 
   const { currentSong, playlist, isPlaying, currentSongIndex } = useSelector(
     (state) => ({
@@ -31,14 +122,14 @@ const MusicPlayer = () => {
       currentSongIndex: state.musicPlayer?.currentSongIndex || 0,
     })
   );
+
   const toggleSlider = () => {
     setShowSlider(!showSlider);
   };
 
-  // Play or pause the audio element when the isPlaying state changes
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume / 100; // Set initial volume
+      audioRef.current.volume = volume / 100;
       if (isPlaying) {
         audioRef.current.play();
       } else {
@@ -49,17 +140,21 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     if (currentSong) {
-      audioRef.current.src = currentSong.audioUrls.high;
-      audioRef.current.play();
-      dispatch(setIsPlaying(true));
+      if (isPlaying) {
+        audioRef.current.src = currentSong.audioUrls.high;
+        audioRef.current.play();
+      }
     }
-  }, [currentSong, dispatch]);
+  }, [currentSong, dispatch, isPlaying]);
 
   // Update progress as the song plays
   const handleTimeUpdate = () => {
     const currentTime = audioRef.current.currentTime;
     const duration = audioRef.current.duration;
+
     setProgress((currentTime / duration) * 100);
+    setCurrentTime(currentTime);
+    setDuration(duration);
   };
 
   // Handle seeking when user drags the seek bar
@@ -91,122 +186,128 @@ const MusicPlayer = () => {
 
   // Handle volume change
   const handleVolumeChange = (e) => {
-    const newVolume = e.target.value;
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume / 100;
-    }
+    setVolume(e.target.value);
   };
 
   if (!currentSong) {
     return (
       <div className="fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-between items-center text-white z-50 text-center">
-        <p className="text-white text-center font-bold">No song is currently playing</p>
+        <p className="text-white text-center font-bold">
+          No song is currently playing
+        </p>
       </div>
     );
   }
 
   return (
     <div
-      className="fixed bottom-0 left-0 w-full bg-gray-600 px-4 py-2 flex justify-between items-center text-white z-50 text-center"
+      className="fixed bottom-0 left-0 w-full bg-gray-600  flex justify-between items-center text-white z-50 text-center"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`, // Add linear gradient for black overlay
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="flex w-full md:pr-16 pr-10">
-        <div className="flex w-[15%] justify-center items-center">
-          <div className="w-24 md:block hidden">
-            <img className="object-cover" src={currentSong.coverImage} alt="" />
-          </div>
-          <div className="flex flex-col content-start justify-items-start justify-start items-start ">
-            <h3 className="text-white text-sm md:text-xl font-semibold ">
-              {currentSong.title}
-            </h3>
-            <p className="text-gray-400 md:text-sm text-xs">
-              {currentSong.artist}
-            </p>
-          </div>
-        </div>
+      <div className="relative flex w-full items-center md:pr-16 pr-10">
+        <MusicSidebar song={currentSong} />
 
-        <div className="w-full ">
-          <div className="flex justify-center items-center mb-4 w-3/5 mx-auto">
+        <div className="w-full flex justify-between items-center ml-[20%] px-8 py-4 rounded-lg shadow-md">
+          {/* Controls (Previous, Play/Pause, Next) */}
+          <div className="flex justify-center items-center md:space-x-4">
             <button
-              className="prev-btn text-gray-100 px-4 py-2"
+              className="prev-btn text-gray-100 p-2 "
               onClick={handlePrev}
             >
               <FaStepBackward size={24} />
             </button>
             <button
-              className="play-btn text-gray-100 px-4 py-2"
+              className="play-btn text-gray-100 p-2 "
               onClick={handlePlayPause}
             >
-              {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
+              {isPlaying ? (
+                <IoPauseCircleOutline className="w-10 h-10" />
+              ) : (
+                <GoPlay className="w-10 h-10" />
+              )}
             </button>
-            <button
-              className="next-btn text-gray-100 px-4 py-2"
-              onClick={handleNext}
-            >
+            <button className="next-btn text-gray-100 p-2" onClick={handleNext}>
               <FaStepForward size={24} />
             </button>
           </div>
-
           <audio
             ref={audioRef}
             onTimeUpdate={handleTimeUpdate}
             onEnded={handleNext}
           />
-
           {/* Progress Bar */}
-          <div className="progress-bar w-3/5 mx-auto mt-4">
-            <input
-              type="range"
-              value={progress}
-              onChange={handleSeek}
-              className="w-full h-1 bg-gray-700 rounded-lg cursor-pointer"
-            />
+          <div className=" flex-grow flex translate-x-4 md:translate-x-0 items-center md:mx-4">
+            <div className=" flex justify-between items-center w-full md:px-4">
+              <span className="text-xs text-gray-100">
+                {formatTime(currentTime)}
+              </span>
+              <input
+                type="range"
+                value={progress}
+                onChange={handleSeek}
+                className="w-full h-1 bg-transparent  rounded-lg cursor-pointer"
+                style={{ accentColor: "#1ecbe1" }}
+              />
+              <span className="text-xs text-gray-100">
+                {formatTime(duration)}
+              </span>
+            </div>
           </div>
         </div>
 
-    
-        <div className="relative w-24 md:w-52 flex items-center justify-center">
-      <FaVolumeUp className="text-white cursor-pointer" size={24} onClick={toggleSlider} />
-      {showSlider && (
-        <div className="absolute -right-10 mt-8 h-24 md:hidden">
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="w-full h-24 bg-transparent cursor-pointer -rotate-90"
+        <div className="relative hidden md:w-52 md:flex items-center justify-center">
+          <FaVolumeUp
+            className="text-white cursor-pointer w-5 h-5"
+            
+            onClick={toggleSlider}
           />
-        </div>
-      )}
-      <div className="hidden md:block">
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={volume}
-          onChange={handleVolumeChange}
-          className="md:w-24 md:h-2 w-16 h-1 bg-transparent cursor-pointer"
-        />
-      </div>
-    </div>
-      </div>
 
-      {/* Playlist Toggle Button */}
-      <div className="absolute md:right-0 -right-3">
-        <button className="text-gray-100 px-4 py-2" onClick={togglePlaylist}>
-          <FaList size={24} />
-        </button>
+          <div className="hidden md:flex">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={handleVolumeChange}
+              className=" md:w-16  cursor-pointer -rotate-90 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/25 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[7px] [&::-webkit-slider-thumb]:w-[15px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500"
+            />
+          </div>
+        </div>
+        <div className="md:flex space-x-3 hidden ">
+          <div className="rounded-full p-1 border">
+            <IoShuffleOutline className="w-5 h-5" />
+          </div>
+          <div className="rounded-full p-1 border">
+            <IoIosRepeat className="w-5 h-5" />
+          </div>
+          <div>
+            <button
+              className="text-gray-100 space-x-1 border flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
+              onClick={togglePlaylist}
+            >
+              <FaChevronCircleUp className="w-3 h-3" />
+              <h1 className="text-xs md:text-sm">Quality</h1>{" "}
+            </button>
+          </div>
+          <div>
+            <button
+              className="text-gray-100 space-x-1 bg-cyan-500 flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
+              onClick={togglePlaylist}
+            >
+              <FaChevronCircleUp className="w-3 h-3" />
+              <h1 className="text-xs md:text-sm">Queue</h1>{" "}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Playlist Sidebar */}
       <div
-        className={`fixed right-0 bottom-16 bg-gray-900 p-4 text-white shadow-xl transform transition-transform duration-300 ${
+        className={`fixed right-0 bottom-16 bg-gray-800 p-4 text-white shadow-xl transform transition-transform duration-300 no-scrollbar ${
           isPlaylistOpen ? "translate-x-0" : "translate-x-full"
         } w-80 h-3/4 z-50 overflow-y-auto rounded-lg`}
       >
@@ -217,14 +318,14 @@ const MusicPlayer = () => {
           </button>
         </div>
 
-        <ul className="space-y-4">
+        <ul className="space-y-4 ">
           {playlist.map((song, index) => (
             <li
               key={index}
-              className={`flex items-center justify-start gap-4 p-2 rounded-md cursor-pointer ${
+              className={`flex items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex
-                  ? "bg-yellow-400 text-black"
-                  : "bg-gray-700"
+                  ? "bg-cyan-500 text-white"
+                  : "bg-gray-800"
               }`}
             >
               <img
@@ -245,5 +346,3 @@ const MusicPlayer = () => {
 };
 
 export default MusicPlayer;
-
-

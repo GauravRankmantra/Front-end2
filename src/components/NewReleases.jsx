@@ -13,7 +13,7 @@ const NewReleases = () => {
         ); // Replace with your actual API endpoint
 
         setSongs(response.data.data);
-        console.log("new release songs ", response.data.data);
+       
       } catch (error) {
         console.error("Error fetching songs:", error);
       }

@@ -40,7 +40,7 @@ const ArtistInfo = () => {
           `https://backend-music-xg6e.onrender.com/api/v1/user/artist${id}`
         );
         const artistData = res?.data?.data;
-        console.log(artistData);
+      
         setArtist(artistData);
         setSongs(artistData?.songs || []);
       } catch (err) {

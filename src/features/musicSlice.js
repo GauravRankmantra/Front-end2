@@ -28,6 +28,8 @@ const getInitialMusicState = () => {
 };
 
 const initialState = getInitialMusicState();
+initialState.isPlaying = false;
+
 
 const musicSlice = createSlice({
   name: "musicPlayer",
@@ -43,7 +45,6 @@ const musicSlice = createSlice({
     },
     addPlaylistToQueue: (state, action) => {
       if (state.playlist.length === 0 && action.payload.length > 0) {
-       
         state.currentSong = action.payload[0];
         state.currentSongIndex = 0;
       }
