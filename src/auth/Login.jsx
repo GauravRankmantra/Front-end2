@@ -42,7 +42,8 @@ const Login = () => {
         {
           email: email.toLowerCase(),
           password,
-        }
+        },
+        { withCredentials: true }
       );
 
       if (response.data) {
@@ -162,39 +163,42 @@ const Login = () => {
           </button>
           {isLoading && <div className={styles.spinner}></div>}
           <div className="flex flex-col">
-
-        
-          <span
-            style={{
-              color: "white",
-              textAlign: "center",
-              display: "inline-block",
-              width: "100%",
-              fontSize: "20px",
-            }}
-          >
-            Don't have an account?{" "}
-            <Link to="/register" style={{ color: "#e2f50c", fontSize: "20px" }}>
-              Create account
-            </Link>
-          </span>
-          <span
-            style={{
-              color: "white",
-              textAlign: "center",
-              display: "inline-block",
-              marginTop:"5px",
-              width: "100%",
-              fontSize: "20px",
-            }}
-          >
-            Forget passsword?{" "}
-            <Link to="/forget_pass" style={{ color: "#e2f50c", fontSize: "20px" }}>
-             Click here
-            </Link>
-          </span>
+            <span
+              style={{
+                color: "white",
+                textAlign: "center",
+                display: "inline-block",
+                width: "100%",
+                fontSize: "20px",
+              }}
+            >
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                style={{ color: "#e2f50c", fontSize: "20px" }}
+              >
+                Create account
+              </Link>
+            </span>
+            <span
+              style={{
+                color: "white",
+                textAlign: "center",
+                display: "inline-block",
+                marginTop: "5px",
+                width: "100%",
+                fontSize: "20px",
+              }}
+            >
+              Forget passsword?{" "}
+              <Link
+                to="/forget_pass"
+                style={{ color: "#e2f50c", fontSize: "20px" }}
+              >
+                Click here
+              </Link>
+            </span>
           </div>
-          
         </div>
       </form>
       <ToastContainer />

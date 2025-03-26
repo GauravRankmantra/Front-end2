@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.jpeg";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
+import axios from "axios";
 
 const Profile = () => {
   const [image, setImage] = useState(null);
@@ -27,7 +28,12 @@ const Profile = () => {
     coverImage: null,
   });
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await axios.post(
+      "https://backend-music-xg6e.onrender.com/api/v1/auth/logout",
+      {},
+      { withCredentials: true }
+    );
     setTimeout(() => {
       localStorage.removeItem("user");
       dispatch(logoutUser());
@@ -211,8 +217,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-
-
     </>
   );
 };

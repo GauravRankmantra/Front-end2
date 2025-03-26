@@ -16,12 +16,14 @@ const SongList = ({ songs, artist }) => {
   const handleMouseLeave = () => {
     setHoveredSongIndex(null);
   };
-  function formatDuration(seconds) {
-    const totalSeconds = Math.floor(seconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainingSeconds = totalSeconds % 60;
-    const formattedMinutes = minutes.toString().padStart(2, '0');
-    const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+  function formatDuration(duration) {
+    const minutes = Math.floor(duration);
+
+    const seconds = Math.round((duration - minutes) * 60);
+
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+    const formattedSeconds = seconds.toString().padStart(2, "0");
+
     return `${formattedMinutes}:${formattedSeconds}`;
   }
 

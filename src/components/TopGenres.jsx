@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classical from "../assets/img/classical.png";
 import dance from "../assets/img/dance.jpg";
 import edm from "../assets/img/edm.jpg";
 import hip_hop from "../assets/img/hip-hop.jpg";
 import rock from "../assets/img/rock.jpg";
 import rom from "../assets/img/rom.jpg";
+import axios from "axios";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 
 const TopGenres = () => {
+  const [genre, setGenre] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://backend-music-xg6e.onrender.com/api/v1/genre"
+        );
+        setGenre(res.data);
+      } catch (error) {
+        console.error("Error fetching genre:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="text-white mx-4 sm:mx-10 lg:mx-10">
       <div className="flex justify-between items-center mb-6">
@@ -17,14 +36,20 @@ const TopGenres = () => {
           </h1>
         </div>
 
-        <a href="#" className="text-blue-500 text-xs md:text-sm hover:underline">
+        <a
+          href="#"
+          className="text-blue-500 text-xs md:text-sm hover:underline"
+        >
           View More
         </a>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Romantic */}
-        <div className="relative col-span-1 md:col-span-1 lg:col-span-2 row-span-2 group">
+        <div
+          onClick={() => navigate("/genre/romantic")}
+          className="relative col-span-1 md:col-span-1 lg:col-span-2 row-span-2 group"
+        >
           <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden">
             <img
               src={rom}
@@ -47,7 +72,10 @@ const TopGenres = () => {
         </div>
 
         {/* Classical */}
-        <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-full group">
+        <div
+          onClick={() => navigate("/genre/classical")}
+          className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-full group"
+        >
           <img
             src={classical}
             alt="Classical"
@@ -62,7 +90,10 @@ const TopGenres = () => {
         </div>
 
         {/* Hip Hop */}
-        <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-full group">
+        <div
+          onClick={() => navigate("/genre/hip-hop")}
+          className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-full group"
+        >
           <img
             src={hip_hop}
             alt="Hip Hop"
@@ -71,13 +102,16 @@ const TopGenres = () => {
           <div className="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-40 transition-opacity duration-300 ease-in-out"></div>
           <div className="absolute bottom-4 left-4">
             <a href="#" className="text-white font-semibold">
-              Hip Hop
+              Hip-Hop
             </a>
           </div>
         </div>
 
         {/* Dancing */}
-        <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group">
+        <div
+          onClick={() => navigate("/genre/dancing")}
+          className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group"
+        >
           <img
             src={dance}
             alt="Dancing"
@@ -92,7 +126,10 @@ const TopGenres = () => {
         </div>
 
         {/* EDM */}
-        <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group">
+        <div
+          onClick={() => navigate("/genre/edm")}
+          className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group"
+        >
           <img
             src={edm}
             alt="EDM"
@@ -107,7 +144,10 @@ const TopGenres = () => {
         </div>
 
         {/* Rock */}
-        <div className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group">
+        <div
+          onClick={() => navigate("/genre/rock")}
+          className="relative bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg overflow-hidden h-48 group"
+        >
           <img
             src={rock}
             alt="Rock"

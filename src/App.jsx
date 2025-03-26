@@ -21,6 +21,8 @@ import Artist from "./pages/Artist";
 import Genre from "./pages/Genre";
 import TopTrack from "./pages/TopTrack";
 import ForgetPass from "./auth/ForgetPass";
+import GenreInfo from "./components/GenreInfo";
+import Download from "./pages/Download";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -40,7 +42,9 @@ const App = () => {
           <Route path="/artists" element={<Artist />} />
           <Route path="/artist/:id" element={<ArtistInfo />} />
           <Route path="/genres" element={<Genre />} />
+          <Route path="/genre/:name" element={<GenreInfo />} />
           <Route path="/top_track" element={<TopTrack />} />
+          <Route path="/downloads" element={<Download />} />
 
 
         </Route>
