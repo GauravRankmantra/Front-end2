@@ -169,7 +169,7 @@ const SongActions = ({ onClose, song }) => {
     <>
       <div
         ref={dropdownRef}
-        className="absolute md:overflow-hidden overflow-scroll right-8 w-24 h-24 md:w-auto md:h-auto m-auto md:max-w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 animate-fade-in"
+        className="absolute md:overflow-hidden overflow-scroll right-8 w-24 h-28 md:w-auto md:h-auto m-auto md:max-w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 animate-fade-in"
       >
         <div className="md:py-1">
           <button

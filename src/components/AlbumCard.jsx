@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiFillPlayCircle } from 'react-icons/ai'; 
+
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
   const [albums, setalbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+    const [currentalbum, setCurrentalbum] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,12 +45,21 @@ const Recently = ({ heading, link }) => {
     navigate(`/album/${album._id}`);
   };
 
+  const handleMenuToggle = (song) => {
+    if (currentalbum && currentalbum._id === song._id) {
+      // If the clicked song is already selected, close the menu
+      setCurrentalbum(null);
+    } else {
+      // Set the current song for which the menu should be shown
+      setCurrentalbum(song);
+    }
+  };
   return (
     <div className="relative mx-4 sm:mx-10 lg:mx-10">
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           {heading}
-          <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
+          <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
       </div>
 
@@ -86,30 +98,37 @@ const Recently = ({ heading, link }) => {
             ? albums.map((album) => (
                 <div
                   key={album._id}
-                  className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[180px] group cursor-pointer"
-                  onClick={() => handlealbumClick(album)}
+                  className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
                 >
-                  <div className="relative overflow-hidden rounded-[10px] aspect-square">
+                  <div
+                    className="relative overflow-hidden rounded-[10px] aspect-square group"
+                    onMouseLeave={() => setCurrentalbum(null)} // Hide menu on mouse leave
+                  >
                     <img
-                      className="w-full h-full object-cover rounded-[10px] group-hover:opacity-50"
+                      className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
                       src={album.coverImage || "https://dummyimage.com/150x150"}
                       alt={album.title}
                     />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <AiFillPlayCircle
+                        className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                        onClick={() => handlealbumClick(album)}
+                      />
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-12 h-12 text-white"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="absolute top-2 right-2 w-5 h-5 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                        onClick={() => handleMenuToggle(album)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M14.752 11.168l-5.804-3.37A1 1 0 008 8.617v6.766a1 1 0 001.532.848l5.804-3.37a1 1 0 000-1.696z"
-                        />
+                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                        <circle cx="5" cy="12" r="2" fill="currentColor" />
+                        <circle cx="19" cy="12" r="2" fill="currentColor" />
                       </svg>
+
+                     
                     </div>
                   </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser as setUserInStore } from "./features/userSlice"; // Import the action to set the user
+
 
 import Home from "./pages/Home";
 import Login from "./auth/Login";
