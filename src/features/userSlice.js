@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-
 // Check if there's a user saved in localStorage
 const savedUser = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
@@ -22,6 +20,7 @@ const userSlice = createSlice({
       state.user = null;
       // Clear the user from localStorage on logout
       localStorage.removeItem("user");
+      localStorage.removeItem("musicPlayerData");
     },
   },
 });
