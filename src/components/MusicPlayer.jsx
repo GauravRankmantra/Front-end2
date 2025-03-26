@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import "../index.css"; 
+import "../index.css";
 import {
   FaPlay,
   FaPause,
@@ -26,6 +26,7 @@ import {
   playPrevSong,
   setIsPlaying,
   seek,
+  clearQueue,
 } from "../features/musicSlice";
 
 const MusicSidebar = ({ song }) => {
@@ -262,7 +263,6 @@ const MusicPlayer = () => {
         <div className="relative hidden md:w-52 md:flex items-center justify-center">
           <FaVolumeUp
             className="text-white cursor-pointer w-5 h-5"
-            
             onClick={toggleSlider}
           />
 
@@ -313,8 +313,11 @@ const MusicPlayer = () => {
       >
         <div className=" sticky flex justify-between items-center mb-4">
           <h4 className="text-white text-lg font-semibold">Queue</h4>
-          <button className="text-yellow-400" onClick={togglePlaylist}>
-            Close
+          <button
+            className="text-yellow-400"
+            onClick={() => dispatch(clearQueue())}
+          >
+            Clear queue
           </button>
         </div>
 

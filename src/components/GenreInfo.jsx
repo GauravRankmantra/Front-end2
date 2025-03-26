@@ -11,7 +11,16 @@ const GenreInfo = () => {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
 
-  // Fetch songs by genre when the component mounts or when 'name' changes
+  const handleResponse = (response) => {
+    const songsData = response.data.songs;
+
+    if (Array.isArray(songsData)) {
+      setSongs(songsData);
+    } else {
+      setSongs([songsData]);
+    }
+  };
+
   useEffect(() => {
     const fetchSongs = async () => {
       try {
@@ -19,7 +28,7 @@ const GenreInfo = () => {
         const response = await axios.get(
           `https://backend-music-xg6e.onrender.com/api/v1/song/genre/${name}`
         );
-        setSongs(response.data.songs);
+        handleResponse(response);
       } catch (err) {
         setError("Failed to fetch songs");
       } finally {
@@ -65,8 +74,9 @@ const GenreInfo = () => {
                 <div
                   key={song._id}
                   className="relative group cursor-pointer"
-                  onClick={() => handleSongClick(song)}
+                  // onClick={() => handleSongClick(song)}
                 >
+                  {console.log(song)}
                   <div className="relative overflow-hidden rounded-[10px] aspect-square">
                     <img
                       className="w-full h-full object-cover rounded-[10px] group-hover:opacity-50"
