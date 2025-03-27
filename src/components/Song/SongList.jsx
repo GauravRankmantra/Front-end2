@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import { PlayCircle, Heart, MoreHorizontal } from "lucide-react"; // Lucide-react icons
 import { useDispatch } from "react-redux";
-import {addSongToQueue, setIsPlaying} from "../features/musicSlice"
+import { addSongToQueue, setIsPlaying } from "../../features/musicSlice";
+import formatDuration from "../../utils/formatDuration";
 
 const SongList = ({ songs, artist }) => {
   const [hoveredSongIndex, setHoveredSongIndex] = useState(null);
-
 
   const dispatch = useDispatch();
 
@@ -16,23 +16,14 @@ const SongList = ({ songs, artist }) => {
   const handleMouseLeave = () => {
     setHoveredSongIndex(null);
   };
-  function formatDuration(duration) {
-    const minutes = Math.floor(duration);
 
-    const seconds = Math.round((duration - minutes) * 60);
-
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    const formattedSeconds = seconds.toString().padStart(2, "0");
-
-    return `${formattedMinutes}:${formattedSeconds}`;
-  }
 
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full text-left text-sm text-gray-400">
         <thead className="text-xs uppercase text-gray-500">
           <tr>
-            <th className="p-4 w-10">#</th> {/* Fixed width for the number column */}
+            <th className="p-4 w-10">#</th>
             <th className="p-4">Song Title</th>
             <th className="p-4">Artist</th>
             <th className="p-4">Duration</th>
@@ -50,8 +41,15 @@ const SongList = ({ songs, artist }) => {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
             >
-              <td className="p-4 w-10"> {/* Fixed width to prevent shifting */}
-                <div onClick={() => dispatch(addSongToQueue(song), setIsPlaying(true))} className="flex items-center justify-center">
+              <td className="p-4 w-10">
+                {" "}
+                {/* Fixed width to prevent shifting */}
+                <div
+                  onClick={() =>
+                    dispatch(addSongToQueue(song), setIsPlaying(true))
+                  }
+                  className="flex items-center justify-center"
+                >
                   {hoveredSongIndex === index ? (
                     <PlayCircle className="text-teal-400 w-5 h-5" />
                   ) : (

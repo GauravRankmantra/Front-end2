@@ -1,11 +1,12 @@
 import React from "react";
-import SongCard from "../components/SongCard";
+import SongCard from "../components/Song/SongCard";
 import owner from "../assets/img/frame.jpeg";
-import AlbumCard from "../components/AlbumCard";
+import AlbumCard from "../components/Album/AlbumCard";
 import WeeklyTop15 from "../components/WeeklyTop15";
 import img728 from "../assets/img/dummy.png";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
+import logo from "../assets/img/logo.jpeg";
 import RadialRangeSlider from "../components/RadialRangeSlider";
 
 const Home = () => {
@@ -84,12 +85,16 @@ const Home = () => {
       <div className="my-4">
         <NewReleases />
       </div>
-      <div  className="my-10">
-        <TopGenres/>
-        </div>
-       
-    
-    
+      <div className="my-10">
+        <TopGenres />
+      </div>
+      <div className="flex w-full flex-col items-center justify-center mt-10 ">
+        <img
+          className=" relative w-24 h-20 rounded-full shadow-2xl opacity-80"
+          src={logo}
+        ></img>
+        <div className="absolute w-28 h-20 rounded-full border border-gray-400 shadow-2xl"></div>
+      </div>
     </>
   );
 };

@@ -12,15 +12,18 @@ import {
 } from "react-icons/fa";
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import  { setSearchQuery } from "../features/searchSlice"
 import { IoDiamondOutline } from "react-icons/io5";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // Handle search input
+  const [inputValue, setInputValue] = useState(""); // Handle search input
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Use Redux dispatch
+
 
   // Toggles Sidebar
   const toggleSidebar = () => {
@@ -29,9 +32,10 @@ const Navbar = () => {
 
   // Handles the search function
   const handleSearch = () => {
-    if (searchQuery) {
-      // Redirect or perform search logic here
-      console.log("Searching for: ", searchQuery);
+    if (inputValue) {
+      dispatch(setSearchQuery(inputValue)); 
+      console.log(inputValue)
+    navigate(`/search?query=${inputValue}`); 
     } else {
       console.log("Search query is empty");
     }
@@ -51,8 +55,8 @@ const Navbar = () => {
                 type="text"
                 className="form-control py-2 pl-3 pr-12 text-sm text-[#777] bg-white rounded-[5px] border-none w-full sm:w-[180px] lg:w-full"
                 placeholder="Search Music Here.."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Handle input change
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)} // Handle input change
               />
               <span
                 onClick={handleSearch}
@@ -137,34 +141,34 @@ const Navbar = () => {
 
       {sidebarOpen && (
         <div
-          className={`fixed top-0 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
+          className={`fixed top-0 bottom-0 z-50 w-fit  transition-transform duration-300 shadow-xl bg-[#1b2039] ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           } lg:hidden`}
         >
           {/* Toggle Button */}
           <div
             onClick={toggleSidebar}
-            className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full text-center flex items-center justify-center shadow-lg hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
+            className="absolute right-[-24px] -z-10 border border-gray-600 top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full text-center flex items-center justify-center shadow-lg hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
           >
             <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-all duration-500" />
           </div>
 
           {/* Sidebar Content */}
-          <div className="w-full h-full bg-[#1b2039] flex flex-col items-center pt-10">
+          <div className="w-fit px-2 mx-2 h-full bg-[#1b2039] flex flex-col items-center pt-10">
             {/* Logo */}
             <div className="flex justify-center items-center min-h-[164px]">
               <Link to="/" className="text-center w-full">
                 <img
                   src={logo}
                   alt="logo"
-                  className="w-[120px] h-auto  shadow-lg hover:scale-105 transition-transform duration-300"
+                  className="w-[80px] h-auto rounded-full  shadow-lg hover:scale-105 transition-transform duration-300"
                 />
               </Link>
             </div>
 
             {/* Sidebar Links */}
-            <div className="w-full mt-[30px] mb-[70px] overflow-y-auto max-h-screen custom-scrollbar">
-              <ul className="space-y-4 flex flex-col justify-center items-center">
+            <div className="w-full mt-[20px] mb-[70px] overflow-y-auto max-h-screen custom-scrollbar">
+              <ul className="space-y-5 flex flex-col justify-center items-center">
                 <li className="w-full">
                   <Link
                     to="/"

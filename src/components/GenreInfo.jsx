@@ -71,10 +71,12 @@ const GenreInfo = () => {
 
           {!loading && !error && songs.length > 0
             ? songs.map((song) => (
+              
                 <div
                   key={song._id}
                   className="relative group cursor-pointer"
-                  // onClick={() => handleSongClick(song)}
+                  onClick={() => handleSongClick(song)}
+
                 >
                   {console.log(song)}
                   <div className="relative overflow-hidden rounded-[10px] aspect-square">

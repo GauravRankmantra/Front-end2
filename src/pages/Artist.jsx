@@ -1,5 +1,5 @@
 import React from "react";
-import AlbumCard from "../components/AlbumCard";
+import AlbumCard from "../components/Album/AlbumCard";
 import ArtistCard from "../components/ArtistCard";
 const Artist = () => {
   return (

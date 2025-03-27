@@ -100,11 +100,24 @@ const MusicSidebar = ({ song }) => {
     </div>
   );
 };
-const formatTime = (time) => {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-};
+
+function formatDuration(duration) {
+  if (duration < 10) {
+    const minutes = Math.floor(duration);
+    const seconds = Math.round((duration - minutes) * 60);
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  } else {
+    // Assume duration is in seconds.
+    const totalSeconds = Math.round(duration);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+}
 const MusicPlayer = () => {
   const dispatch = useDispatch();
   const audioRef = useRef(null);
@@ -244,7 +257,7 @@ const MusicPlayer = () => {
           <div className=" flex-grow flex translate-x-4 md:translate-x-0 items-center md:mx-4">
             <div className=" flex justify-between items-center w-full md:px-4">
               <span className="text-xs text-gray-100">
-                {formatTime(currentTime)}
+                {formatDuration(currentTime)}
               </span>
               <input
                 type="range"
@@ -254,7 +267,7 @@ const MusicPlayer = () => {
                 style={{ accentColor: "#1ecbe1" }}
               />
               <span className="text-xs text-gray-100">
-                {formatTime(duration)}
+                {formatDuration(duration)}
               </span>
             </div>
           </div>

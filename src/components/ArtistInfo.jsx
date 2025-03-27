@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import SongList from "./SongList";
+import SongList from "./Song/SongList";
 import NewReleases from "./NewReleases";
-import AlbumCard from "./AlbumCard";
+import AlbumCard from "./Album/AlbumCard";
 
 const ArtistInfo = () => {
   const { id } = useParams();
@@ -40,7 +40,7 @@ const ArtistInfo = () => {
           `https://backend-music-xg6e.onrender.com/api/v1/user/artist${id}`
         );
         const artistData = res?.data?.data;
-      
+
         setArtist(artistData);
         setSongs(artistData?.songs || []);
       } catch (err) {

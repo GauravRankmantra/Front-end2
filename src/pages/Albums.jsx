@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import SongCard from "../components/SongCard";
-import AlbumCard from "../components/AlbumCard";
+import SongCard from "../components/Song/SongCard";
+import AlbumCard from "../components/Album/AlbumCard";
 
 const Albums = () => {
   return (

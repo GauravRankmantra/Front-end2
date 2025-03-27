@@ -9,6 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { setUser } from "../features/userSlice";
+import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import Google and Facebook icons
 
 const Login = () => {
   const [data, setData] = useState({
@@ -96,6 +97,22 @@ const Login = () => {
     notify("Captcha expired, please verify again", "error");
   };
 
+  // Redirect to Google OAuth
+  const handleGoogleLogin = () => {
+    window.open(
+      "https://backend-music-xg6e.onrender.com/api/v1/auth/google",
+      "_self"
+    );
+  };
+
+  // Redirect to Facebook OAuth
+  const handleFacebookLogin = () => {
+    window.open(
+      "https://backend-music-xg6e.onrender.com/api/v1/auth/facebook",
+      "_self"
+    );
+  };
+
   return (
     <div className={styles.container}>
       <form
@@ -162,43 +179,84 @@ const Login = () => {
             {isLoading ? "Logging In..." : "Login"}
           </button>
           {isLoading && <div className={styles.spinner}></div>}
-          <div className="flex flex-col">
-            <span
-              style={{
-                color: "white",
-                textAlign: "center",
-                display: "inline-block",
-                width: "100%",
-                fontSize: "20px",
-              }}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          {/* Google Login */}
+          <button
+            onClick={handleGoogleLogin}
+            style={{
+              backgroundColor: "#db4437",
+              color: "white",
+              padding: "10px 20px",
+              marginRight: "10px",
+              fontSize: "18px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <FaGoogle /> Login with Google
+          </button>
+
+          {/* Facebook Login */}
+          <button
+            onClick={handleFacebookLogin}
+            style={{
+              backgroundColor: "#4267B2",
+              color: "white",
+              padding: "10px 20px",
+              fontSize: "18px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <FaFacebook /> Login with Facebook
+          </button>
+        </div>
+
+        <div className="flex flex-col" style={{ marginTop: "20px" }}>
+          <span
+            style={{
+              color: "white",
+              textAlign: "center",
+              display: "inline-block",
+              width: "100%",
+              fontSize: "20px",
+            }}
+          >
+            Don't have an account?{" "}
+            <Link to="/register" style={{ color: "#e2f50c", fontSize: "20px" }}>
+              Create account
+            </Link>
+          </span>
+          <span
+            style={{
+              color: "white",
+              textAlign: "center",
+              display: "inline-block",
+              marginTop: "5px",
+              width: "100%",
+              fontSize: "20px",
+            }}
+          >
+            Forget password?{" "}
+            <Link
+              to="/forget_pass"
+              style={{ color: "#e2f50c", fontSize: "20px" }}
             >
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                style={{ color: "#e2f50c", fontSize: "20px" }}
-              >
-                Create account
-              </Link>
-            </span>
-            <span
-              style={{
-                color: "white",
-                textAlign: "center",
-                display: "inline-block",
-                marginTop: "5px",
-                width: "100%",
-                fontSize: "20px",
-              }}
-            >
-              Forget passsword?{" "}
-              <Link
-                to="/forget_pass"
-                style={{ color: "#e2f50c", fontSize: "20px" }}
-              >
-                Click here
-              </Link>
-            </span>
-          </div>
+              Click here
+            </Link>
+          </span>
         </div>
       </form>
       <ToastContainer />

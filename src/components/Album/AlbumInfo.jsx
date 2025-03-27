@@ -2,13 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import SongList from "./SongList";
+import SongList from "../Song/SongList";
 
-import CommentSlider from "./CommentSlider";
+import CommentSlider from "../CommentSlider";
 import AlbumCard from "./AlbumCard";
-import NewReleases from "./NewReleases";
+import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
-import { addPlaylistToQueue,clearQueue } from "../features/musicSlice";
+import { addPlaylistToQueue, clearQueue } from "../../features/musicSlice";
 
 const AlbumInfo = () => {
   const { id } = useParams();
@@ -52,7 +52,7 @@ const AlbumInfo = () => {
   }, [id]);
 
   const handelPlayAll = () => {
-    dispatch(clearQueue())
+    dispatch(clearQueue());
     dispatch(addPlaylistToQueue(songs));
     setDisableBtn(!disableBtn);
   };

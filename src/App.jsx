@@ -14,8 +14,8 @@ import SignUp from "./auth/SignUp";
 import Album from "./pages/Albums";
 import Profile from "./auth/Profile";
 import Layout from "./Layout";
-import SongInfo from "./components/SongInfo";
-import AlbumInfo from "./components/AlbumInfo";
+import SongInfo from "./components/Song/SongInfo";
+import AlbumInfo from "./components/Album/AlbumInfo";
 import ArtistInfo from "./components/ArtistInfo";
 import Artist from "./pages/Artist";
 import Genre from "./pages/Genre";
@@ -23,6 +23,8 @@ import TopTrack from "./pages/TopTrack";
 import ForgetPass from "./auth/ForgetPass";
 import GenreInfo from "./components/GenreInfo";
 import Download from "./pages/Download";
+import OAuthRedirectHandler from "./auth/OAuthRedirectHandler";
+import SearchResults from "./components/SearchResults";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -36,6 +38,8 @@ const App = () => {
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/login" />}
           />
+          
+          <Route path="/Oauth" element={<OAuthRedirectHandler />} />
           <Route path="/albums" element={<Album />} />
           <Route path="/song/:id" element={<SongInfo />} />
           <Route path="/album/:id" element={<AlbumInfo />} />
@@ -45,6 +49,7 @@ const App = () => {
           <Route path="/genre/:name" element={<GenreInfo />} />
           <Route path="/top_track" element={<TopTrack />} />
           <Route path="/downloads" element={<Download />} />
+          <Route path="/search" element={<SearchResults />} />
 
 
         </Route>
