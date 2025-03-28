@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import SongCard from "../components/Song/SongCard";
 import AlbumCard from "../components/Album/AlbumCard";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Albums = () => {
   return (
@@ -9,13 +10,13 @@ const Albums = () => {
         <AlbumCard
           heading={"Featured Albums"}
           link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+            `${apiUrl}api/v1/albums/featureAlbums`
           }
         />
         <AlbumCard
           heading={"Trending Albums"}
           link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/trendingAlbums"
+            `${apiUrl}api/v1/albums/trendingAlbums`
           }
           type={"album"}
         />

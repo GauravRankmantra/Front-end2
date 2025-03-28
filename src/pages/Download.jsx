@@ -6,6 +6,7 @@ import { PlayCircle, Heart, MoreHorizontal, Download } from "lucide-react";
 import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const DownloadPage = () => {
   const user = useSelector((state) => state.user.user);
@@ -35,7 +36,7 @@ const DownloadPage = () => {
   const handelDownload = async (songId) => {
     try {
       const response = await axios.get(
-        `https://backend-music-xg6e.onrender.com/api/v1/song/isPurchased/${songId}`,
+        `${apiUrl}api/v1/song/isPurchased/${songId}`,
         { withCredentials: true }
       );
 
@@ -113,7 +114,7 @@ const DownloadPage = () => {
     const fetchSongs = async () => {
       try {
         const res = await axios.get(
-          "https://backend-music-xg6e.onrender.com/api/v1/user/getPurchasedSong",
+          `${apiUrl}api/v1/user/getPurchasedSong`,
           { withCredentials: true }
         );
         setSongs(res.data.purchasedSongs); // Assuming purchasedSongs is returned

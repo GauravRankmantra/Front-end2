@@ -3,6 +3,7 @@ import axios from "axios";
 import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const GenreInfo = () => {
   const { name } = useParams();
@@ -26,7 +27,7 @@ const GenreInfo = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://backend-music-xg6e.onrender.com/api/v1/song/genre/${name}`
+          `${apiUrl}api/v1/song/genre/${name}`
         );
         handleResponse(response);
       } catch (err) {
@@ -75,10 +76,10 @@ const GenreInfo = () => {
                 <div
                   key={song._id}
                   className="relative group cursor-pointer"
-                  onClick={() => handleSongClick(song)}
+                  // onClick={() => handleSongClick(song)}
 
                 >
-                  {console.log(song)}
+                 
                   <div className="relative overflow-hidden rounded-[10px] aspect-square">
                     <img
                       className="w-full h-full object-cover rounded-[10px] group-hover:opacity-50"

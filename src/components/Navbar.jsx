@@ -32,9 +32,9 @@ const Navbar = () => {
 
   // Handles the search function
   const handleSearch = () => {
+  
     if (inputValue) {
       dispatch(setSearchQuery(inputValue)); 
-      console.log(inputValue)
     navigate(`/search?query=${inputValue}`); 
     } else {
       console.log("Search query is empty");

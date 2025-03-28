@@ -9,6 +9,7 @@ import AlbumCard from "./AlbumCard";
 import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
 import { addPlaylistToQueue, clearQueue } from "../../features/musicSlice";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumInfo = () => {
   const { id } = useParams();
@@ -35,7 +36,7 @@ const AlbumInfo = () => {
 
       try {
         const res = await axios.get(
-          `https://backend-music-xg6e.onrender.com/api/v1/albums/${id}`
+          `${apiUrl}api/v1/albums/${id}`
         );
         setAlbum(res?.data?.data);
         setSongs(res?.data?.data?.songs);
@@ -120,7 +121,7 @@ const AlbumInfo = () => {
   const handleAddToFavourites = async (songId) => {
     try {
       await axios.post(
-        `https://backend-music-xg6e.onrender.com/api/v1/favourites`,
+        `${apiUrl}api/v1/favourites`,
         {
           userId: currentUserId,
           albumId: id,
@@ -280,7 +281,7 @@ const AlbumInfo = () => {
         <AlbumCard
           heading={"You May Also Like"}
           link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+            `${apiUrl}api/v1/albums/featureAlbums`
           }
         />
       </div>

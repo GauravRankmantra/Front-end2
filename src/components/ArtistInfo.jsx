@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import SongList from "./Song/SongList";
 import NewReleases from "./NewReleases";
 import AlbumCard from "./Album/AlbumCard";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const ArtistInfo = () => {
   const { id } = useParams();
@@ -36,9 +37,7 @@ const ArtistInfo = () => {
       setError(null);
 
       try {
-        const res = await axios.get(
-          `https://backend-music-xg6e.onrender.com/api/v1/user/artist${id}`
-        );
+        const res = await axios.get(`${apiUrl}/api/v1/user/artist${id}`);
         const artistData = res?.data?.data;
 
         setArtist(artistData);
@@ -56,7 +55,7 @@ const ArtistInfo = () => {
   const handleAddToFavourites = async (songId) => {
     try {
       await axios.post(
-        `https://backend-music-xg6e.onrender.com/api/v1/favourites`,
+        `${apiUrl}api/v1/favourites`,
         {
           userId: currentUserId,
           artistId: id,
@@ -184,7 +183,7 @@ const ArtistInfo = () => {
         <AlbumCard
           heading={"You May Also Like"}
           link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+            `${apiUrl}api/v1/albums/featureAlbums`
           }
         />
       </div>

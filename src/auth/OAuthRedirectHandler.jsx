@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../features/userSlice";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const OAuthRedirectHandler = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,8 @@ const OAuthRedirectHandler = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          "https://backend-music-xg6e.onrender.com/api/v1/auth/profile",
+           `${apiUrl}api/v1/auth/profile`,
+          
           {
             withCredentials: true,
           }

@@ -45,10 +45,16 @@ const Recently = ({ heading, link }) => {
     scrollContainerRef.current?.scrollBy({ left: 180, behavior: "smooth" });
   };
 
-  const handleSongClick = (song) => {
-    dispatch(addSongToQueue(song));
-    dispatch(setIsPlaying(true));
-  };
+const handleSongClick = (song) => {
+  dispatch(addSongToQueue(song));
+  dispatch(setIsPlaying(true));
+  // Fallback: force play after a slight delay, if necessary.
+  setTimeout(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(err => console.error("Fallback play error:", err));
+    }
+  }, 100);
+};
 
   const handleMenuToggle = (song) => {
     if (currentSong && currentSong._id === song._id) {

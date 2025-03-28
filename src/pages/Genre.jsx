@@ -1,6 +1,7 @@
 import React from "react";
 import TopGenres from "../components/TopGenres";
 import AlbumCard from "../components/Album/AlbumCard";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Genre = () => {
   return (
@@ -12,7 +13,7 @@ const Genre = () => {
         <AlbumCard
           heading={"Featured Albums"}
           link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
+            `${apiUrl}api/v1/albums/featureAlbums`
           }
         />
       </div>

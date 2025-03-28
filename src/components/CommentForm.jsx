@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const CommentForm = ({ albumId }) => {
   //   const user = useSelector((state) => state?.user?.user);
 
@@ -35,7 +35,7 @@ const CommentForm = ({ albumId }) => {
 
       // Make API call to backend using axios
       const response = await axios.post(
-        "https://backend-music-xg6e.onrender.com/api/v1/albums/comment",
+        `${apiUrl}api/v1/albums/comment`,
         commentData
       );
 

@@ -1,5 +1,5 @@
 import { Cookie } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Cookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
@@ -13,9 +13,13 @@ import logo from "../assets/img/logo.jpeg";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import axios from "axios";
+import PlayListContainer from "../components/playlist/PlayListContainer";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const [image, setImage] = useState(null);
+  const [viewAll, setViewAll] = useState(false);
+  const scrollContainerRef = useRef(null);
 
   const userInfo = useSelector((state) => state.user.user);
 
@@ -27,10 +31,35 @@ const Profile = () => {
     password: "",
     coverImage: null,
   });
+  const [playlist, setPlaylist] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${apiUrl}api/v1/playlist/userPlaylists`,
+
+          { withCredentials: true }
+        );
+        if (response.data && response.data.data) {
+          setPlaylist(response.data.data);
+        } else {
+          setError("No songs available");
+        }
+      } catch (err) {
+        setError(err.message || "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleLogout = async () => {
     await axios.post(
-      "https://backend-music-xg6e.onrender.com/api/v1/auth/logout",
+      `${apiUrl}api/v1/auth/logout`,
       {},
       { withCredentials: true }
     );
@@ -40,6 +69,13 @@ const Profile = () => {
     }, 1000);
 
     navigate("/");
+  };
+  const scrollLeft = () => {
+    scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    scrollContainerRef.current?.scrollBy({ left: 180, behavior: "smooth" });
   };
 
   const handleFileChange = (event) => {
@@ -52,6 +88,9 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+  const toggleViewAll = () => {
+    setViewAll(!viewAll); // Toggle the view state
   };
 
   const handleChange = (event) => {
@@ -80,7 +119,7 @@ const Profile = () => {
   //     try {
   //       const userId = userInfo._id;
   //       const response = await fetch(
-  //         `https://backend-music-xg6e.onrender.com/api/v1/user/update/${userId}`,
+  //         `http://:5000/api/v1/user/update/${userId}`,
   //         {
   //           method: "PUT",
   //           headers: {
@@ -116,7 +155,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className="bg-[#14182A] w-full h-full flex items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
+      <div className="bg-[#14182A]  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full sm:w-10/12 md:w-6/12 mx-auto py-10 scroll-smooth no-scrollbar">
           <h1 className="text-center text-2xl text-white mt-10 mb-5">
             Edit Profile
@@ -215,6 +254,10 @@ const Profile = () => {
               </form>
             </div>
           </div>
+        </div>
+
+        <div className="w-full m-auto">
+          <PlayListContainer playlist={playlist} key={playlist._id} />
         </div>
       </div>
     </>

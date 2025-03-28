@@ -6,6 +6,9 @@ import { notify } from "./toast";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
 
 const ForgetPass = () => {
   const [data, setData] = useState({
@@ -36,7 +39,7 @@ const ForgetPass = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "https://backend-music-xg6e.onrender.com/api/v1/user/forgetPass",
+        `${apiUrl}api/v1/user/forgetPass`,
         { email: email.toLowerCase() }
       );
 
@@ -70,7 +73,7 @@ const ForgetPass = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "https://backend-music-xg6e.onrender.com/api/v1/user/verifyOtp",
+        `${apiUrl}api/v1/user/verifyOtp`,
         { email, otp, newPassword }
       );
 

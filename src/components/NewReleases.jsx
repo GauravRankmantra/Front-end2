@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const NewReleases = () => {
   const [songs, setSongs] = useState([]);
@@ -9,7 +10,7 @@ const NewReleases = () => {
     const fetchSongs = async () => {
       try {
         const response = await axios.get(
-          "https://backend-music-xg6e.onrender.com/api/v1/song/new-release"
+          `${apiUrl}api/v1/song/new-release`
         ); // Replace with your actual API endpoint
 
         setSongs(response.data.data);

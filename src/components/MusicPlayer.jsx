@@ -38,7 +38,6 @@ const MusicSidebar = ({ song }) => {
         expand ? "w-max" : "w-2/12"
       }`}
     >
-      {/* Sidebar Left Section: Cover Image and Basic Info */}
       <div className="flex-shrink-0 flex items-center space-x-4">
         <img
           className="w-12 h-12 md:w-16 md:h-16   rounded-lg object-cover shadow-lg"
@@ -46,7 +45,6 @@ const MusicSidebar = ({ song }) => {
           alt={song.title}
         />
 
-        {/* Hide title and artist on mobile */}
         <div className="hidden md:flex flex-col space-y-1 overflow-hidden">
           <h1 className="text-lg font-semibold  whitespace-nowrap text-ellipsis">
             {song.title}
@@ -57,19 +55,16 @@ const MusicSidebar = ({ song }) => {
         </div>
       </div>
 
-      {/* Expanded content */}
       <div
         className={`flex-grow overflow-scroll no-scrollbar hidden md:flex justify-around items-center ml-10 space-x-6 transition-opacity duration-300 ${
           expand ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* First button without border */}
         <button className="flex items-center space-x-2 text-sm">
           <IoCloudDownloadOutline className="w-5 h-5" />
           <span className="text-lg">Download</span>
         </button>
 
-        {/* Vertical line applied to remaining buttons */}
         <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
           <CiHeart className="w-5 h-5" />
           <span className="text-lg">Favorite</span>
@@ -100,24 +95,12 @@ const MusicSidebar = ({ song }) => {
     </div>
   );
 };
+const formatDuration = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+};
 
-function formatDuration(duration) {
-  if (duration < 10) {
-    const minutes = Math.floor(duration);
-    const seconds = Math.round((duration - minutes) * 60);
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  } else {
-    // Assume duration is in seconds.
-    const totalSeconds = Math.round(duration);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  }
-}
 const MusicPlayer = () => {
   const dispatch = useDispatch();
   const audioRef = useRef(null);
@@ -125,16 +108,19 @@ const MusicPlayer = () => {
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [volume, setVolume] = useState(50);
   const [showSlider, setShowSlider] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0); // State for current time
+  const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const { currentSong, playlist, isPlaying, currentSongIndex } = useSelector(
-    (state) => ({
-      currentSong: state.musicPlayer?.currentSong || null,
-      playlist: state.musicPlayer?.playlist || [],
-      isPlaying: state.musicPlayer?.isPlaying || false,
-      currentSongIndex: state.musicPlayer?.currentSongIndex || 0,
-    })
+  const currentSong = useSelector(
+    (state) => state.musicPlayer?.currentSong || null
+  );
+  const playlist = useSelector((state) => state.musicPlayer?.playlist || []);
+  const isPlaying = useSelector(
+    (state) => state.musicPlayer?.isPlaying || false
+  );
+  const currentSongIndex = useSelector(
+    (state) => state.musicPlayer?.currentSongIndex || 0
   );
 
   const toggleSlider = () => {
@@ -145,7 +131,7 @@ const MusicPlayer = () => {
     if (audioRef.current) {
       audioRef.current.volume = volume / 100;
       if (isPlaying) {
-        audioRef.current.play();
+        audioRef.current.play().catch((err) => console.error(err));
       } else {
         audioRef.current.pause();
       }
@@ -154,51 +140,80 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     if (currentSong) {
-      if (isPlaying) {
+      if (audioRef.current.src !== currentSong.audioUrls.high) {
         audioRef.current.src = currentSong.audioUrls.high;
-        audioRef.current.play();
+        const loadAndPlay = async () => {
+          try {
+            await audioRef.current.load();
+            if (isPlaying) {
+              await audioRef.current.play();
+            }
+          } catch (err) {
+            console.error("Error loading/playing new song:", err);
+          }
+        };
+        loadAndPlay();
+      } else if (isPlaying) {
+        audioRef.current
+          .play()
+          .catch((err) => console.error("Play error:", err));
       }
     }
-  }, [currentSong, dispatch, isPlaying]);
+  }, [currentSong, isPlaying]);
 
-  // Update progress as the song plays
   const handleTimeUpdate = () => {
-    const currentTime = audioRef.current.currentTime;
-    const duration = audioRef.current.duration;
-
-    setProgress((currentTime / duration) * 100);
-    setCurrentTime(currentTime);
-    setDuration(duration);
+    if (audioRef.current && !isDragging) {
+      const current = audioRef.current.currentTime;
+      const dur = audioRef.current.duration;
+      if (!isNaN(dur) && dur > 0) {
+        setCurrentTime(current);
+        setProgress((current / dur) * 100);
+        setDuration(dur);
+      }
+    }
   };
 
-  // Handle seeking when user drags the seek bar
-  const handleSeek = (e) => {
+  const handleSeekChange = (e) => {
+    const value = e.target.value;
+    setProgress(value);
+    setIsDragging(true);
+  };
+
+  const handleSeekMouseUp = async (e) => {
     const newTime = (e.target.value / 100) * audioRef.current.duration;
+    setIsDragging(false);
+
+    audioRef.current.pause();
     audioRef.current.currentTime = newTime;
-    dispatch(seek(newTime));
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    if (isPlaying) {
+      audioRef.current.play().catch((err) => console.error(err));
+    }
+    setCurrentTime(newTime);
   };
 
-  // Handle next song action
   const handleNext = () => {
     dispatch(playNextSong());
   };
 
-  // Handle previous song action
   const handlePrev = () => {
     dispatch(playPrevSong());
   };
 
-  // Toggle play/pause
   const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch((err) => console.error("Play error:", err));
+    }
     dispatch(setIsPlaying(!isPlaying));
   };
 
-  // Toggle playlist visibility
   const togglePlaylist = () => {
     setIsPlaylistOpen(!isPlaylistOpen);
   };
 
-  // Handle volume change
   const handleVolumeChange = (e) => {
     setVolume(e.target.value);
   };
@@ -262,12 +277,13 @@ const MusicPlayer = () => {
               <input
                 type="range"
                 value={progress}
-                onChange={handleSeek}
+                onChange={handleSeekChange}
+                onMouseUp={handleSeekMouseUp}
                 className="w-full h-1 bg-transparent  rounded-lg cursor-pointer"
                 style={{ accentColor: "#1ecbe1" }}
               />
               <span className="text-xs text-gray-100">
-                {formatDuration(duration)}
+                {isNaN(duration) ? "0:00" : formatDuration(duration)}
               </span>
             </div>
           </div>

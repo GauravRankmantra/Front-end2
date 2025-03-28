@@ -7,6 +7,7 @@ import rock from "../assets/img/rock.jpg";
 import rom from "../assets/img/rom.jpg";
 import axios from "axios";
 import { Navigate, useNavigate, Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const TopGenres = () => {
   const [genre, setGenre] = useState([]);
@@ -15,7 +16,7 @@ const TopGenres = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://backend-music-xg6e.onrender.com/api/v1/genre"
+          `${apiUrl}api/v1/genre`
         );
         setGenre(res.data);
       } catch (error) {

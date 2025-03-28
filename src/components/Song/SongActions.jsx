@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
   const dropdownRef = useRef(null);
@@ -30,7 +31,7 @@ const SongActions = ({ onClose, song }) => {
   const handelDownload = async () => {
     try {
       const response = await axios.get(
-        `https://backend-music-xg6e.onrender.com/api/v1/song/isPurchased/${songId}`,
+        `${apiUrl}api/v1/song/isPurchased/${songId}`,
         { withCredentials: true }
       );
 

@@ -9,7 +9,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { setUser } from "../features/userSlice";
-import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import Google and Facebook icons
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import facebook from "../assets/img/facebook.png";
+import google from "../assets/img/google.png";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const [data, setData] = useState({
@@ -20,6 +23,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
+  const [usingOauth, setUsingOauth] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,7 +43,7 @@ const Login = () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "https://backend-music-xg6e.onrender.com/api/v1/auth/login",
+        `${apiUrl}api/v1/auth/login`,
         {
           email: email.toLowerCase(),
           password,
@@ -83,6 +87,8 @@ const Login = () => {
     event.preventDefault();
     if (captchaValid) {
       checkData(data);
+    } else if (usingOauth) {
+      notify("Redirecting...", "success");
     } else {
       notify("Please complete the captcha verification", "error");
     }
@@ -99,29 +105,28 @@ const Login = () => {
 
   // Redirect to Google OAuth
   const handleGoogleLogin = () => {
-    window.open(
-      "https://backend-music-xg6e.onrender.com/api/v1/auth/google",
-      "_self"
-    );
+    setUsingOauth(true);
+
+    window.open(`${apiUrl}api/v1/auth/google`, "_self");
   };
 
   // Redirect to Facebook OAuth
   const handleFacebookLogin = () => {
-    window.open(
-      "https://backend-music-xg6e.onrender.com/api/v1/auth/facebook",
-      "_self"
-    );
+    setUsingOauth(true);
+    window.open(`${apiUrl}api/v1/auth/facebook`, "_self");
   };
 
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-cyan-950 p-4">
       <form
-        className={styles.formLogin}
+        className="bg-cyan-600 rounded-lg shadow-lg p-8 w-full max-w-md"
         onSubmit={submitHandler}
         autoComplete="off"
       >
-        <h2 style={{ fontSize: "30px" }}>Sign In</h2>
-        <div>
+        <h2 className="text-3xl text-white font-semibold mb-6 text-center">
+          Sign In
+        </h2>
+        <div className="mb-4">
           <input
             type="text"
             name="email"
@@ -130,9 +135,10 @@ const Login = () => {
             onChange={changeHandler}
             onFocus={focusHandler}
             autoComplete="off"
+            className="w-full p-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div style={{ position: "relative" }}>
+        <div className="mb-4 relative">
           <input
             type={passwordVisible ? "text" : "password"}
             name="password"
@@ -140,26 +146,17 @@ const Login = () => {
             placeholder="Password"
             onChange={changeHandler}
             onFocus={focusHandler}
-            style={{ paddingRight: "40px" }}
+            className="w-full p-3 rounded-md bg-gray-100 text-gray-800 focus pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <div
             onClick={() => setPasswordVisible(!passwordVisible)}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              fontSize: "20px",
-              color: "#3bc8e7",
-            }}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-2xl text-blue-400"
           >
-            {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            {passwordVisible ? <FaEye /> : <FaEyeSlash />}
           </div>
         </div>
 
-        {/* reCAPTCHA component */}
-        <div style={{ margin: "20px 0" }}>
+        <div className="mb-6">
           <ReCAPTCHA
             sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
             onChange={onRecaptchaSuccess}
@@ -167,93 +164,54 @@ const Login = () => {
           />
         </div>
 
-        <div>
+        <div className="mb-6">
           <button
             type="submit"
             disabled={!captchaValid}
-            style={{
-              fontSize: "20px",
-              backgroundColor: captchaValid ? "#000" : "#ccc",
-            }}
+            className={`w-full p-3 rounded-md text-white font-semibold ${
+              captchaValid ? "bg-black" : "bg-gray-500 cursor-not-allowed"
+            }`}
           >
             {isLoading ? "Logging In..." : "Login"}
           </button>
-          {isLoading && <div className={styles.spinner}></div>}
+          {isLoading && (
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500 mx-auto mt-2"></div>
+          )}
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          {/* Google Login */}
+        {/* Google/Facebook Login buttons */}
+        <div className="mb-6">
           <button
+            className="w-full mb-4 flex items-center justify-center py-3 px-4 rounded-lg shadow-xl transition-colors duration-300 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={handleGoogleLogin}
-            style={{
-              backgroundColor: "#db4437",
-              color: "white",
-              padding: "10px 20px",
-              marginRight: "10px",
-              fontSize: "18px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
           >
-            <FaGoogle /> Login with Google
+            <img className="w-6 h-6 mr-2" src={google} alt="Google logo" />
+            <span className="font-semibold">Continue with Google</span>
           </button>
 
-          {/* Facebook Login */}
           <button
+            className="w-full flex items-center justify-center py-3 px-4 rounded-lg shadow-xl transition-colors duration-300 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={handleFacebookLogin}
-            style={{
-              backgroundColor: "#4267B2",
-              color: "white",
-              padding: "10px 20px",
-              fontSize: "18px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
           >
-            <FaFacebook /> Login with Facebook
+            <img className="w-6 h-6 mr-2" src={facebook} alt="Facebook logo" />
+            <span className="font-semibold">Continue with Facebook</span>
           </button>
+
+          {/* <p className="text-gray-100 text-sm mt-4">
+              By continuing, you agree to our <a href="/terms" className="text-gray-500 hover:underline">Terms</a> and <a href="/privacy" className="text-gray-500 hover:underline">Privacy Policy</a>.
+          </p> */}
         </div>
 
-        <div className="flex flex-col" style={{ marginTop: "20px" }}>
-          <span
-            style={{
-              color: "white",
-              textAlign: "center",
-              display: "inline-block",
-              width: "100%",
-              fontSize: "20px",
-            }}
-          >
+        <div className="flex flex-col space-y-2 text-center">
+          <span className="text-gray-100">
             Don't have an account?{" "}
-            <Link to="/register" style={{ color: "#e2f50c", fontSize: "20px" }}>
+            <Link to="/register" className="text-yellow-300 hover:underline">
               Create account
             </Link>
           </span>
-          <span
-            style={{
-              color: "white",
-              textAlign: "center",
-              display: "inline-block",
-              marginTop: "5px",
-              width: "100%",
-              fontSize: "20px",
-            }}
-          >
+          <span className="text-gray-100">
             Forget password?{" "}
-            <Link
-              to="/forget_pass"
-              style={{ color: "#e2f50c", fontSize: "20px" }}
-            >
+            <Link to="/forget_pass" className="text-yellow-300 hover:underline">
               Click here
             </Link>
           </span>

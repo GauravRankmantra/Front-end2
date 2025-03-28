@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SongCard from "../components/Song/SongCard";
 import owner from "../assets/img/frame.jpeg";
 import AlbumCard from "../components/Album/AlbumCard";
@@ -8,6 +8,9 @@ import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
 import logo from "../assets/img/logo.jpeg";
 import RadialRangeSlider from "../components/RadialRangeSlider";
+import axios from "axios";
+import PlayListCard from "../components/playlist/PlayListCard";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Home = () => {
   return (
@@ -61,22 +64,21 @@ const Home = () => {
         <div className="my-4">
           <SongCard
             heading={"Top 15 Songs"}
-            link={"https://backend-music-xg6e.onrender.com/api/v1/song/top15"}
+            link={`${apiUrl}api/v1/song/top15`}
           />
         </div>
       </div>
+
       <div className="my-4">
         <WeeklyTop15
           heading={"Weekly top 15"}
-          link={"https://backend-music-xg6e.onrender.com/api/v1/song/top15"}
+          link={`${apiUrl}api/v1/song/top15`}
         />
       </div>
       <div className="my-10">
         <AlbumCard
           heading={"Feature Albums"}
-          link={
-            "https://backend-music-xg6e.onrender.com/api/v1/albums/featureAlbums"
-          }
+          link={`${apiUrl}api/v1/albums/featureAlbums`}
         />
       </div>
       <div className="flex justify-center my-4">
