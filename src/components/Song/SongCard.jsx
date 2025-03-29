@@ -48,12 +48,6 @@ const Recently = ({ heading, link }) => {
 const handleSongClick = (song) => {
   dispatch(addSongToQueue(song));
   dispatch(setIsPlaying(true));
-  // Fallback: force play after a slight delay, if necessary.
-  setTimeout(() => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(err => console.error("Fallback play error:", err));
-    }
-  }, 100);
 };
 
   const handleMenuToggle = (song) => {

@@ -128,6 +128,7 @@ const MusicPlayer = () => {
   };
 
   useEffect(() => {
+    if (!audioRef.current) return;
     if (audioRef.current) {
       audioRef.current.volume = volume / 100;
       if (isPlaying) {
@@ -279,6 +280,7 @@ const MusicPlayer = () => {
                 value={progress}
                 onChange={handleSeekChange}
                 onMouseUp={handleSeekMouseUp}
+                onTouchEnd={handleSeekMouseUp}
                 className="w-full h-1 bg-transparent  rounded-lg cursor-pointer"
                 style={{ accentColor: "#1ecbe1" }}
               />
