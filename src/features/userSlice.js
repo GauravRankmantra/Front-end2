@@ -8,17 +8,16 @@ const savedUser = localStorage.getItem("user")
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: savedUser, // Load the saved user from localStorage on initialization
+    user: savedUser,
   },
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      // Save the user to localStorage whenever it's set
+
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
     logoutUser: (state) => {
       state.user = null;
-      // Clear the user from localStorage on logout
       localStorage.removeItem("user");
       localStorage.removeItem("musicPlayerData");
     },

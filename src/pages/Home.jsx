@@ -15,7 +15,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const Home = () => {
   return (
     <>
-      <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth no-scrollbar">
+      <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth">
         <div className="">
           <div className="flex flex-wrap justify-center lg:justify-start">
             <div className="w-full sm:w-[90%] lg:w-[511px] mx-auto text-center lg:text-left">
@@ -33,10 +33,10 @@ const Home = () => {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
                   This Month's
                 </h1>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#3bc8e7]">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#3bc8e7]">
                   Record Breaking Albums !
                 </h1>
-                <p className="text-white my-4 leading-8 text-sm sm:text-base lg:text-md">
+                <p className="text-gray-300 my-4 leading-8 text-sm sm:text-base lg:text-md">
                   Dream your moments, Until I Met You, Gimme Some Courage, Dark
                   Alley, One More Of A Stranger, Endless
                   <br /> Things, The Heartbeat Stops, Walking Promises, Desired

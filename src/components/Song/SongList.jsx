@@ -6,6 +6,8 @@ import formatDuration from "../../utils/formatDuration";
 
 const SongList = ({ songs, artist }) => {
   const [hoveredSongIndex, setHoveredSongIndex] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
 
   const dispatch = useDispatch();
 
@@ -23,7 +25,7 @@ const SongList = ({ songs, artist }) => {
       <table className="table-auto w-full text-left text-sm text-gray-400">
         <thead className="text-xs uppercase text-gray-500">
           <tr>
-            <th className="p-4 w-10">#</th>
+            <th className="p-4 w-24 text-center">#</th>
             <th className="p-4">Song Title</th>
             <th className="p-4">Artist</th>
             <th className="p-4">Duration</th>
@@ -36,22 +38,25 @@ const SongList = ({ songs, artist }) => {
             <tr
               key={index}
               className={`border-b border-gray-700 hover:bg-gray-800 transition-colors duration-300 ${
-                hoveredSongIndex === index ? "text-teal-400" : ""
+                hoveredSongIndex === index ? "text-cyan-500" : ""
               }`}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
+             
             >
-              <td className="p-4 w-10">
+              <td className="p-4 w-24">
                 {" "}
                 {/* Fixed width to prevent shifting */}
                 <div
-                  onClick={() =>
+                  onClick={() =>{
+               
                     dispatch(addSongToQueue(song), setIsPlaying(true))
+                  }
                   }
                   className="flex items-center justify-center"
                 >
                   {hoveredSongIndex === index ? (
-                    <PlayCircle className="text-teal-400 w-5 h-5" />
+                    <PlayCircle className="text-cyan-500 w-5 h-5" />
                   ) : (
                     index + 1
                   )}
@@ -61,10 +66,10 @@ const SongList = ({ songs, artist }) => {
               <td className="p-4">{artist}</td>
               <td className="p-4">{formatDuration(song.duration)}</td>
               <td className="p-4">
-                <Heart className="w-5 h-5 hover:text-teal-400 transition-colors duration-300" />
+                <Heart className="w-5 h-5 hover:text-cyan-500 transition-colors duration-300" />
               </td>
               <td className="p-4">
-                <MoreHorizontal className="w-5 h-5 hover:text-teal-400 transition-colors duration-300" />
+                <MoreHorizontal className="w-5 h-5 hover:text-cyan-500 transition-colors duration-300" />
               </td>
             </tr>
           ))}

@@ -1,18 +1,11 @@
-import { Cookie } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
-import { Cookies } from "react-cookie";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
-import { faGooglePlusG } from "@fortawesome/free-brands-svg-icons"; // Correct import from brands
-
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/logo.jpeg";
+
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import axios from "axios";
+import SongCard from "../components/Song/SongCard"
 import PlayListContainer from "../components/playlist/PlayListContainer";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -258,6 +251,12 @@ const Profile = () => {
 
         <div className="w-full m-auto">
           <PlayListContainer playlist={playlist} key={playlist._id} />
+        </div>
+        <div className="w-full m-auto">
+        <SongCard
+            heading={"Recently played"}
+            link={`${apiUrl}api/v1/user/gethistory`}
+          />
         </div>
       </div>
     </>

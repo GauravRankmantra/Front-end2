@@ -57,7 +57,7 @@ const CommentForm = ({ albumId }) => {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full  py-16 px-4 sm:px-6 lg:px-8 ">
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           Leave a comment

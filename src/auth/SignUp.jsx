@@ -88,7 +88,7 @@ const SignUp = () => {
         notify(response.data.message || "Something went wrong", "warning");
       }
     } catch (error) {
-      console.log("error while signup", error);
+      console.error("error while signup", error);
       if (error.response) {
         notify(
           error.response.data.message ||

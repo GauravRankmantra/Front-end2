@@ -1,11 +1,25 @@
 import React from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import {
+  addPlaylistToQueue,
+  setIsPlaying,
+  clearQueue,
+} from "../../features/musicSlice";
 
-const PlayListCard = ({playlist}) => {
+const PlayListCard = ({ playlist }) => {
+  const dispatch = useDispatch();
+  const handelPlaylistClick = (songs) => {
+    dispatch(clearQueue());
+    dispatch(addPlaylistToQueue(songs));
+    dispatch(setIsPlaying(true));
+  };
+
+ 
   return (
     <div>
       <div
-        key={playlist._id}
+        key={playlist?._id}
         className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
       >
         <div
@@ -14,11 +28,12 @@ const PlayListCard = ({playlist}) => {
         >
           <img
             className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
-            src={playlist.coverImage || "https://dummyimage.com/150x150"}
-            alt={playlist.name}
+            src={playlist?.coverImage || "https://dummyimage.com/150x150"}
+            alt={playlist?.name}
           />
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <AiFillPlayCircle
+              onClick={() => handelPlaylistClick(playlist.songs)}
               className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
               // onClick={() => handleSongClick(song)}
             />
@@ -48,10 +63,12 @@ const PlayListCard = ({playlist}) => {
         <div className="text-left mt-4">
           <h3 className="text-[14px] mb-[5px]">
             <a href="#" className="text-white hover:text-[#3bc8e7]">
-              {playlist.name}
+              {playlist?.name}
             </a>
           </h3>
-          <p className="text-[#dedede] text-[12px]">{playlist.totalSongs} Songs</p>
+          <p className="text-[#dedede] text-[12px]">
+            {playlist?.totalSongs} Songs
+          </p>
         </div>
       </div>
     </div>

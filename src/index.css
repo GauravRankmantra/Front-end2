@@ -61,6 +61,21 @@
 
   
 
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      /* Move left by 100% of the duplicated container's width */
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-scroll {
+    animation-name: scroll;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
   
   
   .debug {

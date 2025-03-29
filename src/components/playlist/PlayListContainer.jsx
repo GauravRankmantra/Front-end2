@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 const PlayListContainer = ({ playlist }) => {
-  console.log("playlist in container", playlist);
+
   const scrollContainerRef = useRef(null);
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);

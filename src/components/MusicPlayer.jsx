@@ -20,6 +20,7 @@ import { FaChevronUp } from "react-icons/fa6";
 import { FaChevronCircleUp } from "react-icons/fa";
 import { IoShuffleOutline } from "react-icons/io5";
 import { IoIosRepeat } from "react-icons/io";
+import formateDuration from "../utils/formatDuration";
 
 import {
   playNextSong,
@@ -34,67 +35,76 @@ const MusicSidebar = ({ song }) => {
 
   return (
     <div
-      className={`transition-all py-2 absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
-        expand ? "w-max" : "w-2/12"
+      className={` transition-all py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+        expand ? "max-w-max" : "w-20 lg:w-24 xl:w-2/12"
       }`}
     >
-      <div className="flex-shrink-0 flex items-center space-x-4">
-        <img
-          className="w-12 h-12 md:w-16 md:h-16   rounded-lg object-cover shadow-lg"
-          src={song.coverImage}
-          alt={song.title}
-        />
+      <div className="w-full relative flex items-center">
+        <div className="flex-shrink-0 flex items-center space-x-4">
+          <img
+            className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover shadow-lg"
+            src={song.coverImage}
+            alt={song.title}
+          />
 
-        <div className="hidden md:flex flex-col space-y-1 overflow-hidden">
-          <h1 className="text-lg font-semibold  whitespace-nowrap text-ellipsis">
-            {song.title}
-          </h1>
-          <h2 className="text-sm  whitespace-nowrap text-ellipsis ">
-            {song.artist}
-          </h2>
+          {/* Song Title and Artist Info */}
+          <div className="hidden xl:flex flex-col space-y-1 overflow-hidden">
+            {/* Song Title */}
+            <h1 className={`text-lg text-start max-w-[120px]  font-semibold text-ellipsis overflow-hidden whitespace-nowrap
+              ${ expand && "max-w-max"}
+              `}>
+              {song.title}
+            </h1>
+            {/* Song Artist */}
+            <h2 className="text-sm text-start max-w-[120px] text-ellipsis overflow-hidden whitespace-nowrap">
+              {song.artist}
+            </h2>
+          </div>
         </div>
+
+        {/* Action Buttons Section */}
+        <div
+          className={`flex-grow overflow-scroll no-scrollbar hidden md:hidden lg:flex  justify-around items-center ml-10 space-x-6 transition-opacity duration-300 ${
+            expand ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+          <button className="flex items-center space-x-2 text-sm">
+            <IoCloudDownloadOutline className="w-5 h-5" />
+            <span className="text-lg">Download</span>
+          </button>
+
+          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+            <CiHeart className="w-5 h-5" />
+            <span className="text-lg">Favorite</span>
+          </button>
+
+          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+            <MdOutlinePlaylistAdd className="w-5 h-5" />
+            <span className="text-lg">Add to Playlist</span>
+          </button>
+
+          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+            <IoCloudDownloadOutline className="w-5 h-5" />
+            <span className="text-lg">Share</span>
+          </button>
+        </div>
+
+        {/* Expand/Collapse Button */}
+        <button
+          onClick={() => setExpand(!expand)}
+          className={`absolute px-1 right-0 hidden md:hidden lg:flex  w-7 h-7 bg-cyan-500 rounded-full  justify-center items-center ${expand&& "translate-x-7"}`}
+        >
+          {expand ? (
+            <MdOutlineExpandCircleDown className="  rotate-90 w-7 h-7" />
+          ) : (
+            <MdOutlineExpandCircleDown className="-rotate-90 w-7 h-7" />
+          )}
+        </button>
       </div>
-
-      <div
-        className={`flex-grow overflow-scroll no-scrollbar hidden md:flex justify-around items-center ml-10 space-x-6 transition-opacity duration-300 ${
-          expand ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <button className="flex items-center space-x-2 text-sm">
-          <IoCloudDownloadOutline className="w-5 h-5" />
-          <span className="text-lg">Download</span>
-        </button>
-
-        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
-          <CiHeart className="w-5 h-5" />
-          <span className="text-lg">Favorite</span>
-        </button>
-
-        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
-          <MdOutlinePlaylistAdd className="w-5 h-5" />
-          <span className="text-lg">Add to playlist</span>
-        </button>
-
-        <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
-          <IoCloudDownloadOutline className="w-5 h-5" />
-          <span className="text-lg">Share</span>
-        </button>
-      </div>
-
-      {/* Expand/Collapse Button */}
-      <button
-        onClick={() => setExpand(!expand)}
-        className="ml-auto hidden  w-24 h-10 bg-cyan-500  rounded-full md:flex justify-center items-center "
-      >
-        {expand ? (
-          <MdOutlineExpandCircleDown className="rotate-90 w-6 h-6" />
-        ) : (
-          <MdOutlineExpandCircleDown className="-rotate-90  w-6 h-6" />
-        )}
-      </button>
     </div>
   );
 };
+
 const formatDuration = (time) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
@@ -241,7 +251,7 @@ const MusicPlayer = () => {
       <div className="relative flex w-full items-center md:pr-16 pr-10">
         <MusicSidebar song={currentSong} />
 
-        <div className="w-full flex justify-between items-center ml-[20%] md:px-8 md:py-4 rounded-lg shadow-md">
+        <div className="w-full flex justify-between  items-center ml-[20%] md:ml-[10%] xl:ml-[20%] lg:ml-[15%]  md:px-8 md:py-4 rounded-lg shadow-md">
           {/* Controls (Previous, Play/Pause, Next) */}
           <div className="flex justify-center items-center md:space-x-4">
             <button
@@ -304,11 +314,11 @@ const MusicPlayer = () => {
               max="100"
               value={volume}
               onChange={handleVolumeChange}
-              className=" md:w-16  cursor-pointer -rotate-90 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/25 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[7px] [&::-webkit-slider-thumb]:w-[15px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500"
+              className=" md:w-16  cursor-pointer -rotate-90 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/80 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[7px] [&::-webkit-slider-thumb]:w-[15px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500"
             />
           </div>
         </div>
-        <div className="md:flex space-x-3 hidden ">
+        <div className="lg:flex space-x-3 hidden ">
           <div className="rounded-full p-1 border ">
             <IoShuffleOutline className="w-5 h-5" />
           </div>
@@ -356,7 +366,7 @@ const MusicPlayer = () => {
           {playlist.map((song, index) => (
             <li
               key={index}
-              className={`flex items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
+              className={`flex relative  items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex
                   ? "bg-cyan-500 text-white"
                   : "bg-gray-800"
@@ -367,9 +377,23 @@ const MusicPlayer = () => {
                 alt={song.title}
                 className="w-12 h-12 rounded-md object-cover"
               />
-              <div className="flex flex-col justify-start items-start">
-                <h5 className="text-lg font-semibold">{song.title}</h5>
-                <p className="text-sm">{song.artist}</p>
+              <div className="flex  w-6/12 flex-col justify-start items-start">
+                <div className="w-full text-start overflow-hidden">
+                  {" "}
+                  {/* Wrapping div */}
+                  <h5 className="text-lg font-semibold whitespace-nowrap">
+                    {song.title}
+                  </h5>
+                </div>
+                <div className="w-full text-start overflow-hidden">
+                  {" "}
+                  {/* Wrapping div */}
+                  <p className="text-sm whitespace-nowrap">{song.artist}</p>
+                </div>
+              </div>
+
+              <div className="absolute right-1">
+                <p className="text-sm">{formateDuration(song.duration)}</p>
               </div>
             </li>
           ))}

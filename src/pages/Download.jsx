@@ -118,7 +118,7 @@ const DownloadPage = () => {
           { withCredentials: true }
         );
         setSongs(res.data.purchasedSongs); // Assuming purchasedSongs is returned
-        console.log(res.data.purchasedSongs);
+      
       } catch (error) {
         console.error("Error fetching purchased songs:", error);
       }

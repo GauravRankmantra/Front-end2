@@ -1,9 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { addSongToQueue, setIsPlaying } from "../../features/musicSlice";
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToHistory,
+} from "../../features/musicSlice";
 import { useDispatch } from "react-redux";
 import SongAction from "./SongActions";
 import { AiFillPlayCircle } from "react-icons/ai";
+import axios from "axios"
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
@@ -18,13 +23,10 @@ const Recently = ({ heading, link }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${link}`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        if (data && data.data) {
-          setSongs(data.data);
+        const response = await axios.get(link,{withCredentials:true});
+        if (response.data && response.data.data) {
+         
+          setSongs(response.data.data);
         } else {
           setError("No songs available");
         }
@@ -36,6 +38,7 @@ const Recently = ({ heading, link }) => {
     };
     fetchData();
   }, [link]);
+  
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
@@ -45,10 +48,12 @@ const Recently = ({ heading, link }) => {
     scrollContainerRef.current?.scrollBy({ left: 180, behavior: "smooth" });
   };
 
-const handleSongClick = (song) => {
-  dispatch(addSongToQueue(song));
-  dispatch(setIsPlaying(true));
-};
+  const handleSongClick = (song) => {
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueue(song));
+
+    dispatch(setIsPlaying(true));
+  };
 
   const handleMenuToggle = (song) => {
     if (currentSong && currentSong._id === song._id) {
@@ -94,10 +99,12 @@ const handleSongClick = (song) => {
 
           {!loading && !error && songs.length > 0
             ? songs.map((song) => (
+              
                 <div
                   key={song._id}
                   className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
                 >
+                  {console.log("song info",song)}
                   <div
                     className="relative overflow-hidden rounded-[10px] aspect-square group"
                     onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
@@ -141,9 +148,10 @@ const handleSongClick = (song) => {
                         {song.title}
                       </a>
                     </h3>
-                    <p className="text-[#dedede] text-[12px]">{song?.artist}</p>
+                    <p className="text-[#dedede] text-[12px]"> {song?.artist?.fullName || song?.artist || "Unknown Artist"}</p>
                   </div>
                 </div>
+                
               ))
             : !loading &&
               !error && <p className="text-white">No songs available</p>}

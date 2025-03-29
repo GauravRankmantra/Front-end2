@@ -8,7 +8,7 @@ import CommentSlider from "../CommentSlider";
 import AlbumCard from "./AlbumCard";
 import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
-import { addPlaylistToQueue, clearQueue } from "../../features/musicSlice";
+import { addPlaylistToQueue, clearQueue ,setIsPlaying } from "../../features/musicSlice";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumInfo = () => {
@@ -54,7 +54,10 @@ const AlbumInfo = () => {
 
   const handelPlayAll = () => {
     dispatch(clearQueue());
+   
     dispatch(addPlaylistToQueue(songs));
+    dispatch(setIsPlaying(true))
+    
     setDisableBtn(!disableBtn);
   };
 
@@ -166,8 +169,8 @@ const AlbumInfo = () => {
   }
 
   return (
-    <div className="shadow-2xl rounded-lg">
-      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8 min-h-screen text-white w-full font-sans">
+    <div className="shadow-2xl overflow-hidden rounded-lg">
+      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
             <img
@@ -188,7 +191,9 @@ const AlbumInfo = () => {
               Released {formatDate(album.releaseDate)} | {album.company}
             </p>
 
-            <div className="mt-4 flex flex-col sm:flex-row gap-4">
+            <div className="mt-4 flex justify-center  items-center  flex-row gap-4">
+              <div className="flex space-x-2">
+                
               <button
                 disabled={disableBtn}
                 onClick={handelPlayAll}
@@ -213,10 +218,8 @@ const AlbumInfo = () => {
                 </svg>
                 Add To Queue
               </button>
-            </div>
-          </div>
-
-          <div className="ml-0 md:ml-auto relative mt-4 md:mt-0">
+              </div>
+              <div className="ml-0 md:ml-auto relative mt-4 md:mt-0">
             <button
               onClick={handelMenu}
               className="text-gray-400 hover:text-gray-200"
@@ -263,6 +266,10 @@ const AlbumInfo = () => {
               </div>
             )}
           </div>
+            </div>
+          </div>
+
+
         </div>
 
         <div className="mt-20">
