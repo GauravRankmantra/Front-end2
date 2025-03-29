@@ -35,14 +35,14 @@ const MusicSidebar = ({ song }) => {
 
   return (
     <div
-      className={` transition-all py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+      className={` transition-all shadow-2xl py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
         expand ? "max-w-max" : "w-20 lg:w-24 xl:w-2/12"
       }`}
     >
       <div className="w-full relative flex items-center">
         <div className="flex-shrink-0 flex items-center space-x-4">
           <img
-            className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover shadow-lg"
+            className="w-12 h-12 shadow-xl md:w-16 md:h-16 rounded-lg object-cover"
             src={song.coverImage}
             alt={song.title}
           />
@@ -241,7 +241,7 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600  flex justify-between items-center text-white z-50 text-center"
+      className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600 py-4 md:py-0 flex justify-between items-center text-white z-50 text-center"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`, // Add linear gradient for black overlay
         backgroundSize: "cover",
