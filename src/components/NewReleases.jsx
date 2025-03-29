@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import formateDuration from "../utils/formatDuration"
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const NewReleases = () => {
@@ -61,7 +62,7 @@ const NewReleases = () => {
               </div>
 
               <p className="text-sm text-gray-400  hover:text-cyan-500">
-                {track.duration}
+                {formateDuration(track.duration)}
               </p>
               {/* Play icon */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
