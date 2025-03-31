@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import axios from "axios";
-import SongCard from "../components/Song/SongCard"
+import SongCard from "../components/Song/SongCard";
 import PlayListContainer from "../components/playlist/PlayListContainer";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -248,15 +248,19 @@ const Profile = () => {
             </div>
           </div>
         </div>
-
+      </div>
+      <div className="p-2 px-4 shadow-2xl bg-[#171c32] rounded-2xl  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full m-auto">
           <PlayListContainer playlist={playlist} key={playlist._id} />
         </div>
-        <div className="w-full m-auto">
-        <SongCard
+        <div className="w-full  m-auto mt-5">
+          <SongCard
             heading={"Recently played"}
             link={`${apiUrl}api/v1/user/gethistory`}
           />
+        </div>
+        <div className="w-full m-auto mt-5">
+          <SongCard heading={"Liked Songs"} link={`${apiUrl}api/v1/like`} />
         </div>
       </div>
     </>

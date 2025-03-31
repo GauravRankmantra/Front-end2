@@ -68,6 +68,7 @@ const musicSlice = createSlice({
 
     addPlaylistToQueue: (state, action) => {
       const songs = action.payload;
+      console.log("ation payload ",action.payload)
 
       // Sanitize the songs to extract necessary fields, including low and high audioUrls and artist
       const sanitizedSongs = songs.map((song) => {

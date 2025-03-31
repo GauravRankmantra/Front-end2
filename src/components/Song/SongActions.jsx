@@ -9,10 +9,13 @@ import {
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ShareModal from "../ShareModal";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
   const dropdownRef = useRef(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [shareData, setShareData] = useState(null);
   const songId = song._id;
 
   useEffect(() => {
@@ -152,18 +155,33 @@ const SongActions = ({ onClose, song }) => {
     onClose();
   };
 
-  const handleShare = () => {
-    console.log("Shared");
-    toast.success("Shared!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    onClose();
+  const handleShare = ({ songId, albumId }) => {
+    // Define the base URL dynamically
+    const publicBaseUrl = `https://odgmusic.netlify.app` 
+    const shareUrl = albumId
+      ? `${publicBaseUrl}/album/${albumId}`
+      : `${publicBaseUrl}/song/${songId}`;
+
+    // Message to be shared
+    const message = encodeURIComponent(
+      `Check out this amazing music: ${shareUrl}`
+    );
+
+    // Social media sharing links
+    const socialMediaLinks = {
+      whatsapp: `https://wa.me/?text=${message}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
+      x: `https://twitter.com/intent/tweet?url=${shareUrl}&text=${message}`,
+      instagram: "https://www.instagram.com/", // Instagram does not support direct link sharing
+    };
+
+    // Open the Share Modal
+    openShareModal({ shareUrl, socialMediaLinks });
+  };
+
+  const openShareModal = ({ shareUrl, socialMediaLinks }) => {
+    setShareData({ shareUrl, socialMediaLinks });
+    setModalOpen(true);
   };
 
   return (
@@ -203,11 +221,18 @@ const SongActions = ({ onClose, song }) => {
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-            onClick={handleShare}
+            onClick={() => handleShare({ albumId: "67d01b3117cdbb2f4ea0c29b" })}
           >
             <AiOutlineShareAlt className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
             Share
           </button>
+          {isModalOpen && shareData && (
+            <ShareModal
+              shareUrl={shareData.shareUrl}
+              socialMediaLinks={shareData.socialMediaLinks}
+              onClose={() => setModalOpen(false)}
+            />
+          )}
         </div>
       </div>
     </>

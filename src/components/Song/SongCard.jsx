@@ -8,7 +8,10 @@ import {
 import { useDispatch } from "react-redux";
 import SongAction from "./SongActions";
 import { AiFillPlayCircle } from "react-icons/ai";
-import axios from "axios"
+import axios from "axios";
+import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
@@ -19,13 +22,14 @@ const Recently = ({ heading, link }) => {
   const [viewAll, setViewAll] = useState(false); // Toggle between "View All" and "Hide"
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const likedSongsArray =[];
+  const [likedSongs, setLikedSongs] = useState(new Set(likedSongsArray || []));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(link,{withCredentials:true});
+        const response = await axios.get(link, { withCredentials: true });
         if (response.data && response.data.data) {
-         
           setSongs(response.data.data);
         } else {
           setError("No songs available");
@@ -38,7 +42,43 @@ const Recently = ({ heading, link }) => {
     };
     fetchData();
   }, [link]);
-  
+
+  const toggleLike = async (songId) => {
+    if (loading) return;
+
+    const isCurrentlyLiked = likedSongs.has(songId);
+
+    try {
+      if (isCurrentlyLiked) {
+        await axios.delete(`${apiUrl}api/v1/like`, {
+          data: { songId },
+          withCredentials: true,
+        });
+
+        // Remove song from liked set
+        setLikedSongs((prev) => {
+          const newLikedSongs = new Set(prev);
+          newLikedSongs.delete(songId);
+          return newLikedSongs;
+        });
+      } else {
+        await axios.post(
+          `${apiUrl}api/v1/like`,
+          { songId },
+          { withCredentials: true }
+        );
+
+        // Add song to liked set
+        setLikedSongs((prev) => {
+          const newLikedSongs = new Set(prev);
+          newLikedSongs.add(songId);
+          return newLikedSongs;
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
@@ -99,12 +139,10 @@ const Recently = ({ heading, link }) => {
 
           {!loading && !error && songs.length > 0
             ? songs.map((song) => (
-              
                 <div
                   key={song._id}
                   className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
                 >
-                  {console.log("song info",song)}
                   <div
                     className="relative overflow-hidden rounded-[10px] aspect-square group"
                     onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
@@ -132,6 +170,17 @@ const Recently = ({ heading, link }) => {
                         <circle cx="5" cy="12" r="2" fill="currentColor" />
                         <circle cx="19" cy="12" r="2" fill="currentColor" />
                       </svg>
+                      <button
+                        onClick={() => toggleLike(song._id)}
+                        disabled={loading}
+                        className="focus:outline-none absolute bottom-2 right-2"
+                      >
+                        {likedSongs.has(song._id) ? (
+                          <FaHeart className="text-red-500 w-6 h-6" />
+                        ) : (
+                          <CiHeart className="text-gray-200 w-6 h-6" />
+                        )}
+                      </button>
 
                       {currentSong && currentSong._id === song._id && (
                         <SongAction
@@ -148,10 +197,14 @@ const Recently = ({ heading, link }) => {
                         {song.title}
                       </a>
                     </h3>
-                    <p className="text-[#dedede] text-[12px]"> {song?.artist?.fullName || song?.artist || "Unknown Artist"}</p>
+                    <p className="text-[#dedede] text-[12px]">
+                      {" "}
+                      {song?.artist?.fullName ||
+                        song?.artist ||
+                        "Unknown Artist"}
+                    </p>
                   </div>
                 </div>
-                
               ))
             : !loading &&
               !error && <p className="text-white">No songs available</p>}

@@ -25,6 +25,7 @@ import GenreInfo from "./components/GenreInfo";
 import Download from "./pages/Download";
 import OAuthRedirectHandler from "./auth/OAuthRedirectHandler";
 import SearchResults from "./components/SearchResults";
+import CreatePlaylist from "./components/playlist/CreatePlaylist";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -48,8 +49,10 @@ const App = () => {
           <Route path="/genres" element={<Genre />} />
           <Route path="/genre/:name" element={<GenreInfo />} />
           <Route path="/top_track" element={<TopTrack />} />
+          <Route path='/create-playlist' element={<CreatePlaylist/>}/>
           <Route path="/downloads" element={<Download />} />
           <Route path="/search" element={<SearchResults />} />
+          
 
 
         </Route>

@@ -240,6 +240,7 @@ const MusicPlayer = () => {
   }
 
   return (
+
     <div
       className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600 py-4 md:py-0 flex justify-between items-center text-white z-50 text-center"
       style={{

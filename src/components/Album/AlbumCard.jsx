@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiFillPlayCircle } from 'react-icons/ai'; 
-
+import { AiFillPlayCircle } from "react-icons/ai";
+import AlbumActions from "./AlbumActions";
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
   const [albums, setalbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-    const [currentalbum, setCurrentalbum] = useState(null); 
+ 
   const navigate = useNavigate();
+  const [currentAlbum, setCurrentAlbum] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,13 +46,14 @@ const Recently = ({ heading, link }) => {
     navigate(`/album/${album._id}`);
   };
 
-  const handleMenuToggle = (song) => {
-    if (currentalbum && currentalbum._id === song._id) {
-      // If the clicked song is already selected, close the menu
-      setCurrentalbum(null);
+  const handleMenuToggle = (album) => {
+    if (currentAlbum && currentAlbum._id === album._id) {
+      setCurrentAlbum(null);
+      console.log("set menu = null");
     } else {
-      // Set the current song for which the menu should be shown
-      setCurrentalbum(song);
+      setCurrentAlbum(album);
+      console.log("set menu = album");
+      console.log(album)
     }
   };
   return (
@@ -102,7 +104,7 @@ const Recently = ({ heading, link }) => {
                 >
                   <div
                     className="relative overflow-hidden rounded-[10px] aspect-square group"
-                    onMouseLeave={() => setCurrentalbum(null)} // Hide menu on mouse leave
+                    onMouseLeave={() => setCurrentAlbum(null)} 
                   >
                     <img
                       className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
@@ -128,7 +130,13 @@ const Recently = ({ heading, link }) => {
                         <circle cx="19" cy="12" r="2" fill="currentColor" />
                       </svg>
 
-                     
+
+                      {currentAlbum && currentAlbum._id === album._id && (
+                        <AlbumActions
+                          onClose={() => setCurrentAlbum(null)}
+                          album={currentAlbum}
+                        />
+                      )}
                     </div>
                   </div>
 
