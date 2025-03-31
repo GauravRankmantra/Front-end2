@@ -35,7 +35,7 @@ export const createPlaylist = createAsyncThunk(
       formData.append("description", description);
       formData.append("songs", JSON.stringify(songs.map((song) => song._id)));
       if (coverImage) formData.append("coverImage", coverImage);
-      const response = await axios.post(`${apiUrl}playlist`, formData, {
+      const response = await axios.post(`${apiUrl}api/v1/playlist`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
