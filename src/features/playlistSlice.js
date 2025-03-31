@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const fetchTopSongs = createAsyncThunk(
   "playlist/fetchTopSongs",
   async () => {
-    const response = await axios.get(`${apiUrl}/song/top15`);
+    const response = await axios.get(`${apiUrl}api/v1/song/top15`);
     return response.data.data;
   }
 );
@@ -18,7 +18,7 @@ export const fetchTopSongs = createAsyncThunk(
 export const searchSongs = createAsyncThunk(
   "playlist/searchSongs",
   async (query) => {
-    const response = await axios.get(`${apiUrl}/song/search`, {
+    const response = await axios.get(`${apiUrl}api/v1/song/search`, {
       params: { query },
     });
     return response.data.data;
