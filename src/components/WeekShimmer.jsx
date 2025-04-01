@@ -1,6 +1,6 @@
 import React from "react";
 
-const WeeklyTop15Shimmer = () => {
+const WeekShimmer = () => {
   return (
     <div className="bg-gray-900 text-gray-300 px-4 sm:px-10 lg:px-10 py-4">
       <div className="container mx-auto">
@@ -52,4 +52,4 @@ const WeeklyTop15Shimmer = () => {
   );
 };
 
-export default WeeklyTop15Shimmer;
+export default WeekShimmer;

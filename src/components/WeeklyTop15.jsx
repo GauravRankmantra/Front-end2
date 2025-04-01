@@ -3,7 +3,7 @@ import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
 import { useDispatch } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import formatDuration from "../utils/formatDuration";
-import WeeklyTop15Shimmer from "./WeeklyTop15shimmer";
+import WeekShimmer from "./WeekShimmer";
 
 const WeeklyTop15 = ({ link, heading }) => {
   const [songs, setSongs] = useState([]);
@@ -53,7 +53,7 @@ const WeeklyTop15 = ({ link, heading }) => {
 
         {/* Conditional Rendering: Shimmer or Actual Content */}
         {loading ? (
-          <WeeklyTop15Shimmer /> // Show shimmer when loading
+          <WeekShimmer /> // Show shimmer when loading
         ) : (
           /* Song Grid */
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
