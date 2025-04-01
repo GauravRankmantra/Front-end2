@@ -23,6 +23,7 @@ const AlbumInfo = () => {
   const [disableBtn, setDisableBtn] = useState(false);
   const [artist, setArtist] = useState("");
   const [activePopup, setActivePopup] = useState(null);
+  const [commentsData,setCommentsData]=useState([])
   const dispatch = useDispatch();
 
   const handelMenu = () => {
@@ -39,6 +40,8 @@ const AlbumInfo = () => {
           `${apiUrl}api/v1/albums/${id}`
         );
         setAlbum(res?.data?.data);
+        setCommentsData(res?.data?.data?.comments)
+        console.log("album info",res.data.data)
         setSongs(res?.data?.data?.songs);
 
         setArtist(res?.data?.data?.artistDetails?.fullName);
@@ -68,44 +71,7 @@ const AlbumInfo = () => {
     const month = date.toLocaleString("default", { month: "long" });
     return `${month} ${year}`;
   };
-  const commentsData = [
-    {
-      avatar: "https://dummyimage.com/50x50",
-      name: "Frank Adler",
-      timeAgo: "10 Minutes Ago",
-      commentText:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...",
-    },
-    {
-      avatar: "https://dummyimage.com/50x50",
-      name: "John Doe",
-      timeAgo: "5 Minutes Ago",
-      commentText:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...",
-    },
-    {
-      avatar: "https://dummyimage.com/50x50",
-      name: "John Doe",
-      timeAgo: "5 Minutes Ago",
-      commentText:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...",
-    },
-    {
-      avatar: "https://dummyimage.com/50x50",
-      name: "John Doe",
-      timeAgo: "5 Minutes Ago",
-      commentText:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...",
-    },
-    {
-      avatar: "https://dummyimage.com/50x50",
-      name: "John Doe",
-      timeAgo: "5 Minutes Ago",
-      commentText:
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor...",
-    },
-    // Add more comments here
-  ];
+
 
   const formatDuration = (durationInMinutes) => {
     if (typeof durationInMinutes !== "number") {

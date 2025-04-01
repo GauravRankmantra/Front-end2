@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaSearch,
   FaGlobe,
@@ -14,31 +14,40 @@ import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import  { setSearchQuery } from "../features/searchSlice"
+import { fetchSearchResults, setSearchQuery } from "../features/searchSlice";
+import SearchResultsDisplay from "./SearchResultsDisplay";
+
 import { IoDiamondOutline } from "react-icons/io5";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(""); // Handle search input
+  const [inputValue, setInputValue] = useState("");
+  const { query, results, loading, error } = useSelector(
+    (state) => state.search
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Use Redux dispatch
-
 
   // Toggles Sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Handles the search function
-  const handleSearch = () => {
-  
-    if (inputValue) {
-      dispatch(setSearchQuery(inputValue)); 
-    navigate(`/search?query=${inputValue}`); 
-    } else {
-      console.log("Search query is empty");
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  useEffect(() => {
+    if (inputValue.length >= 2) {
+      dispatch(setSearchQuery(inputValue)); // Update query in store
+      dispatch(fetchSearchResults(inputValue)); // Fetch search results
     }
+  }, [inputValue, dispatch]);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
   };
 
   // Check if user is authenticated
@@ -56,12 +65,9 @@ const Navbar = () => {
                 className="form-control py-2 pl-3 pr-12 text-sm text-[#777] bg-white rounded-[5px] border-none w-full sm:w-[180px] lg:w-full"
                 placeholder="Search Music Here.."
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)} // Handle input change
+                onChange={handleInputChange}
               />
-              <span
-                onClick={handleSearch}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 h-[36px] flex items-center justify-center bg-[#3bc8e7] rounded-r-[5px] px-3 cursor-pointer"
-              >
+              <span className="absolute right-0 top-1/2 transform -translate-y-1/2 h-[36px] flex items-center justify-center bg-[#3bc8e7] rounded-r-[5px] px-3 cursor-pointer">
                 <FaSearch size={18} color="#fff" />
               </span>
             </div>
@@ -138,6 +144,13 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      {inputValue.length >= 2 && (
+        <SearchResultsDisplay
+          results={results}
+    
+          setInputValue={setInputValue}
+        />
+      )}
 
       {sidebarOpen && (
         <div

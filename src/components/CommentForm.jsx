@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 const apiUrl = import.meta.env.VITE_API_URL;
-const CommentForm = ({ albumId }) => {
-  //   const user = useSelector((state) => state?.user?.user);
+
+const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted prop
+  //   const user = useSelector((state) => state?.user?.user);
 
   // States for form data and errors
   const [name, setName] = useState("");
@@ -40,8 +43,18 @@ const CommentForm = ({ albumId }) => {
       );
 
       // Handle the success response (e.g., show a success message or reset form)
- 
-      alert("Comment submitted successfully!");
+      toast.success("Comment submitted successfully!", { // Use toast here
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      // Trigger re-render in parent component
+      onCommentPosted(); // Call the callback function
 
       // Clear the form after successful submission
       setName("");
@@ -57,11 +70,11 @@ const CommentForm = ({ albumId }) => {
   };
 
   return (
-    <div className="flex flex-col w-full  py-16 px-4 sm:px-6 lg:px-8 ">
+    <div className="flex flex-col w-full  py-16 px-4 sm:px-6 lg:px-8 ">
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           Leave a comment
-          <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
+          <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
       </div>
       <form

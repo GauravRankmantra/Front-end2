@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/navigation"; // Ensure you import the CSS for navigation
+import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import CommentForm from "./CommentForm";
 
-const CommentSlider = ({ comments ,albumId }) => {
+const CommentSlider = ({ comments, albumId }) => {
+  const [newCommentAdded, setNewCommentAdded] = useState(false);
+  const [updatedComments, setUpdatedComments] = useState(comments);
+
+  const handleCommentPosted = () => {
+    setNewCommentAdded(true);
+  };
+
+  useEffect(() => {
+    setUpdatedComments(comments);
+    setNewCommentAdded(false);
+  }, [comments, newCommentAdded]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); 
+  };
 
   return (
     <>
       <div className="relative bg-gray-900 text-cyan-500 px-4 md:px-8 py-4">
         <div className="w-full mb-6">
           <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
-            Comments ({comments.length})
-            <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
+            Comments ({updatedComments.length})
+            <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
           </h1>
         </div>
 
@@ -24,54 +40,47 @@ const CommentSlider = ({ comments ,albumId }) => {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
           }}
-          spaceBetween={10} // Adjust the spacing between slides for mobile
+          spaceBetween={10}
           loop={true}
           breakpoints={{
-            // when window width is >= 320px (mobile)
             320: {
               slidesPerView: 1,
               spaceBetween: 10,
             },
-            // when window width is >= 640px (tablet)
             640: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
-            // when window width is >= 1024px (desktop)
             1024: {
               slidesPerView: 3,
               spaceBetween: 30,
             },
           }}
         >
-          {comments.map((comment, index) => (
+          {updatedComments.map((comment, index) => (
             <SwiperSlide key={index}>
               <div className="bg-gray-800 rounded-lg p-4 shadow-md">
                 <div className="flex items-center mb-4">
                   <img
                     className="w-12 h-12 rounded-full"
-                    src={comment.avatar}
+                    src='https://dummyimage.com/50x50'
                     alt={comment.name}
                   />
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold">{comment.name}</h3>
                     <span className="text-gray-400 text-sm">
-                      {comment.timeAgo}
+                      {formatDate(comment.createdAt)}
                     </span>
                   </div>
                 </div>
-                <p className="text-gray-300">{comment.commentText}</p>
+                <p className="text-gray-300">{comment.comment}</p>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
-
-        {/* Swiper Navigation */}
-        {/* <div className="swiper-button-prev absolute   left-5 translate-y-1/2 text-white cursor-pointer"></div>
-      <div className="swiper-button-next absolute  right-5 translate-y-1/2 text-white  cursor-pointer"></div> */}
       </div>
 
-<CommentForm albumId={albumId}/>
+      <CommentForm albumId={albumId} onCommentPosted={handleCommentPosted} />
     </>
   );
 };
