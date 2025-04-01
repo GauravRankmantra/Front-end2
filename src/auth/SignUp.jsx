@@ -107,7 +107,7 @@ const SignUp = () => {
     event.preventDefault();
     setUsingOauth(true);
 
-    window.open(`${apiUrl}/api/v1/auth/google`, "_self");
+    window.open(`${apiUrl}api/v1/auth/google`, "_self");
     setUsingOauth(false);
   };
 
@@ -115,7 +115,7 @@ const SignUp = () => {
   const handleFacebookLogin = () => {
     event.preventDefault();
     setUsingOauth(true);
-    window.open(`${apiUrl}/api/v1/auth/facebook`, "_self");
+    window.open(`${apiUrl}api/v1/auth/facebook`, "_self");
     setUsingOauth(false);
   };
 
