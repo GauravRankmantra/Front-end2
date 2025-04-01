@@ -12,7 +12,7 @@ import axios from "axios";
 import SongShimmer from "../Shimmer/SongShimmer"; // Import the SongShimmer component
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const Recently = ({ heading, link }) => {
+const Recently = ({ heading, link, showGrid }) => {
   const scrollContainerRef = useRef(null);
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,6 @@ const Recently = ({ heading, link }) => {
     };
     fetchData();
   }, [link]);
-
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
@@ -82,7 +81,6 @@ const Recently = ({ heading, link }) => {
         </h1>
       </div>
 
-    
       {loading ? (
         <SongShimmer viewAll={viewAll} /> // Show shimmer when loading
       ) : (
@@ -90,8 +88,8 @@ const Recently = ({ heading, link }) => {
           <div
             ref={scrollContainerRef}
             className={`w-full transition-all duration-400 ${
-              viewAll
-                ? "grid grid-cols-2 py-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 place-items-center"
+              viewAll || showGrid
+                ? "grid grid-cols-2 py-4 sm:grid-cols-3 md:grid-cols-4  gap-4 place-items-center"
                 : "flex space-x-6 py-4 overflow-x-scroll scroll-smooth no-scrollbar"
             }`}
             style={{
@@ -112,7 +110,9 @@ const Recently = ({ heading, link }) => {
                     >
                       <img
                         className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
-                        src={song.coverImage || "https://dummyimage.com/150x150"}
+                        src={
+                          song.coverImage || "https://dummyimage.com/150x150"
+                        }
                         alt={song.title}
                       />
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

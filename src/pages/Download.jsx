@@ -33,7 +33,8 @@ const DownloadPage = () => {
     return `${formattedMinutes}:${formattedSeconds}`;
   }
 
-  const handelDownload = async (songId) => {
+  const handelDownload = async (song) => {
+    const songId=song._id
     try {
       const response = await axios.get(
         `${apiUrl}api/v1/song/isPurchased/${songId}`,
@@ -179,7 +180,7 @@ const DownloadPage = () => {
                 <td className="p-4">
                   <Download
                     o
-                    onClick={() => handelDownload(song._id)}
+                    onClick={() => handelDownload(song)}
                     className="w-5 h-5 hover:text-cyan-500 transition-colors duration-300"
                   />
                 </td>

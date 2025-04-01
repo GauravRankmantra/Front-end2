@@ -10,12 +10,17 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../ShareModal";
+import addLike from "../../utils/addLike";
+import PlaylistSelectionModal from "../PlaylistSelectionModal"
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
   const dropdownRef = useRef(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [shareData, setShareData] = useState(null);
+  const [userPlaylists, setUserPlaylists] = useState([]);
+  const [pModelOpen, setPModelOpen] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const songId = song._id;
 
   useEffect(() => {
@@ -113,18 +118,36 @@ const SongActions = ({ onClose, song }) => {
     onClose();
   };
 
-  const handleAddToFav = () => {
-    console.log("Added to favorites");
-    toast.success("Added to favorites!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    onClose();
+  const handleAddToFav = (songId) => {
+    addLike({ songId })
+      .then((response) => {
+        // Handle the successful response
+        console.log("Song added to favorites:", response);
+        toast.success("Added to favorites!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        onClose();
+      })
+      .catch((error) => {
+        // Handle errors
+
+        toast.success(error.response.data.message, {
+          // Show error message
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
 
   const handleAddToQueue = () => {
@@ -141,23 +164,34 @@ const SongActions = ({ onClose, song }) => {
     onClose();
   };
 
-  const handleAddToPlaylist = () => {
-    console.log("Added to playlist");
-    toast.success("Added to playlist!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    onClose();
+  const handleAddToPlaylist = async () => {
+    try {
+      // 1. Fetch user's playlists
+      const playlistsRes = await axios.get(
+        `${apiUrl}api/v1/playlist/userPlaylists`,
+        { withCredentials: true }
+      );
+      const playlists = playlistsRes?.data?.data;
+
+      if (!playlists || playlists.length === 0) {
+        toast.error("You don't have any playlists yet.", {
+          position: "top-right",
+        });
+        return;
+      }
+      setUserPlaylists(playlists);
+      setPModelOpen(true); // Open the playlist selection modal
+    } catch (error) {
+      console.error("Error fetching playlists:", error);
+      toast.error("Failed to fetch playlists. Please try again.", {
+        position: "top-right",
+      });
+    }
   };
 
   const handleShare = ({ songId, albumId }) => {
     // Define the base URL dynamically
-    const publicBaseUrl = `https://odgmusic.netlify.app` 
+    const publicBaseUrl = `https://odgmusic.netlify.app`;
     const shareUrl = albumId
       ? `${publicBaseUrl}/album/${albumId}`
       : `${publicBaseUrl}/song/${songId}`;
@@ -193,7 +227,7 @@ const SongActions = ({ onClose, song }) => {
         <div className="md:py-1">
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200 "
-            onClick={handleAddToFav}
+            onClick={() => handleAddToFav(song._id)}
           >
             <AiOutlineHeart className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
             Add To Fav
@@ -234,6 +268,13 @@ const SongActions = ({ onClose, song }) => {
             />
           )}
         </div>
+        {pModelOpen && (
+          <PlaylistSelectionModal
+            playlists={userPlaylists}
+            onSelect={onPlaylistSelected}
+            onClose={() => setPModelOpen(false)}
+          />
+        )}
       </div>
     </>
   );
