@@ -21,14 +21,13 @@ const Recently = ({ heading, link, showGrid }) => {
   const [viewAll, setViewAll] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const likedSongsArray = [];
-  const [likedSongs, setLikedSongs] = useState(new Set(likedSongsArray || []));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(link, { withCredentials: true });
-        if (response.data && response.data.data) {
+        if (response.data || response.data.data) {
+          console.log(response.data.data);
           setSongs(response.data.data);
         } else {
           setError("No songs available");
@@ -98,7 +97,7 @@ const Recently = ({ heading, link, showGrid }) => {
           >
             {error && <p className="text-white">Error: {error}</p>}
 
-            {!loading && !error && songs.length > 0
+            {!loading && !error && songs?.length > 0
               ? songs.map((song) => (
                   <div
                     key={song._id}
@@ -150,7 +149,6 @@ const Recently = ({ heading, link, showGrid }) => {
                         </a>
                       </h3>
                       <p className="text-[#dedede] text-[12px]">
-                        {" "}
                         {song?.artist?.fullName ||
                           song?.artist ||
                           "Unknown Artist"}

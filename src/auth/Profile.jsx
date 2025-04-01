@@ -31,12 +31,14 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        
         const response = await axios.get(
           `${apiUrl}api/v1/playlist/userPlaylists`,
 
           { withCredentials: true }
         );
-        if (response.data && response.data.data) {
+        if (response?.data && response?.data?.data) {
+          console.log(response.data.data)
           setPlaylist(response.data.data);
         } else {
           setError("No songs available");
@@ -161,14 +163,14 @@ const Profile = () => {
                     htmlFor="image"
                     className="cursor-pointer relative bg-gray-400 h-36 w-36 rounded-full flex items-center justify-center text-gray-600 text-lg hover:bg-gray-500 transition duration-200"
                     style={{
-                      backgroundImage: userInfo.coverImage
-                        ? `url(${userInfo.coverImage})`
+                      backgroundImage: userInfo?.coverImage
+                        ? `url(${userInfo?.coverImage})`
                         : null,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
                   >
-                    {!userInfo.coverImage && <span>151 x 151</span>}
+                    {!userInfo?.coverImage && <span>151 x 151</span>}
                     <input
                       type="file"
                       id="image"
