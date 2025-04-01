@@ -26,6 +26,8 @@ import {
   playNextSong,
   playPrevSong,
   setIsPlaying,
+  addSongToHistory,
+  addSongToQueue,
   seek,
   clearQueue,
 } from "../features/musicSlice";
@@ -132,6 +134,12 @@ const MusicPlayer = () => {
   const currentSongIndex = useSelector(
     (state) => state.musicPlayer?.currentSongIndex || 0
   );
+  const handelQueueSongClick=(song)=>{
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueue(song));
+
+    dispatch(setIsPlaying(true));
+  }
 
   const toggleSlider = () => {
     setShowSlider(!showSlider);
@@ -366,6 +374,7 @@ const MusicPlayer = () => {
         <ul className="space-y-4 ">
           {playlist.map((song, index) => (
             <li
+            onClick={()=>handelQueueSongClick(song)}
               key={index}
               className={`flex relative  items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex

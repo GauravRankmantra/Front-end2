@@ -9,20 +9,19 @@ import { useDispatch } from "react-redux";
 import SongAction from "./SongActions";
 import { AiFillPlayCircle } from "react-icons/ai";
 import axios from "axios";
-import { CiHeart } from "react-icons/ci";
-import { FaHeart } from "react-icons/fa";
+import SongShimmer from "../Shimmer/SongShimmer"; // Import the SongShimmer component
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentSong, setCurrentSong] = useState(null); // Track the current song
+  const [currentSong, setCurrentSong] = useState(null);
   const [error, setError] = useState(null);
-  const [viewAll, setViewAll] = useState(false); // Toggle between "View All" and "Hide"
+  const [viewAll, setViewAll] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const likedSongsArray =[];
+  const likedSongsArray = [];
   const [likedSongs, setLikedSongs] = useState(new Set(likedSongsArray || []));
 
   useEffect(() => {
@@ -37,48 +36,12 @@ const Recently = ({ heading, link }) => {
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after fetching
       }
     };
     fetchData();
   }, [link]);
 
-  const toggleLike = async (songId) => {
-    if (loading) return;
-
-    const isCurrentlyLiked = likedSongs.has(songId);
-
-    try {
-      if (isCurrentlyLiked) {
-        await axios.delete(`${apiUrl}api/v1/like`, {
-          data: { songId },
-          withCredentials: true,
-        });
-
-        // Remove song from liked set
-        setLikedSongs((prev) => {
-          const newLikedSongs = new Set(prev);
-          newLikedSongs.delete(songId);
-          return newLikedSongs;
-        });
-      } else {
-        await axios.post(
-          `${apiUrl}api/v1/like`,
-          { songId },
-          { withCredentials: true }
-        );
-
-        // Add song to liked set
-        setLikedSongs((prev) => {
-          const newLikedSongs = new Set(prev);
-          newLikedSongs.add(songId);
-          return newLikedSongs;
-        });
-      }
-    } catch (error) {
-      console.error("Error toggling like:", error);
-    }
-  };
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
@@ -119,97 +82,87 @@ const Recently = ({ heading, link }) => {
         </h1>
       </div>
 
-      {/* Scrollable Song List or Full Grid */}
-      <div className="relative">
-        <div
-          ref={scrollContainerRef}
-          className={`w-full transition-all duration-400 ${
-            viewAll
-              ? "grid grid-cols-2 py-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 place-items-center"
-              : "flex space-x-6 py-4 overflow-x-scroll scroll-smooth no-scrollbar"
-          }`}
-          style={{
-            willChange: "display, grid-template-columns, gap", // Improve performance
-          }}
-        >
-          {loading && (
-            <p className="text-white text-center">Loading songs...</p>
-          )}
-          {error && <p className="text-white">Error: {error}</p>}
+    
+      {loading ? (
+        <SongShimmer viewAll={viewAll} /> // Show shimmer when loading
+      ) : (
+        <div className="relative">
+          <div
+            ref={scrollContainerRef}
+            className={`w-full transition-all duration-400 ${
+              viewAll
+                ? "grid grid-cols-2 py-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 place-items-center"
+                : "flex space-x-6 py-4 overflow-x-scroll scroll-smooth no-scrollbar"
+            }`}
+            style={{
+              willChange: "display, grid-template-columns, gap", // Improve performance
+            }}
+          >
+            {error && <p className="text-white">Error: {error}</p>}
 
-          {!loading && !error && songs.length > 0
-            ? songs.map((song) => (
-                <div
-                  key={song._id}
-                  className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
-                >
+            {!loading && !error && songs.length > 0
+              ? songs.map((song) => (
                   <div
-                    className="relative overflow-hidden rounded-[10px] aspect-square group"
-                    onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
+                    key={song._id}
+                    className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
                   >
-                    <img
-                      className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
-                      src={song.coverImage || "https://dummyimage.com/150x150"}
-                      alt={song.title}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <AiFillPlayCircle
-                        className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
-                        onClick={() => handleSongClick(song)}
+                    <div
+                      className="relative overflow-hidden rounded-[10px] aspect-square group"
+                      onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
+                    >
+                      <img
+                        className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
+                        src={song.coverImage || "https://dummyimage.com/150x150"}
+                        alt={song.title}
                       />
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="absolute top-2 right-2 w-5 h-5 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
-                        onClick={() => handleMenuToggle(song)}
-                      >
-                        <circle cx="12" cy="12" r="2" fill="currentColor" />
-                        <circle cx="5" cy="12" r="2" fill="currentColor" />
-                        <circle cx="19" cy="12" r="2" fill="currentColor" />
-                      </svg>
-                      <button
-                        onClick={() => toggleLike(song._id)}
-                        disabled={loading}
-                        className="focus:outline-none absolute bottom-2 right-2"
-                      >
-                        {likedSongs.has(song._id) ? (
-                          <FaHeart className="text-red-500 w-6 h-6" />
-                        ) : (
-                          <CiHeart className="text-gray-200 w-6 h-6" />
-                        )}
-                      </button>
-
-                      {currentSong && currentSong._id === song._id && (
-                        <SongAction
-                          onClose={() => setCurrentSong(null)}
-                          song={currentSong}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <AiFillPlayCircle
+                          className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                          onClick={() => handleSongClick(song)}
                         />
-                      )}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="absolute top-2 right-2 w-5 h-5 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                          onClick={() => handleMenuToggle(song)}
+                        >
+                          <circle cx="12" cy="12" r="2" fill="currentColor" />
+                          <circle cx="5" cy="12" r="2" fill="currentColor" />
+                          <circle cx="19" cy="12" r="2" fill="currentColor" />
+                        </svg>
+
+                        {currentSong && currentSong._id === song._id && (
+                          <SongAction
+                            onClose={() => setCurrentSong(null)}
+                            song={currentSong}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-left mt-4">
+                      <h3 className="text-[14px] mb-[5px]">
+                        <a href="#" className="text-white hover:text-[#3bc8e7]">
+                          {song.title}
+                        </a>
+                      </h3>
+                      <p className="text-[#dedede] text-[12px]">
+                        {" "}
+                        {song?.artist?.fullName ||
+                          song?.artist ||
+                          "Unknown Artist"}
+                      </p>
                     </div>
                   </div>
-
-                  <div className="text-left mt-4">
-                    <h3 className="text-[14px] mb-[5px]">
-                      <a href="#" className="text-white hover:text-[#3bc8e7]">
-                        {song.title}
-                      </a>
-                    </h3>
-                    <p className="text-[#dedede] text-[12px]">
-                      {" "}
-                      {song?.artist?.fullName ||
-                        song?.artist ||
-                        "Unknown Artist"}
-                    </p>
-                  </div>
-                </div>
-              ))
-            : !loading &&
-              !error && <p className="text-white">No songs available</p>}
+                ))
+              : !loading &&
+                !error && <p className="text-white">No songs available</p>}
+          </div>
         </div>
-      </div>
+      )}
 
       {!viewAll && (
         <>

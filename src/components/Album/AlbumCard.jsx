@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiFillPlayCircle } from "react-icons/ai";
 import AlbumActions from "./AlbumActions";
+import SongShimmer from "../Shimmer/SongShimmer";
 
 const Recently = ({ heading, link }) => {
   const scrollContainerRef = useRef(null);
@@ -84,6 +85,9 @@ const Recently = ({ heading, link }) => {
           />
         </svg>
       </button>
+      {loading ? (
+        <SongShimmer /> // Show shimmer when loading
+      ) : (
 
       <div className="relative">
         {/* Scrollable album List */}
@@ -91,9 +95,7 @@ const Recently = ({ heading, link }) => {
           ref={scrollContainerRef}
           className="flex space-x-6 py-4 w-full overflow-x-scroll scroll-smooth no-scrollbar"
         >
-          {loading && (
-            <p className="text-white text-center">Loading albums...</p>
-          )}
+
           {error && <p className="text-white">Error: {error}</p>}
 
           {!loading && !error && albums.length > 0
@@ -156,6 +158,7 @@ const Recently = ({ heading, link }) => {
               !error && <p className="text-white">No albums available</p>}
         </div>
       </div>
+      )}
 
       <button
         onClick={scrollRight}

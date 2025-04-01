@@ -57,12 +57,20 @@ const musicSlice = createSlice({
           high: song.audioUrls.high,
         },
       };
+      const songIndex = state.playlist.findIndex(
+        (item) => item._id === sanitizedSong._id
+      );
+      if (songIndex === -1) {
+        // Song is not in queue, add it
+        state.playlist.push(sanitizedSong);
+        state.currentSong = sanitizedSong;
+        state.currentSongIndex = state.playlist.length - 1; //set to the last index
+      } else {
+        // Song is already in queue, set it as current
+        state.currentSong = state.playlist[songIndex];
+        state.currentSongIndex = songIndex;
+      }
 
-      state.currentSong = sanitizedSong;
-      if (state.playlist.length === 0) state.currentSongIndex = 0;
-      else state.currentSongIndex = state.playlist.length;
-
-      state.playlist.push(sanitizedSong);
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
 

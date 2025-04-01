@@ -7,9 +7,7 @@ import img728 from "../assets/img/dummy.png";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
 import logo from "../assets/img/logo.jpeg";
-import RadialRangeSlider from "../components/RadialRangeSlider";
-import axios from "axios";
-import PlayListCard from "../components/playlist/PlayListCard";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Home = () => {
