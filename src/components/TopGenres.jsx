@@ -28,7 +28,7 @@ const TopGenres = () => {
   }, []);
 
   return (
-    <div className="text-white mx-4 sm:mx-10 lg:mx-10">
+    <div className="text-white mx-2 sm:mx-10 lg:mx-10">
       <div className="flex justify-between items-center mb-6">
         <div className="w-full mb-6">
           <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">

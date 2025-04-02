@@ -17,7 +17,7 @@ const Layout = () => {
 
       <div className="flex flex-1 scroll-smooth no-scrollbar">
         <Sidebar />
-        <div className="flex-auto mx-4 sm:mx-10 lg:mx-36 mt-12 overflow-hidden  ">
+        <div className="flex-auto mx-2 sm:mx-10 lg:mx-36 mt-12 overflow-hidden  ">
           <Outlet />
         </div>
       </div>

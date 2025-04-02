@@ -69,7 +69,7 @@ const Recently = ({ heading, link, showGrid }) => {
   };
 
   return (
-    <div className="relative mx-4 sm:mx-10 lg:mx-10">
+    <div className="relative mx-2  sm:mx-10 lg:mx-10">
       <div className="w-full mb-6 flex justify-between items-center">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           {heading}
@@ -101,7 +101,7 @@ const Recently = ({ heading, link, showGrid }) => {
               ? songs.map((song) => (
                   <div
                     key={song._id}
-                    className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
+                    className="relative flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] group cursor-pointer"
                   >
                     <div
                       className="relative overflow-hidden rounded-[10px] aspect-square group"

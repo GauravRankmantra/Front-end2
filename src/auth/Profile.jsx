@@ -344,7 +344,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="p-2 px-4 shadow-2xl bg-[#171c32] rounded-2xl  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
+      <div className="p-2  shadow-2xl bg-[#171c32] rounded-2xl  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full m-auto">
           <PlayListContainer playlist={playlist} key={playlist._id} />
         </div>
