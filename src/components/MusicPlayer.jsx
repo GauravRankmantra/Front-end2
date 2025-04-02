@@ -52,14 +52,31 @@ const MusicSidebar = ({ song }) => {
           {/* Song Title and Artist Info */}
           <div className="hidden xl:flex flex-col space-y-1 overflow-hidden">
             {/* Song Title */}
-            <h1 className={`text-lg text-start max-w-[120px]  font-semibold text-ellipsis overflow-hidden whitespace-nowrap
-              ${ expand && "max-w-max"}
-              `}>
+            <h1
+              className={`text-lg text-start max-w-[120px]  font-semibold text-ellipsis overflow-hidden whitespace-nowrap
+              ${expand && "max-w-max"}
+              `}
+            >
               {song.title}
             </h1>
             {/* Song Artist */}
             <h2 className="text-sm text-start max-w-[120px] text-ellipsis overflow-hidden whitespace-nowrap">
-              {song.artist}
+              {Array.isArray(song.artist) ? (
+                song.artist.map((artistObj, index) => (
+                  <span
+                    key={artistObj._id}
+                    onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
+                    className="cursor-pointer hover:underline"
+                  >
+                    {artistObj.fullName}
+                    {index !== song.artist.length - 1 && ", "}
+                  </span>
+                ))
+              ) : (
+                <span>
+                  {song.artist?.fullName || song.artist || "Unknown Artist"}
+                </span>
+              )}
             </h2>
           </div>
         </div>
@@ -94,7 +111,9 @@ const MusicSidebar = ({ song }) => {
         {/* Expand/Collapse Button */}
         <button
           onClick={() => setExpand(!expand)}
-          className={`absolute px-1 right-0 hidden md:hidden lg:flex  w-7 h-7 bg-cyan-500 rounded-full  justify-center items-center ${expand&& "translate-x-7"}`}
+          className={`absolute px-1 right-0 hidden md:hidden lg:flex  w-7 h-7 bg-cyan-500 rounded-full  justify-center items-center ${
+            expand && "translate-x-7"
+          }`}
         >
           {expand ? (
             <MdOutlineExpandCircleDown className="  rotate-90 w-7 h-7" />
@@ -134,12 +153,12 @@ const MusicPlayer = () => {
   const currentSongIndex = useSelector(
     (state) => state.musicPlayer?.currentSongIndex || 0
   );
-  const handelQueueSongClick=(song)=>{
+  const handelQueueSongClick = (song) => {
     dispatch(addSongToHistory(song));
     dispatch(addSongToQueue(song));
 
     dispatch(setIsPlaying(true));
-  }
+  };
 
   const toggleSlider = () => {
     setShowSlider(!showSlider);
@@ -248,7 +267,6 @@ const MusicPlayer = () => {
   }
 
   return (
-
     <div
       className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600 py-4 md:py-0 flex justify-between items-center text-white z-50 text-center"
       style={{
@@ -374,7 +392,7 @@ const MusicPlayer = () => {
         <ul className="space-y-4 ">
           {playlist.map((song, index) => (
             <li
-            onClick={()=>handelQueueSongClick(song)}
+              onClick={() => handelQueueSongClick(song)}
               key={index}
               className={`flex relative  items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex
@@ -398,7 +416,26 @@ const MusicPlayer = () => {
                 <div className="w-full text-start overflow-hidden">
                   {" "}
                   {/* Wrapping div */}
-                  <p className="text-sm whitespace-nowrap">{song.artist}</p>
+                  <p className="text-sm whitespace-nowrap">
+                    {Array.isArray(song.artist) ? (
+                      song.artist.map((artistObj, index) => (
+                        <span
+                          key={artistObj._id}
+                          onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
+                          className="cursor-pointer hover:underline"
+                        >
+                          {artistObj.fullName}
+                          {index !== song.artist.length - 1 && ", "}
+                        </span>
+                      ))
+                    ) : (
+                      <span>
+                        {song.artist?.fullName ||
+                          song.artist ||
+                          "Unknown Artist"}
+                      </span>
+                    )}
+                  </p>
                 </div>
               </div>
 

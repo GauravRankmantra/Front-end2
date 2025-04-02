@@ -11,7 +11,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../ShareModal";
 import addLike from "../../utils/addLike";
-import PlaylistSelectionModal from "../PlaylistSelectionModal"
+import PlaylistSelectionModal from "../PlaylistSelectionModal";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
@@ -35,6 +35,55 @@ const SongActions = ({ onClose, song }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
+
+  const onPlaylistSelected = async (selectedPlaylistObj) => {
+    setSelectedPlaylist(selectedPlaylistObj._id);
+    setPModelOpen(false);
+  
+    let res; // Declare res outside try block to avoid reference errors
+  
+    try {
+      res = await axios.post(`${apiUrl}api/v1/playlist/singlSong`, {
+        playlistId: selectedPlaylistObj._id,
+        songId: song._id,
+      });
+  
+      if (res.status === 200) {
+        toast.success("Song added to playlist!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (addSongError) {
+      console.error("Error adding song", addSongError);
+  
+      if (addSongError.response) {
+        // Handle specific errors from the API response
+        if (addSongError.response.status === 400) {
+          toast.error(addSongError.response.data.message || "Bad request", {
+            position: "top-right",
+          });
+        } else if (addSongError.response.status === 500) {
+          toast.error("Server error, please try again later.", {
+            position: "top-right",
+          });
+        } else {
+          toast.error(
+            `Error: ${addSongError.response.data.message || "Something went wrong"}`,
+            { position: "top-right" }
+          );
+        }
+      } else {
+        // Handle network errors
+        toast.error("Network error, please check your connection.", {
+          position: "top-right",
+        });
+      }
+    }
+  
+    onClose(); 
+  };
+  
 
   const handelDownload = async () => {
     try {

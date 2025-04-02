@@ -37,7 +37,7 @@ const ArtistInfo = () => {
       setError(null);
 
       try {
-        const res = await axios.get(`${apiUrl}/api/v1/user/artist${id}`);
+        const res = await axios.get(`${apiUrl}api/v1/user/artist${id}`);
         const artistData = res?.data?.data;
 
         setArtist(artistData);

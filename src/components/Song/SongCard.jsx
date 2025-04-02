@@ -149,9 +149,14 @@ const Recently = ({ heading, link, showGrid }) => {
                         </a>
                       </h3>
                       <p className="text-[#dedede] text-[12px]">
-                        {song?.artist?.fullName ||
-                          song?.artist ||
-                          "Unknown Artist"}
+                        {Array.isArray(song?.artist)
+                          ? song.artist.map((artist, index) => (
+                              <span key={index}>
+                                {artist.fullName}
+                                {index !== song.artist.length - 1 && ", "}
+                              </span>
+                            ))
+                          : song?.artist?.fullName ||  song?.artist || "Unknown Artist"}
                       </p>
                     </div>
                   </div>

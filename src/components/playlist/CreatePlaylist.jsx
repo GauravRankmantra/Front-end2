@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaSearch, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
-import Loading from "../Loading"; // Import the Loading component
+import Loading from "../Loading";
 import "react-toastify/dist/ReactToastify.css";
 
 import {
@@ -17,7 +17,14 @@ import {
 
 const CreatePlaylist = () => {
   const dispatch = useDispatch();
-  const { name, songs, availableSongs, loading: playlistLoading, error, description } = useSelector((state) => state.playlist); // Renamed to playlistLoading
+  const {
+    name,
+    songs,
+    availableSongs,
+    loading: playlistLoading,
+    error,
+    description,
+  } = useSelector((state) => state.playlist); // Renamed to playlistLoading
   const [searchQuery, setSearchQuery] = useState("");
   const [coverImage, setCoverImage] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
@@ -25,18 +32,17 @@ const CreatePlaylist = () => {
   const isFormValid = name.trim() && songs.length > 0 && coverImage;
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     setLoading(true);
-    dispatch(fetchTopSongs()).then(()=>setLoading(false));
+    dispatch(fetchTopSongs()).then(() => setLoading(false));
   }, [dispatch]);
 
   useEffect(() => {
-    setLoading(true);
+    
     if (!searchQuery.trim()) {
-      dispatch(fetchTopSongs()).then(()=>setLoading(false));
+      dispatch(fetchTopSongs()).then(() => setLoading(false));
     } else {
-      dispatch(searchSongs(searchQuery)).then(()=>setLoading(false));
+      dispatch(searchSongs(searchQuery)).then(() => setLoading(false));
     }
   }, [searchQuery, dispatch]);
 
@@ -79,12 +85,13 @@ const CreatePlaylist = () => {
       return;
     }
     setLoading(true);
-    dispatch(createPlaylist({ name, songs, description, coverImage })).then(()=>{
-      setCoverImage(null);
-      setCoverPreview(null);
-      setLoading(false);
-    });
-
+    dispatch(createPlaylist({ name, songs, description, coverImage })).then(
+      () => {
+        setCoverImage(null);
+        setCoverPreview(null);
+        setLoading(false);
+      }
+    );
   };
 
   return (
@@ -100,7 +107,11 @@ const CreatePlaylist = () => {
               onMouseLeave={() => setIsHovered(false)}
             >
               {coverPreview ? (
-                <img src={coverPreview} alt="Cover Preview" className="w-full h-full object-cover" />
+                <img
+                  src={coverPreview}
+                  alt="Cover Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full bg-gray-700 flex justify-center items-center">
                   <span className="text-gray-400">Upload Image</span>
@@ -110,13 +121,25 @@ const CreatePlaylist = () => {
               {isHovered && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                   {coverPreview ? (
-                    <button onClick={handleRemoveImage} className="text-red-500 hover:text-red-600">
+                    <button
+                      onClick={handleRemoveImage}
+                      className="text-red-500 hover:text-red-600"
+                    >
                       <FaTrashAlt size={24} />
                     </button>
                   ) : (
-                    <label htmlFor="imageInput" className="text-white hover:text-gray-300">
+                    <label
+                      htmlFor="imageInput"
+                      className="text-white hover:text-gray-300"
+                    >
                       <FaEdit size={24} />
-                      <input id="imageInput" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                      <input
+                        id="imageInput"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
                     </label>
                   )}
                 </div>
@@ -159,17 +182,32 @@ const CreatePlaylist = () => {
                 <div
                   key={song._id}
                   className={`flex items-center justify-between p-2 cursor-pointer ${
-                    songs.some((s) => s._id === song._id) ? "bg-cyan-500" : "bg-gray-700"
+                    songs.some((s) => s._id === song._id)
+                      ? "bg-cyan-500"
+                      : "bg-gray-700"
                   } hover:bg-cyan-400 transition-all rounded-md mb-1`}
                   onClick={() => handleSongSelection(song)}
                 >
                   <div className="flex justify-between items-center w-full">
                     <div className="flex justify-center items-center space-x-1">
-                      <img className="w-10 h-10 rounded-xl" src={song.coverImage} alt={song.title} />
+                      <img
+                        className="w-10 h-10 rounded-xl"
+                        src={song.coverImage}
+                        alt={song.title}
+                      />
                       <span>{song.title}</span>
                     </div>
                     <div>
-                      <span>{song.artist}</span>
+                      <p className="text-[#dedede] text-[12px]">
+                        {Array.isArray(song?.artist)
+                          ? song.artist.map((artist, index) => (
+                              <span key={index}>
+                                {artist.fullName}
+                                {index !== song.artist.length - 1 && ", "}
+                              </span>
+                            ))
+                          : song?.artist?.fullName || "Unknown Artist"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -181,7 +219,9 @@ const CreatePlaylist = () => {
           <button
             onClick={handleCreatePlaylist}
             className={`w-full mt-4 p-2 rounded-md transition-all ${
-              isFormValid ? "bg-green-500 hover:bg-green-600" : "bg-gray-600 cursor-not-allowed"
+              isFormValid
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-gray-600 cursor-not-allowed"
             }`}
             disabled={!isFormValid}
           >

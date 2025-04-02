@@ -41,30 +41,49 @@ const musicSlice = createSlice({
     // Adding a song to the queue
     addSongToQueue: (state, action) => {
       const song = action.payload;
+      
 
-      // Set the artist to fullName if available, else use artist
-      const artist = song.artist?.fullName ? song.artist.fullName : song.artist;
+      // Handle artist field properly for both array and object cases
+      let artist = [];
+
+      if (Array.isArray(song.artist)) {
+        // If artist is an array, store an array of artist objects
+        artist = song.artist.map((artistObj) => ({
+          
+          _id: artistObj._id,
+          fullName: artistObj.fullName || "Unknown Artist",
+        }));
+    
+      } else if (song.artist?.fullName ||song.artist) {
+        // If artist is a single object, store it as an array with one object
+        artist = [{ _id: song.artist._id, fullName: song.artist.fullName ||song.artist}];
+      } else {
+        // Default case when no artist info is available
+        artist = [{ _id: "unknown", fullName: "Unknown Artist" }];
+      }
 
       // Store necessary fields, including low and high audioUrls and artist
       const sanitizedSong = {
         _id: song._id,
         title: song.title,
         coverImage: song.coverImage,
-        artist: artist,
+        artist: artist, // Now an array of objects
         duration: song.duration,
         audioUrls: {
           low: song.audioUrls.low,
           high: song.audioUrls.high,
         },
       };
+
       const songIndex = state.playlist.findIndex(
         (item) => item._id === sanitizedSong._id
       );
+
       if (songIndex === -1) {
         // Song is not in queue, add it
         state.playlist.push(sanitizedSong);
         state.currentSong = sanitizedSong;
-        state.currentSongIndex = state.playlist.length - 1; //set to the last index
+        state.currentSongIndex = state.playlist.length - 1; // Set to the last index
       } else {
         // Song is already in queue, set it as current
         state.currentSong = state.playlist[songIndex];
@@ -76,19 +95,31 @@ const musicSlice = createSlice({
 
     addPlaylistToQueue: (state, action) => {
       const songs = action.payload;
-      console.log("ation payload ",action.payload)
+      console.log("Action Payload: ", action.payload);
 
       // Sanitize the songs to extract necessary fields, including low and high audioUrls and artist
       const sanitizedSongs = songs.map((song) => {
-        const artist = song.artist?.fullName
-          ? song.artist.fullName
-          : song.artist;
+        let artist = [];
+
+        if (Array.isArray(song.artist)) {
+          // If artist is an array, store an array of artist objects
+          artist = song.artist.map((artistObj) => ({
+            _id: artistObj._id,
+            fullName: artistObj.fullName || "Unknown Artist",
+          }));
+        } else if (song.artist?.fullName||song.artist) {
+          // If artist is a single object, store it as an array with one object
+          artist = [{ _id: song.artist._id, fullName: song.artist.fullName ||song.artist}];
+        } else {
+          // Default case when no artist info is available
+          artist = [{ _id: "unknown", fullName: "Unknown Artist" }];
+        }
 
         return {
           _id: song._id,
           title: song.title,
           coverImage: song.coverImage,
-          artist: artist,
+          artist: artist, // Updated artist field (now an array of objects)
           duration: song.duration,
           audioUrls: {
             low: song.audioUrls.low,
@@ -105,6 +136,7 @@ const musicSlice = createSlice({
       state.playlist = [...state.playlist, ...sanitizedSongs];
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
+
     addRecentlyPlayed: (state, action) => {
       const song = action.payload;
 
@@ -163,7 +195,7 @@ export const addSongToHistory = (song) => async (dispatch) => {
   try {
     const songId = song._id;
     await axios.post(
-      `${apiUrl}api/v1/user/addHistory`, 
+      `${apiUrl}api/v1/user/addHistory`,
       { songId },
       { withCredentials: true }
     );
