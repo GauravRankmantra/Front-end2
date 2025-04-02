@@ -76,7 +76,7 @@ const GenreInfo = () => {
                 <div
                   key={song._id}
                   className="relative group cursor-pointer"
-                  // onClick={() => handleSongClick(song)}
+                  onClick={() => handleSongClick(song)}
 
                 >
                  

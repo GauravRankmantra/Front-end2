@@ -1,5 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import ShareModal from "../modals/ShareModal";
+const apiUrl = import.meta.env.VITE_API_URL;
 import "../index.css";
 import {
   FaPlay,
@@ -17,10 +22,12 @@ import playIcon from "../assets/svg/play_icon.svg";
 import { GoPlay } from "react-icons/go";
 import { IoPauseCircleOutline } from "react-icons/io5";
 import { FaChevronUp } from "react-icons/fa6";
+import PlaylistSelectionModal from "../modals/PlaylistSelectionModal";
 import { FaChevronCircleUp } from "react-icons/fa";
 import { IoShuffleOutline } from "react-icons/io5";
 import { IoIosRepeat } from "react-icons/io";
 import formateDuration from "../utils/formatDuration";
+import addLike from "../utils/addLike";
 
 import {
   playNextSong,
@@ -34,6 +41,225 @@ import {
 
 const MusicSidebar = ({ song }) => {
   const [expand, setExpand] = useState(false);
+  const dropdownRef = useRef(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [shareData, setShareData] = useState(null);
+  const [userPlaylists, setUserPlaylists] = useState([]);
+  const [pModelOpen, setPModelOpen] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState("");
+  const songId = song._id;
+
+  const handleShare = ({ songId, albumId }) => {
+    // Define the base URL dynamically
+    const publicBaseUrl = `https://odgmusic.netlify.app`;
+    const shareUrl = albumId
+      ? `${publicBaseUrl}/album/${albumId}`
+      : `${publicBaseUrl}/song/${songId}`;
+
+    // Message to be shared
+    const message = encodeURIComponent(
+      `Check out this amazing music: ${shareUrl}`
+    );
+
+    // Social media sharing links
+    const socialMediaLinks = {
+      whatsapp: `https://wa.me/?text=${message}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
+      x: `https://twitter.com/intent/tweet?url=${shareUrl}&text=${message}`,
+      instagram: "https://www.instagram.com/", // Instagram does not support direct link sharing
+    };
+
+    // Open the Share Modal
+    openShareModal({ shareUrl, socialMediaLinks });
+  };
+
+  const openShareModal = ({ shareUrl, socialMediaLinks }) => {
+    setShareData({ shareUrl, socialMediaLinks });
+    setModalOpen(true);
+  };
+
+  const handleAddToFav = () => {
+    addLike({ songId })
+      .then((response) => {
+        // Handle the successful response
+        console.log("Song added to favorites:", response);
+        toast.success("Added to favorites!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch((error) => {
+        // Handle errors
+
+        toast.success(error?.response?.data?.message, {
+          // Show error message
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
+  const handleAddToPlaylist = async () => {
+    try {
+      // 1. Fetch user's playlists
+      const playlistsRes = await axios.get(
+        `${apiUrl}api/v1/playlist/userPlaylists`,
+        { withCredentials: true }
+      );
+      const playlists = playlistsRes?.data?.data;
+
+      if (!playlists || playlists.length === 0) {
+        toast.error("You don't have any playlists yet.", {
+          position: "top-right",
+        });
+        return;
+      }
+      setUserPlaylists(playlists);
+      setPModelOpen(true); // Open the playlist selection modal
+    } catch (error) {
+      console.error("Error fetching playlists:", error);
+      toast.error(error.response.data.message, {
+        position: "top-right",
+      });
+    }
+  };
+
+  const onPlaylistSelected = async (selectedPlaylistObj) => {
+    setSelectedPlaylist(selectedPlaylistObj._id);
+    setPModelOpen(false);
+
+    let res; // Declare res outside try block to avoid reference errors
+
+    try {
+      res = await axios.post(`${apiUrl}api/v1/playlist/singlSong`, {
+        playlistId: selectedPlaylistObj._id,
+        songId: song._id,
+      });
+
+      if (res.status === 200) {
+        toast.success("Song added to playlist!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (addSongError) {
+      console.error("Error adding song", addSongError);
+
+      if (addSongError.response) {
+        // Handle specific errors from the API response
+        if (addSongError.response.status === 400) {
+          toast.error(addSongError.response.data.message || "Bad request", {
+            position: "top-right",
+          });
+        } else if (addSongError.response.status === 500) {
+          toast.error("Server error, please try again later.", {
+            position: "top-right",
+          });
+        } else {
+          toast.error(
+            `Error: ${
+              addSongError.response.data.message || "Something went wrong"
+            }`,
+            { position: "top-right" }
+          );
+        }
+      } else {
+        // Handle network errors
+        toast.error("Network error, please check your connection.", {
+          position: "top-right",
+        });
+      }
+    }
+  };
+
+  const handelDownload = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}api/v1/song/isPurchased/${song._id}`,
+        { withCredentials: true }
+      );
+
+      if (response.data.isPurchased) {
+        toast.success("Download started", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        // Fetch the blob data
+        const audioResponse = await axios.get(song.audioUrls.high, {
+          responseType: "blob", // Important: Get the response as a blob
+        });
+
+        const audioBlob = audioResponse.data;
+
+        // Create a download link for the blob
+        const downloadLink = document.createElement("a");
+        const url = window.URL.createObjectURL(audioBlob); // Create a blob URL
+        downloadLink.href = url;
+        downloadLink.download = `${song.title}.mp3`; // Set the desired filename
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url); // Release the blob URL
+        document.body.removeChild(downloadLink);
+      } else if (response.data.isPurchased === false) {
+        toast.error("Download not allowed. Purchase the song first.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message === "Unauthorized: You Need to Login"
+      ) {
+        toast.error("Please login to download the song.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        console.error("Error checking purchase status", error);
+        toast.error("An error occurred while checking purchase status.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    }
+  };
+  const handleDownloadClick = async () => {
+    await handelDownload();
+  };
 
   return (
     <div
@@ -64,7 +290,7 @@ const MusicSidebar = ({ song }) => {
               {Array.isArray(song.artist) ? (
                 song.artist.map((artistObj, index) => (
                   <span
-                    key={artistObj._id}
+                    key={index}
                     onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
                     className="cursor-pointer hover:underline"
                   >
@@ -87,22 +313,31 @@ const MusicSidebar = ({ song }) => {
             expand ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
         >
-          <button className="flex items-center space-x-2 text-sm">
+          <button
+            onClick={handleDownloadClick}
+            className="flex items-center space-x-2 text-sm"
+          >
             <IoCloudDownloadOutline className="w-5 h-5" />
             <span className="text-lg">Download</span>
           </button>
 
-          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <button
+            onClick={handleAddToFav}
+            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+          >
             <CiHeart className="w-5 h-5" />
             <span className="text-lg">Favorite</span>
           </button>
 
-          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <button
+            onClick={handleAddToPlaylist}
+            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+          >
             <MdOutlinePlaylistAdd className="w-5 h-5" />
             <span className="text-lg">Add to Playlist</span>
           </button>
 
-          <button className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <button  onClick={() => handleShare({ songId: song._id })} className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
             <IoCloudDownloadOutline className="w-5 h-5" />
             <span className="text-lg">Share</span>
           </button>
@@ -122,6 +357,20 @@ const MusicSidebar = ({ song }) => {
           )}
         </button>
       </div>
+      {isModalOpen && shareData && (
+        <ShareModal
+          shareUrl={shareData.shareUrl}
+          socialMediaLinks={shareData.socialMediaLinks}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
+      {pModelOpen && (
+        <PlaylistSelectionModal
+          playlists={userPlaylists}
+          onSelect={onPlaylistSelected}
+          onClose={() => setPModelOpen(false)}
+        />
+      )}
     </div>
   );
 };
@@ -420,7 +669,7 @@ const MusicPlayer = () => {
                     {Array.isArray(song.artist) ? (
                       song.artist.map((artistObj, index) => (
                         <span
-                          key={artistObj._id}
+                          key={index}
                           onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
                           className="cursor-pointer hover:underline"
                         >

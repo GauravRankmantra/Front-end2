@@ -18,8 +18,8 @@ const PlaylistSelectionModal = ({ playlists, onSelect, onClose }) => {
                 className="w-12 h-12 rounded mr-2 object-cover"
               />
               <div>
-                <div className="font-semibold">{playlist.name}</div>
-                <div className="text-sm text-gray-500">
+                <div className="font-semibold text-black text-start">{playlist.name}</div>
+                <div className="text-sm text-gray-500 text-start">
                   {playlist.totalSongs} Songs
                 </div>
               </div>

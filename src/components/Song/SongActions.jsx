@@ -9,9 +9,11 @@ import {
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ShareModal from "../ShareModal";
+import ShareModal from "../../modals/ShareModal";
 import addLike from "../../utils/addLike";
-import PlaylistSelectionModal from "../PlaylistSelectionModal";
+import { addSongToQueue, setIsPlaying } from "../../features/musicSlice";
+import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
+import { useDispatch } from "react-redux";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
@@ -22,6 +24,7 @@ const SongActions = ({ onClose, song }) => {
   const [pModelOpen, setPModelOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const songId = song._id;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,15 +42,15 @@ const SongActions = ({ onClose, song }) => {
   const onPlaylistSelected = async (selectedPlaylistObj) => {
     setSelectedPlaylist(selectedPlaylistObj._id);
     setPModelOpen(false);
-  
+
     let res; // Declare res outside try block to avoid reference errors
-  
+
     try {
       res = await axios.post(`${apiUrl}api/v1/playlist/singlSong`, {
         playlistId: selectedPlaylistObj._id,
         songId: song._id,
       });
-  
+
       if (res.status === 200) {
         toast.success("Song added to playlist!", {
           position: "top-right",
@@ -56,7 +59,7 @@ const SongActions = ({ onClose, song }) => {
       }
     } catch (addSongError) {
       console.error("Error adding song", addSongError);
-  
+
       if (addSongError.response) {
         // Handle specific errors from the API response
         if (addSongError.response.status === 400) {
@@ -69,7 +72,9 @@ const SongActions = ({ onClose, song }) => {
           });
         } else {
           toast.error(
-            `Error: ${addSongError.response.data.message || "Something went wrong"}`,
+            `Error: ${
+              addSongError.response.data.message || "Something went wrong"
+            }`,
             { position: "top-right" }
           );
         }
@@ -80,10 +85,9 @@ const SongActions = ({ onClose, song }) => {
         });
       }
     }
-  
-    onClose(); 
+
+    onClose();
   };
-  
 
   const handelDownload = async () => {
     try {
@@ -200,16 +204,30 @@ const SongActions = ({ onClose, song }) => {
   };
 
   const handleAddToQueue = () => {
-    console.log("Added to queue");
-    toast.success("Added to queue!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    try {
+      dispatch(addSongToQueue(song));
+      dispatch(setIsPlaying(true));
+      toast.success("Added to queue!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error(error?.response?.data?.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     onClose();
   };
 
@@ -232,7 +250,7 @@ const SongActions = ({ onClose, song }) => {
       setPModelOpen(true); // Open the playlist selection modal
     } catch (error) {
       console.error("Error fetching playlists:", error);
-      toast.error("Failed to fetch playlists. Please try again.", {
+      toast.error(error.response.data.message, {
         position: "top-right",
       });
     }
@@ -304,7 +322,7 @@ const SongActions = ({ onClose, song }) => {
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-            onClick={() => handleShare({ albumId: "67d01b3117cdbb2f4ea0c29b" })}
+            onClick={() => handleShare({ songId: song._id })}
           >
             <AiOutlineShareAlt className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
             Share

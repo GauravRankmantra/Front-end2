@@ -9,10 +9,10 @@ import {
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ShareModal from "../ShareModal";
+import ShareModal from "../../modals/ShareModal";
 import { addPlaylistToQueue, setIsPlaying } from "../../features/musicSlice";
 import { useDispatch } from "react-redux";
-import PlaylistSelectionModal from "../../components/PlaylistSelectionModal";
+import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumActions = ({ onClose, album }) => {
@@ -124,7 +124,7 @@ const AlbumActions = ({ onClose, album }) => {
 
       setSong(songs);
       dispatch(addPlaylistToQueue(songs));
-      dispatch(setIsPlaying(false));
+      dispatch(setIsPlaying(true));
 
       toast.success("Added all songs to queue!", {
         position: "top-right",
