@@ -99,7 +99,7 @@ const Navbar = () => {
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">
             <div className="relative text-white capitalize cursor-pointer group">
-              <div id="google_translate_element" className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-50"></div>
+              <div id="google_translate_element" className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-10"></div>
             </div>
 
             {user ? (
