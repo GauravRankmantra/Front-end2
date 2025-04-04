@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
+import { addSongToQueue, setIsPlaying,addSongToQueueWithAuth } from "../features/musicSlice";
 import { useDispatch } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import formatDuration from "../utils/formatDuration";
@@ -36,7 +36,7 @@ const WeeklyTop15 = ({ link, heading }) => {
 
   const handleSongClick = (song) => {
     setCurrentSong(song._id);
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
     dispatch(setIsPlaying(true));
   };
 

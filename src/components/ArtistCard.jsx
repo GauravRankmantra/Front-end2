@@ -114,11 +114,11 @@ const ArtistCard = ({ heading, link }) => {
                   </div>
 
                   <div className="text-left mt-4">
-                    <h3 className="text-[14px] mb-[5px]">
+                    <h1 className="text-[14px] mb-[5px]">
                       <a href="#" className="text-white hover:text-[#3bc8e7]">
                         {artist.fullName}
                       </a>
-                    </h3>
+                    </h1>
                     <p className="text-[#dedede] text-[12px]">
                       {artist.bio||"No bio providede by the artist "}
                     </p>

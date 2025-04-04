@@ -5,6 +5,7 @@ import {
   addSongToQueue,
   setIsPlaying,
   addSongToHistory,
+  addSongToQueueWithAuth,
 } from "../../features/musicSlice";
 import { useDispatch } from "react-redux";
 
@@ -15,13 +16,12 @@ const SongInfo = () => {
   const [error, setError] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
-    const handleSongClick = () => {
-    
-      dispatch(addSongToHistory(song));
-      dispatch(addSongToQueue(song));
-  
-      dispatch(setIsPlaying(true));
-    };
+  const handleSongClick = () => {
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueueWithAuth(song));
+
+    dispatch(setIsPlaying(true));
+  };
 
   useEffect(() => {
     const fetchSong = async () => {
@@ -73,23 +73,26 @@ const SongInfo = () => {
   return (
     <div className=" bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-            {song.title}
-          </h1>
-        </div>
+        <h1 className="text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
+          {song.title}
+        </h1>
+      </div>
       <div className="max-w-3xl flex justify-center shadow-2xl  items-center border border-gray-700 rounded-xl mx-auto">
-        
-
-        <div className="relative rounded-lg  overflow-hidden shadow-lg"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}>
+        <div
+          className="relative rounded-lg  overflow-hidden shadow-lg"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <img
             className="w-36  object-cover"
             src={song.coverImage || "https://dummyimage.com/600x400"}
             alt={song.title}
           />
           {isHovered && (
-            <div onClick={handleSongClick} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div
+              onClick={handleSongClick}
+              className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-12 w-12 text-white cursor-pointer"
@@ -100,16 +103,13 @@ const SongInfo = () => {
               </svg>
             </div>
           )}
-          <div>
-            
-          </div>
+          <div></div>
         </div>
 
         <div className="  border-l border-gray-600 mx-1">
           <div className=" rounded-lg p-2 shadow-md">
-           
             <p className="text-sm whitespace-nowrap">
-            <span className="mr-1 text-lg font-semibold mb-1">Artist:</span>
+              <span className="mr-1 text-lg font-semibold mb-1">Artist:</span>
               {Array.isArray(song.artist) ? (
                 song.artist.map((artistObj, index) => (
                   <span
@@ -123,7 +123,7 @@ const SongInfo = () => {
                 ))
               ) : (
                 <span className="cursor-pointer text-sm hover:underline">
-                  {song.artist?.fullName || song.artist || "Unknown Artist"}
+                  {song?.artist?.fullName || song?.artist || "Unknown Artist"}
                 </span>
               )}
             </p>
@@ -132,14 +132,18 @@ const SongInfo = () => {
           <div className=" rounded-lg p-2 shadow-md">
             <p className="text-lg font-semibold mb-1">
               Album:{" "}
-              <span className="cursor-pointer text-sm hover:underline">{song?.album?.title || "No album"}</span>
+              <span className="cursor-pointer text-sm hover:underline">
+                {song?.album?.title || "No album"}
+              </span>
             </p>
           </div>
 
           <div className="rounded-lg p-2 shadow-md">
             <p className="text-lg font-semibold mb-1">
               Genre:{" "}
-              <span className="cursor-pointer text-sm hover:underline">{song.genre.name || "Unknown"}</span>
+              <span className="cursor-pointer text-sm hover:underline">
+                {song?.genre?.name || "Unknown"}
+              </span>
             </p>
           </div>
 

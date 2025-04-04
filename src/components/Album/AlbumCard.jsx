@@ -50,11 +50,10 @@ const Recently = ({ heading, link }) => {
   const handleMenuToggle = (album) => {
     if (currentAlbum && currentAlbum._id === album._id) {
       setCurrentAlbum(null);
-      console.log("set menu = null");
+
     } else {
       setCurrentAlbum(album);
-      console.log("set menu = album");
-      console.log(album)
+
     }
   };
   return (
@@ -143,11 +142,11 @@ const Recently = ({ heading, link }) => {
                   </div>
 
                   <div className="text-left mt-4">
-                    <h3 className="text-[14px] mb-[5px]">
+                    <h1 className="text-[14px] mb-[5px]">
                       <a href="#" className="text-white hover:text-[#3bc8e7]">
                         {album.title}
                       </a>
-                    </h3>
+                    </h1>
                     <p className="text-[#dedede] text-[12px]">
                       {album?.artist?.fullName}
                     </p>

@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
+import { clearQueue } from "../features/musicSlice";
 import axios from "axios";
 import SongCard from "../components/Song/SongCard";
 import PlayListContainer from "../components/playlist/PlayListContainer";
@@ -39,7 +40,7 @@ const Profile = () => {
           { withCredentials: true }
         );
         if (response?.data && response?.data?.data) {
-          console.log(response.data.data);
+        
           setPlaylist(response.data.data);
         } else {
           setError("No songs available");
@@ -61,15 +62,17 @@ const Profile = () => {
     );
     setTimeout(() => {
       localStorage.removeItem("user");
+      localStorage.removeItem("musicPlayerData");
+      dispatch(clearQueue())
       dispatch(logoutUser());
     }, 1000);
 
     navigate("/");
   };
   const handleSubmit = (e) => {
-    console.log("onSubmit clickred");
+
     e.preventDefault();
-    console.log("pass c before sending ", oldPassword, newPassword);
+   
     handelChangePass(newPassword, oldPassword);
   };
 
@@ -114,17 +117,17 @@ const Profile = () => {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-        setUpdatedInfo((prev) => ({ ...prev, coverImage: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImage(reader.result);
+  //       setUpdatedInfo((prev) => ({ ...prev, coverImage: reader.result }));
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
   const toggleViewAll = () => {
     setViewAll(!viewAll); // Toggle the view state
   };
@@ -165,7 +168,7 @@ const Profile = () => {
                       type="file"
                       id="image"
                       className="absolute inset-0 opacity-0 cursor-pointer"
-                      onChange={handleFileChange}
+                      // onChange={handleFileChange}
                     />
                   </label>
                 </div>

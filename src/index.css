@@ -128,3 +128,47 @@
     transform: translate3d(-50%, -50%, 0); /* Centers the dot properly */
   }
   
+
+  /* Hide Google Translate top bar */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}
+
+/* Hide default Google Translate text */
+.goog-te-gadget {
+  font-family: inherit;
+  font-size: 0px; /* Hide unwanted text */
+}
+
+/* Style the dropdown button */
+.goog-te-gadget .goog-te-combo {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.goog-te-gadget .goog-te-combo:hover {
+  background: #333;
+}
+
+.goog-te-gadget .goog-te-combo:focus {
+  outline: none;
+}
+/* Hide Google Translate logo */
+.goog-te-gadget img {
+  display: none !important;
+}
+
+/* Hide the Google Translate "powered by" text */
+.goog-te-gadget span {
+  display: none !important;
+}

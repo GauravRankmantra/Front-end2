@@ -27,6 +27,7 @@ import SearchResults from "./components/SearchResults";
 import CreatePlaylist from "./components/playlist/CreatePlaylist";
 import History from "./components/History";
 import Favourites from "./components/Favourites";
+import Purchase from "./components/Purchase";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -51,6 +52,8 @@ const App = () => {
           <Route path="/genre/:name" element={<GenreInfo />} />
           <Route path="/top_track" element={<TopTrack />} />
           <Route path="/history" element={<History />} />
+          <Route path="/purchased" element={<Purchase />} />
+
           <Route path="/favourites" element={<Favourites/>}/>
           <Route path="/create-playlist" element={<CreatePlaylist />} />
           <Route path="/downloads" element={<Download />} />

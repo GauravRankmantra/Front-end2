@@ -11,7 +11,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../../modals/ShareModal";
 import addLike from "../../utils/addLike";
-import { addSongToQueue, setIsPlaying } from "../../features/musicSlice";
+import { addSongToQueue, setIsPlaying,addSongToQueueWithAuth } from "../../features/musicSlice";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 import { useDispatch } from "react-redux";
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -174,8 +174,7 @@ const SongActions = ({ onClose, song }) => {
   const handleAddToFav = (songId) => {
     addLike({ songId })
       .then((response) => {
-        // Handle the successful response
-        console.log("Song added to favorites:", response);
+
         toast.success("Added to favorites!", {
           position: "top-right",
           autoClose: 3000,
@@ -205,8 +204,8 @@ const SongActions = ({ onClose, song }) => {
 
   const handleAddToQueue = () => {
     try {
-      dispatch(addSongToQueue(song));
-      dispatch(setIsPlaying(true));
+      dispatch(addSongToQueueWithAuth(song));
+      dispatch(setIsPlaying(false));
       toast.success("Added to queue!", {
         position: "top-right",
         autoClose: 3000,

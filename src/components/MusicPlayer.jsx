@@ -34,13 +34,17 @@ import {
   playPrevSong,
   setIsPlaying,
   addSongToHistory,
+  addSongToQueueWithAuth,
   addSongToQueue,
   seek,
   clearQueue,
+  toggleRepeat,
+  shufflePlaylist,
 } from "../features/musicSlice";
 
 const MusicSidebar = ({ song }) => {
   const [expand, setExpand] = useState(false);
+ 
   const dropdownRef = useRef(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [shareData, setShareData] = useState(null);
@@ -48,6 +52,7 @@ const MusicSidebar = ({ song }) => {
   const [pModelOpen, setPModelOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const songId = song._id;
+
 
   const handleShare = ({ songId, albumId }) => {
     // Define the base URL dynamically
@@ -82,7 +87,7 @@ const MusicSidebar = ({ song }) => {
     addLike({ songId })
       .then((response) => {
         // Handle the successful response
-        console.log("Song added to favorites:", response);
+       
         toast.success("Added to favorites!", {
           position: "top-right",
           autoClose: 3000,
@@ -337,7 +342,10 @@ const MusicSidebar = ({ song }) => {
             <span className="text-lg">Add to Playlist</span>
           </button>
 
-          <button  onClick={() => handleShare({ songId: song._id })} className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4">
+          <button
+            onClick={() => handleShare({ songId: song._id })}
+            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+          >
             <IoCloudDownloadOutline className="w-5 h-5" />
             <span className="text-lg">Share</span>
           </button>
@@ -391,6 +399,29 @@ const MusicPlayer = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [openQuality, setOpenQuality] = useState(false);
+  const [quality, setQuality] = useState("high");
+
+
+  const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
+  const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
+
+
+  const handelQualityClick = (type) => {
+    setQuality(type);
+    if (audioRef.current && currentSong) {
+      const newSrc = type === "low" ? currentSong.audioUrls.low : currentSong.audioUrls.high;
+      if (audioRef.current.src !== newSrc) {
+        
+        audioRef.current.src = newSrc;
+ 
+        audioRef.current.load();
+        if (isPlaying) {
+          audioRef.current.play().catch((err) => console.error("Play error:", err));
+        }
+      }
+    }
+  };
 
   const currentSong = useSelector(
     (state) => state.musicPlayer?.currentSong || null
@@ -404,7 +435,8 @@ const MusicPlayer = () => {
   );
   const handelQueueSongClick = (song) => {
     dispatch(addSongToHistory(song));
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
+
 
     dispatch(setIsPlaying(true));
   };
@@ -427,8 +459,8 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     if (currentSong) {
-      if (audioRef.current.src !== currentSong.audioUrls.high) {
-        audioRef.current.src = currentSong.audioUrls.high;
+      if (audioRef.current.src !== currentSong.audioUrls.low) {
+        audioRef.current.src = currentSong.audioUrls.low;
         const loadAndPlay = async () => {
           try {
             await audioRef.current.load();
@@ -447,6 +479,7 @@ const MusicPlayer = () => {
       }
     }
   }, [currentSong, isPlaying]);
+
 
   const handleTimeUpdate = () => {
     if (audioRef.current && !isDragging) {
@@ -508,9 +541,9 @@ const MusicPlayer = () => {
   if (!currentSong) {
     return (
       <div className="fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-between items-center text-white z-50 text-center">
-        <p className="text-white text-center font-bold">
+        {/* <p className="text-white text-center font-bold">
           No song is currently playing
-        </p>
+        </p> */}
       </div>
     );
   }
@@ -583,7 +616,7 @@ const MusicPlayer = () => {
             onClick={toggleSlider}
           />
 
-          <div className="hidden md:flex">
+          <div className="absolute right-0 hidden md:flex">
             <input
               type="range"
               min="0"
@@ -601,14 +634,38 @@ const MusicPlayer = () => {
           <div className="rounded-full p-1 border">
             <IoIosRepeat className="w-5 h-5" />
           </div>
-          <div>
+          <div className="relative">
             <button
               className="text-gray-100 space-x-1 border flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
-              onClick={togglePlaylist}
+              onClick={() => setOpenQuality(!openQuality)}
             >
               <FaChevronCircleUp className="w-3 h-3" />
               <h1 className="text-xs md:text-sm">Quality</h1>{" "}
             </button>
+            {openQuality && (
+              <div className="absolute bottom-7 mt-2 bg-gray-100 rounded-md shadow-lg p-2 w-32">
+                <div>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 hover:bg-gray-400 rounded-md"
+                    onClick={() => {
+                      handelQualityClick("low");
+                      setOpenQuality(false);
+                    }}
+                  >
+                    Low
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-900 hover:bg-gray-400 rounded-md"
+                    onClick={() => {
+                      handelQualityClick("high");
+                      setOpenQuality(false);
+                    }}
+                  >
+                    High
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <div>
             <button

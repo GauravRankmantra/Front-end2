@@ -6,6 +6,7 @@ import {
   addSongToQueue,
   setIsPlaying,
   addSongToHistory,
+  addSongToQueueWithAuth
 } from "../features/musicSlice";
 
 const SearchResultsDisplay = ({ results, setInputValue }) => {
@@ -23,7 +24,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
     setInputValue("");
     setShow(false);
     dispatch(addSongToHistory(song));
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
     dispatch(setIsPlaying(true));
   };
   const handleartistClick = (id) => {

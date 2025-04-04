@@ -4,6 +4,7 @@ import {
   addSongToQueue,
   setIsPlaying,
   addSongToHistory,
+  addSongToQueueWithAuth
 } from "../../features/musicSlice";
 import { useDispatch } from "react-redux";
 import SongAction from "./SongActions";
@@ -27,7 +28,7 @@ const Recently = ({ heading, link, showGrid }) => {
       try {
         const response = await axios.get(link, { withCredentials: true });
         if (response.data || response.data.data) {
-          console.log(response.data.data);
+
           setSongs(response.data.data);
         } else {
           setError("No songs available");
@@ -50,8 +51,9 @@ const Recently = ({ heading, link, showGrid }) => {
   };
 
   const handleSongClick = (song) => {
+
     dispatch(addSongToHistory(song));
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
 
     dispatch(setIsPlaying(true));
   };
@@ -143,11 +145,11 @@ const Recently = ({ heading, link, showGrid }) => {
                     </div>
 
                     <div className="text-left mt-4">
-                      <h3 className="text-[14px] mb-[5px]">
+                      <h1 className="text-[14px] mb-[5px]">
                         <a href="#" className="text-white hover:text-[#3bc8e7]">
                           {song.title}
                         </a>
-                      </h3>
+                      </h1>
                       <p className="text-[#dedede] text-[12px]">
                         {Array.isArray(song?.artist)
                           ? song.artist.map((artist, index) => (

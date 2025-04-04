@@ -1,7 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
+import { toast } from "react-toastify";
 
+
+
+
+const isAuthenticated = async () => {
+  try {
+    const response = await axios.get(`${apiUrl}api/v1/auth`, {
+      withCredentials: true,
+    });
+    return response.data.user; // API should return { isValid: true/false }
+  } catch (error) {
+    return false; // If API call fails, assume the user is not authenticated
+  }
+};
 // Helper function to get initial state from localStorage
 const getInitialMusicState = () => {
   try {
@@ -30,6 +44,38 @@ const getInitialMusicState = () => {
     };
   }
 };
+export const addSongToQueueWithAuth = (song) => async (dispatch) => {
+  if (await isAuthenticated()) {
+    dispatch(musicSlice.actions.addSongToQueue(song));
+  } else {
+    toast.error("Please login to add songs to queue.");
+  }
+};
+
+export const playNextSongWithAuth = () => async (dispatch) => {
+  if (await isAuthenticated()) {
+    dispatch(musicSlice.actions.playNextSong());
+  } else {
+    toast.error("Please login to play the next song.");
+  }
+};
+
+export const playPrevSongWithAuth = () => async (dispatch) => {
+  if (await isAuthenticated()) {
+    dispatch(musicSlice.actions.playPrevSong());
+  } else {
+    toast.error("Please login to play the previous song.");
+  }
+};
+
+export const addPlaylistToQueueWithAuth = (playlist) => async (dispatch) => {
+  if (await isAuthenticated()) {
+    dispatch(musicSlice.actions.addPlaylistToQueue(playlist));
+  } else {
+    toast.error("Please login to add a playlist to the queue.");
+  }
+};
+
 
 const initialState = getInitialMusicState();
 initialState.isPlaying = false;
@@ -93,9 +139,32 @@ const musicSlice = createSlice({
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
 
+
+    toggleRepeat: (state) => {
+      state.isRepeating = !state.isRepeating;
+      localStorage.setItem("musicPlayerData", JSON.stringify(state));
+    },
+    shufflePlaylist: (state) => {
+      if (state.playlist.length > 1) {
+        let shuffled = [...state.playlist];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        state.playlist = shuffled;
+        state.currentSongIndex = 0;
+        state.currentSong = state.playlist[0];
+      }
+      localStorage.setItem("musicPlayerData", JSON.stringify(state));
+    },
+    toggleAudioQuality: (state) => {
+      state.currentQuality = state.currentQuality === "low" ? "high" : "low";
+      localStorage.setItem("musicPlayerData", JSON.stringify(state));
+    },
+
     addPlaylistToQueue: (state, action) => {
       const songs = action.payload;
-      console.log("Action Payload: ", action.payload);
+     
 
       // Sanitize the songs to extract necessary fields, including low and high audioUrls and artist
       const sanitizedSongs = songs.map((song) => {
@@ -107,9 +176,14 @@ const musicSlice = createSlice({
             _id: artistObj._id,
             fullName: artistObj.fullName || "Unknown Artist",
           }));
-        } else if (song.artist?.fullName||song.artist) {
+        } else if (song.artist?.fullName || song.artist) {
           // If artist is a single object, store it as an array with one object
-          artist = [{ _id: song.artist._id, fullName: song.artist.fullName ||song.artist}];
+          artist = [
+            {
+              _id: song.artist._id,
+              fullName: song.artist.fullName || song.artist,
+            },
+          ];
         } else {
           // Default case when no artist info is available
           artist = [{ _id: "unknown", fullName: "Unknown Artist" }];
@@ -153,6 +227,8 @@ const musicSlice = createSlice({
         localStorage.setItem("musicPlayerData", JSON.stringify(state));
       }
     },
+    
+    
     playNextSong: (state) => {
       if (state.currentSongIndex < state.playlist.length - 1) {
         state.currentSongIndex += 1;
@@ -192,19 +268,32 @@ const musicSlice = createSlice({
 });
 
 export const addSongToHistory = (song) => async (dispatch) => {
+
+  if (await isAuthenticated()) {
+
   try {
+ 
     const songId = song._id;
-    await axios.post(
+    const res = await axios.post(
       `${apiUrl}api/v1/user/addHistory`,
       { songId },
       { withCredentials: true }
     );
 
-    dispatch(addRecentlyPlayed(song));
+    if (res.status === 200) {
+      dispatch(addRecentlyPlayed(song)); // Ensure this action is being called
+     
+    } else {
+      toast.error("Failed to add song to history.");
+    }
   } catch (error) {
     console.error("Failed to add song to history:", error);
+    toast.error("Error connecting to the server.");
   }
+}
 };
+
+
 
 export const {
   addSongToQueue,
@@ -215,6 +304,9 @@ export const {
   clearQueue,
   seek,
   addRecentlyPlayed,
+  toggleRepeat,
+  shufflePlaylist,
+  toggleAudioQuality,
 } = musicSlice.actions;
 
 export default musicSlice.reducer;

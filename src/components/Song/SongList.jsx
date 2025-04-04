@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { PlayCircle, Heart, MoreHorizontal } from "lucide-react"; // Lucide-react icons
 import { useDispatch } from "react-redux";
-import { addSongToQueue, setIsPlaying } from "../../features/musicSlice";
+import { addSongToQueue, setIsPlaying ,addSongToQueueWithAuth} from "../../features/musicSlice";
 import formatDuration from "../../utils/formatDuration";
 
 const SongList = ({ songs, artist }) => {
@@ -50,7 +50,7 @@ const SongList = ({ songs, artist }) => {
                 <div
                   onClick={() =>{
                
-                    dispatch(addSongToQueue(song), setIsPlaying(true))
+                     dispatch(addSongToQueueWithAuth(song), setIsPlaying(true))
                   }
                   }
                   className="flex items-center justify-center"

@@ -40,9 +40,9 @@ const NewReleases = () => {
           </a>
         </div>
         <div className="flex md:justify-center items-center space-x-8 overflow-x-scroll scrollbar-hide  no-scrollbar">
-          {songs.map((track) => (
+          {songs.map((track,index) => (
             <div
-              key={track._id}
+              key={index}
               className="group space-x-4 justify-center content-center items-center flex relative px-5  bg-gray-800 rounded-lg  hover:cursor-pointer transition duration-300 ease-in-out"
             >
               <div className="w-20 h-14 rounded bg-gray-900">

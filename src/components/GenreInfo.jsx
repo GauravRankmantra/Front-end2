@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToQueueWithAuth,
+  playNextSongWithAuth,
+} from "../features/musicSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -26,9 +31,7 @@ const GenreInfo = () => {
     const fetchSongs = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${apiUrl}api/v1/song/genre/${name}`
-        );
+        const response = await axios.get(`${apiUrl}api/v1/song/genre/${name}`);
         handleResponse(response);
       } catch (err) {
         setError("Failed to fetch songs");
@@ -49,7 +52,7 @@ const GenreInfo = () => {
   }
 
   const handleSongClick = (song) => {
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
     dispatch(setIsPlaying(true));
   };
 
@@ -72,14 +75,11 @@ const GenreInfo = () => {
 
           {!loading && !error && songs.length > 0
             ? songs.map((song) => (
-              
                 <div
                   key={song._id}
                   className="relative group cursor-pointer"
                   onClick={() => handleSongClick(song)}
-
                 >
-                 
                   <div className="relative overflow-hidden rounded-[10px] aspect-square">
                     <img
                       className="w-full h-full object-cover rounded-[10px] group-hover:opacity-50"
@@ -105,11 +105,11 @@ const GenreInfo = () => {
                   </div>
 
                   <div className="text-left mt-4">
-                    <h3 className="text-[14px] mb-[5px]">
+                    <h1 className="text-[14px] mb-[5px]">
                       <a href="#" className="text-white hover:text-[#3bc8e7]">
                         {song.title}
                       </a>
-                    </h3>
+                    </h1>
                     <p className="text-[#dedede] text-[12px]">
                       {song?.artist?.fullName}
                     </p>

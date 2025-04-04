@@ -20,6 +20,7 @@ const PlayListCard = ({ playlist, onClose, onPlaylistDeleted }) => {
   const handelPlaylistClick = (songs) => {
     try {
       dispatch(clearQueue());
+     
       dispatch(addPlaylistToQueue(songs));
       dispatch(setIsPlaying(true));
     } catch (error) {
@@ -91,11 +92,11 @@ const PlayListCard = ({ playlist, onClose, onPlaylistDeleted }) => {
         </div>
 
         <div className="text-left mt-4">
-          <h3 className="text-[14px] mb-[5px]">
+          <h1 className="text-[14px] mb-[5px]">
             <a href="#" className="text-white hover:text-[#3bc8e7]">
               {playlist?.name}
             </a>
-          </h3>
+          </h1>
           <p className="text-[#dedede] text-[12px]">
             {playlist?.totalSongs} Songs
           </p>

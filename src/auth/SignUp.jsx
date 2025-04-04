@@ -109,8 +109,8 @@ const SignUp = () => {
   };
 
   const verifyOtp = async () => {
-    console.log("user otp", userOtp);
-    console.log("otp", otp);
+
+
     if (userOtp === otp) {
       notify("OTP verified successfully!", "success");
 

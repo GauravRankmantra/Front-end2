@@ -8,7 +8,7 @@ import CommentSlider from "../CommentSlider";
 import AlbumCard from "./AlbumCard";
 import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
-import { addPlaylistToQueue, clearQueue ,setIsPlaying } from "../../features/musicSlice";
+import { addPlaylistToQueue, clearQueue ,setIsPlaying,addPlaylistToQueueWithAuth } from "../../features/musicSlice";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumInfo = () => {
@@ -41,7 +41,7 @@ const AlbumInfo = () => {
         );
         setAlbum(res?.data?.data);
         setCommentsData(res?.data?.data?.comments)
-        console.log("album info",res.data.data)
+      
         setSongs(res?.data?.data?.songs);
 
         setArtist(res?.data?.data?.artistDetails?.fullName);
@@ -58,7 +58,7 @@ const AlbumInfo = () => {
   const handelPlayAll = () => {
     dispatch(clearQueue());
    
-    dispatch(addPlaylistToQueue(songs));
+    dispatch(addPlaylistToQueueWithAuth(songs));
     dispatch(setIsPlaying(true))
     
     setDisableBtn(!disableBtn);

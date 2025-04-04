@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
+import { addSongToQueue, setIsPlaying ,addSongToQueueWithAuth} from "../features/musicSlice";
 import axios from "axios";
 import formatDuration from "../utils/formatDuration";
 import { AiFillPlayCircle } from "react-icons/ai";
@@ -53,7 +53,7 @@ const SearchResults = () => {
 
   const handleSongClick = (song) => {
     setCurrentSong(song._id); // Mark the current song as playing
-    dispatch(addSongToQueue(song));
+    dispatch(addSongToQueueWithAuth(song));
     dispatch(setIsPlaying(true));
   };
 

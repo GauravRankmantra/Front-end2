@@ -13,7 +13,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const Home = () => {
   return (
     <>
-      <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth">
+      <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth ">
         <div className="">
           <div className="flex flex-wrap justify-center lg:justify-start">
             <div className="w-full sm:w-[90%] lg:w-[511px] mx-auto text-center lg:text-left">

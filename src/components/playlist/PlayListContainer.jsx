@@ -29,7 +29,7 @@ const PlayListContainer = ({ playlist: initialPlaylist }) => {
         `${apiUrl}api/v1/playlist/userPlaylists`,
         { withCredentials: true }
       );
-      console.log("Playlists fetched:", response.data.data); // Log the response
+      
       setPlaylists(response.data.data);
       setLoading(false);
     } catch (err) {
@@ -107,11 +107,11 @@ const PlayListContainer = ({ playlist: initialPlaylist }) => {
       </div>
 
       <div className="text-center mt-4">
-        <h3 className="text-[14px] mb-[5px]">
-          <h1 className="text-white hover:text-[#3bc8e7]">
+        <h1 className="text-[14px] mb-[5px]">
+          <p className="text-white hover:text-[#3bc8e7]">
             Add Playlist
-          </h1>
-        </h3>
+          </p>
+        </h1>
         <p className="text-[#dedede] text-[12px]">Click to create</p>
       </div>
     </div>

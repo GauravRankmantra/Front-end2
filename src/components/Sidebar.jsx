@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { NavLink } from "react-router-dom"; // Use NavLink instead of Link for active highlighting
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { NavLink } from "react-router-dom";
 import {
   FaAngleRight,
   FaHome,
@@ -18,9 +18,24 @@ import logo from "../assets/img/logo.jpeg";
 
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(false);
+  const sidebarRef = useRef(null);
 
   const toggleSidebar = useCallback(() => {
     setOpenMenu((prevOpenMenu) => !prevOpenMenu);
+  }, []);
+
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setOpenMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const navItems = [
@@ -39,47 +54,24 @@ const Sidebar = () => {
   ];
 
   const playlistNavItems = [
-    {
-      to: "/featured-playlist",
-      icon: <FaListAlt />,
-      text: "featured playlist",
-    },
+    { to: "/featured-playlist", icon: <FaListAlt />, text: "featured playlist" },
     { to: "/create-playlist", icon: <FaPlusCircle />, text: "create playlist" },
   ];
 
   return (
-    <div
-      className={`fixed top-5 bottom-0 z-50 bg-[#1b2039] ${
-        openMenu ? "w-[200px]" : "w-[80px]"
-      } transition-all duration-300 shadow-lg hidden lg:block`}
-    >
+    <div ref={sidebarRef} className={`fixed top-5 bottom-0 z-50 bg-[#1b2039] ${openMenu ? "w-[200px]" : "w-[80px]"} transition-all duration-300 shadow-lg hidden lg:block`}>
       <div
         onClick={toggleSidebar}
-        className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full text-center flex items-center justify-center"
+        className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center"
       >
-        <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-all duration-500" />
+        <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-transform duration-500 hover:rotate-180" />
       </div>
 
-      <div
-        className={`${
-          openMenu ? "w-[200px]" : "w-[80px]"
-        } h-full bg-[#1b2039] flex flex-col items-center pt-10 transition-all duration-300`}
-      >
+      <div className={`${openMenu ? "w-[200px]" : "w-[80px]"} h-full bg-[#1b2039] flex flex-col items-center pt-10 transition-all duration-300`}>
         <div className="flex justify-center items-center min-h-[164px]">
-          <div
-            className={`${openMenu ? "hidden" : "block"} text-center w-full`}
-          >
-            <NavLink to="/">
-              <img src={logo} alt="logo" className="img-fluid" />
-            </NavLink>
-          </div>
-          <div
-            className={`${openMenu ? "block" : "hidden"} text-center w-full`}
-          >
-            <NavLink to="/">
-              <img src={logo} alt="logo" className="img-fluid" />
-            </NavLink>
-          </div>
+          <NavLink to="/" className="w-full text-center">
+            <img src={logo} alt="logo" className="img-fluid" />
+          </NavLink>
         </div>
 
         <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
@@ -95,16 +87,9 @@ const Sidebar = () => {
                   }
                 >
                   {React.cloneElement(item.icon, {
-                    className:
-                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                    className: "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform",
                   })}
-                  <span
-                    className={`${
-                      openMenu ? "block" : "hidden"
-                    } flex-grow nav_text`}
-                  >
-                    {item.text}
-                  </span>
+                  <span className={`${openMenu ? "block" : "hidden"} flex-grow`}>{item.text}</span>
                 </NavLink>
               </li>
             ))}
@@ -122,16 +107,9 @@ const Sidebar = () => {
                   }
                 >
                   {React.cloneElement(item.icon, {
-                    className:
-                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                    className: "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform",
                   })}
-                  <span
-                    className={`${
-                      openMenu ? "block" : "hidden"
-                    } flex-grow nav_text`}
-                  >
-                    {item.text}
-                  </span>
+                  <span className={`${openMenu ? "block" : "hidden"} flex-grow`}>{item.text}</span>
                 </NavLink>
               </li>
             ))}
@@ -149,46 +127,15 @@ const Sidebar = () => {
                   }
                 >
                   {React.cloneElement(item.icon, {
-                    className:
-                      "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-[1.1] transition-all icon-rotate",
+                    className: "w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform",
                   })}
-                  <span
-                    className={`${
-                      openMenu ? "block" : "hidden"
-                    } flex-grow nav_text`}
-                  >
-                    {item.text}
-                  </span>
+                  <span className={`${openMenu ? "block" : "hidden"} flex-grow`}>{item.text}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </div>
       </div>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 2px;
-          background-color: transparent;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background-color: blue;
-          border-radius: 5px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background-color: transparent;
-        }
-
-        .icon-rotate {
-          transition: transform 0.4s ease;
-        }
-
-        .icon-rotate:hover {
-          transform: rotate(360deg);
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaSearch,
   FaGlobe,
@@ -21,7 +21,9 @@ import { IoDiamondOutline } from "react-icons/io5";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const { query, results, loading, error } = useSelector(
     (state) => state.search
@@ -32,6 +34,20 @@ const Navbar = () => {
   // Toggles Sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  const closeSidebar = () => {
+    setSidebarOpen(false);
   };
 
   const formatDate = (dateString) => {
@@ -82,11 +98,8 @@ const Navbar = () => {
 
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">
-            <div className="relative text-white capitalize cursor-pointer pr-6 group">
-              <span className="flex items-center">
-                Languages
-                <FaGlobe size={20} className="ml-2" />
-              </span>
+            <div className="relative text-white capitalize cursor-pointer group">
+              <div id="google_translate_element" className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-50"></div>
             </div>
 
             {user ? (
@@ -145,90 +158,65 @@ const Navbar = () => {
         </div>
       </div>
       {inputValue.length >= 2 && (
-        <SearchResultsDisplay
-          results={results}
-    
-          setInputValue={setInputValue}
-        />
+        <SearchResultsDisplay results={results} setInputValue={setInputValue} />
       )}
 
       {sidebarOpen && (
         <div
-          className={`fixed top-0 bottom-0 z-50 w-fit  transition-transform duration-300 shadow-xl bg-[#1b2039] ${
+          ref={sidebarRef}
+          className={`fixed top-10 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           } lg:hidden`}
         >
           {/* Toggle Button */}
           <div
             onClick={toggleSidebar}
-            className="absolute right-[-24px] -z-10 border border-gray-600 top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full text-center flex items-center justify-center shadow-lg hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
+            className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
           >
             <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-all duration-500" />
           </div>
 
           {/* Sidebar Content */}
-          <div className="w-fit px-2 mx-2 h-full bg-[#1b2039] flex flex-col items-center pt-10">
+          <div className="w-full px-4 h-full bg-[#1b2039] flex flex-col items-start pt-10">
             {/* Logo */}
-            <div className="flex justify-center items-center min-h-[164px]">
-              <Link to="/" className="text-center w-full">
+            <div className="flex justify-center items-center w-full">
+              <Link
+                to="/"
+                className="text-center w-full"
+                onClick={closeSidebar}
+              >
                 <img
                   src={logo}
                   alt="logo"
-                  className="w-[80px] h-auto rounded-full  shadow-lg hover:scale-105 transition-transform duration-300"
+                  className="w-[80px] h-auto rounded-full shadow-lg hover:scale-105 transition-transform duration-300"
                 />
               </Link>
             </div>
 
             {/* Sidebar Links */}
-            <div className="w-full mt-[20px] mb-[70px] overflow-y-auto max-h-screen custom-scrollbar">
-              <ul className="space-y-5 flex flex-col justify-center items-center">
-                <li className="w-full">
+            <ul className="space-y-5 mt-10 w-full">
+              {[
+                { to: "/", icon: <FaHome />, text: "Discover" },
+                { to: "/albums", icon: <FaMusic />, text: "Albums" },
+                { to: "/artists", icon: <FaUser />, text: "Artists" },
+                { to: "/genres", icon: <FaHeadphones />, text: "Genres" },
+                {
+                  to: "/top_track",
+                  icon: <IoDiamondOutline />,
+                  text: "Top Tracks",
+                },
+              ].map((item, index) => (
+                <li key={index} className="w-full">
                   <Link
-                    to="/"
-                    className="flex items-center justify-start text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
+                    to={item.to}
+                    className="flex items-center text-[#cdcdcd] text-sm py-2 px-4 hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
+                    onClick={closeSidebar}
                   >
-                    <FaHome className="w-[25px] h-[25px] mr-4" />
-                    <span>Discover</span>
+                    {item.icon} <span className="ml-4">{item.text}</span>
                   </Link>
                 </li>
-                <li className="w-full">
-                  <Link
-                    to="/albums"
-                    className="flex items-center justify-start text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
-                  >
-                    <FaMusic className="w-[25px] h-[25px] mr-4" />
-                    <span>Albums</span>
-                  </Link>
-                </li>
-                <li className="w-full">
-                  <Link
-                    to="/artists"
-                    className="flex items-center justify-start text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
-                  >
-                    <FaUser className="w-[25px] h-[25px] mr-4" />
-                    <span>Artists</span>
-                  </Link>
-                </li>
-                <li className="w-full">
-                  <Link
-                    to="/genres"
-                    className="flex items-center justify-start text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
-                  >
-                    <FaHeadphones className="w-[25px] h-[25px] mr-4" />
-                    <span>Genres</span>
-                  </Link>
-                </li>
-                <li className="w-full">
-                  <Link
-                    to="/top_track"
-                    className="flex items-center justify-start text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
-                  >
-                    <IoDiamondOutline className="w-[25px] h-[25px] mr-4" />
-                    <span>Top Tracks</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
         </div>
       )}
