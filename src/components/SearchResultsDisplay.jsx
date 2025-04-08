@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import formatDuration from "../utils/formatDuration";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import cart from "../assets/svg/cart.svg";
 import {
   addSongToQueue,
   setIsPlaying,
   addSongToHistory,
-  addSongToQueueWithAuth
+  addSongToQueueWithAuth,
 } from "../features/musicSlice";
 
 const SearchResultsDisplay = ({ results, setInputValue }) => {
@@ -14,6 +15,8 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
   const searchResultsRef = useRef(null);
   const [show, setShow] = useState(true);
   const dispatch = useDispatch(); // Corrected: Call useDispatch as a function
+
+  const user = useSelector((state) => state.user.user);
 
   const handelAlbumRedirect = (id) => {
     setInputValue("");
@@ -96,11 +99,13 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                   </div>
 
                   <div>
-                    <h1 className=" md:text-center text-start font-semibold">Songs</h1>
+                    <h1 className=" md:text-center text-start font-semibold">
+                      Songs
+                    </h1>
                     <div className="grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
                       {artist.songs.map((song) => (
                         <div
-                        key={song._id}
+                          key={song._id}
                           onClick={() => handleSongClick(song)}
                           className="flex hover:bg-[#34384d] rounded-xl justify-start space-x-2 space-y-2 p-1 items-center"
                         >
@@ -122,11 +127,13 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                     </div>
                   </div>
                   <div>
-                    <h1 className="md:text-center text-start font-semibold">Albums</h1>
+                    <h1 className="md:text-center text-start font-semibold">
+                      Albums
+                    </h1>
                     <div className=" grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
                       {artist.albums.map((album) => (
                         <div
-                        key={album._id}
+                          key={album._id}
                           onClick={() => {
                             handelAlbumRedirect(album._id);
                           }}
@@ -177,12 +184,13 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                       alt={album.title}
                       className="w-24 h-24 object-cover cursor-pointer rounded-full mb-4"
                     />
-                    <div
-                      
-                    >
-                      <h3 onClick={() => {
-                        handelAlbumRedirect(album._id);
-                      }} className="text-lg font-semibold text-white cursor-pointer">
+                    <div>
+                      <h3
+                        onClick={() => {
+                          handelAlbumRedirect(album._id);
+                        }}
+                        className="text-lg font-semibold text-white cursor-pointer"
+                      >
                         {album.title}
                       </h3>
                       <p className="text-gray-400 text-xs">
@@ -209,7 +217,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                         <div className=" grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
                           {album.songs.map((song) => (
                             <div
-                            key={song._id}
+                              key={song._id}
                               onClick={() => handleSongClick(song)}
                               className="flex hover:bg-[#34384d] rounded-xl justify-start space-x-2 space-y-2 p-1 items-center"
                             >
@@ -248,17 +256,19 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                   key={song._id}
                   className="bg-gray-800  flex mx-5 flex-col border border-gray-600 rounded-lg shadow-md p-4 transition-transform duration-300 "
                 >
-                  <div
-                   
-                    className="flex items-center space-x-2"
-                  >
-                    <img  onClick={() => handleSongClick(song)}
+                  <div className=" flex items-center space-x-2">
+                    <img
+                      onClick={() => handleSongClick(song)}
                       src={song.coverImage || "https://dummyimage.com/151x151"}
                       alt={song.title}
-                      className="w-24 h-24 object-cover rounded-md mb-4 cursor-pointer"
+                      className="w-24  h-24 object-cover rounded-md mb-4 cursor-pointer"
                     />
+
                     <div>
-                      <h3  onClick={() => handleSongClick(song)} className="text-lg font-semibold text-white cursor-pointer">
+                      <h3
+                        onClick={() => handleSongClick(song)}
+                        className="text-lg font-semibold text-white cursor-pointer"
+                      >
                         {song.title}
                       </h3>
                       <p className="text-gray-400">
@@ -267,15 +277,49 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                       <p className="text-gray-400">
                         By{" "}
                         <span
-                          onClick={() =>
-                            handleartistClick(song.artistInfo._id)
-                          }
+                          onClick={() => handleartistClick(song.artistInfo._id)}
                           className="text-gray-400 cursor-pointer underline"
                         >
                           {song.artistInfo.fullName}
                         </span>
                       </p>
                     </div>
+                    
+                    {song.price > 0 && (
+                      <>
+                        {user?.purchasedSongs?.includes(song._id) ? (
+                          <div className=" flex justify-center items-center space-x-1  bg-green-600 text-white rounded-xl px-3 py-1">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-5 h-5 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                            <span>Purchased</span>
+                          </div>
+                        ) : (
+                          <div className=" flex justify-center items-center space-x-1 bottom-1 bg-blue-600 text-white rounded-xl px-3 py-1">
+                            <img
+                              src={cart}
+                              className="w-5 h-5 text-white"
+                              alt="Cart"
+                            />
+                            <button onClick={() => handelBuyNowClick(song)}>
+                              Buy Now
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+
                   </div>
 
                   {song.albumInfo && (

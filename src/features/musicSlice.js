@@ -11,12 +11,25 @@ const isAuthenticated = async () => {
     const response = await axios.get(`${apiUrl}api/v1/auth`, {
       withCredentials: true,
     });
-    return response.data.user; // API should return { isValid: true/false }
+    return response.data.user; 
   } catch (error) {
-    return false; // If API call fails, assume the user is not authenticated
+    return false; 
   }
 };
-// Helper function to get initial state from localStorage
+const incresePlayCont = async (songId) => {
+  try {
+    const response = await axios.post(
+      `${apiUrl}api/v1/song/incresePlayCont`,
+      { id: songId },
+      { withCredentials: true }
+    );
+    return response.data; // e.g., success status, updated play count
+  } catch (error) {
+    console.error("Failed to increase play count", error);
+    return false;
+  }
+};
+
 const getInitialMusicState = () => {
   try {
     const storedData = localStorage.getItem("musicPlayerData");
@@ -46,6 +59,7 @@ const getInitialMusicState = () => {
 };
 export const addSongToQueueWithAuth = (song) => async (dispatch) => {
   if (await isAuthenticated()) {
+    incresePlayCont(song._id)
     dispatch(musicSlice.actions.addSongToQueue(song));
   } else {
     toast.error("Please login to add songs to queue.");

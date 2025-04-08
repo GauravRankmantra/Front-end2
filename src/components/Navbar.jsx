@@ -28,6 +28,7 @@ const Navbar = () => {
   const { query, results, loading, error } = useSelector(
     (state) => state.search
   );
+
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Use Redux dispatch
 
@@ -68,6 +69,21 @@ const Navbar = () => {
 
   // Check if user is authenticated
   const user = useSelector((state) => state.user.user);
+    // 🔒 Token validation on mount
+    useEffect(() => {
+      const validateUser = async () => {
+        try {
+          const { data } = await axios.get("http://localhost:5000/api/v1/auth", {
+            withCredentials: true,
+          });
+          dispatch(setUser(data.user));
+        } catch (error) {
+          console.log("User not authenticated");
+        }
+      };
+  
+      validateUser();
+    }, [dispatch]);
 
   return (
     <div>
