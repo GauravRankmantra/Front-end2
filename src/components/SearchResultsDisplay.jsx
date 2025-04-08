@@ -16,6 +16,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
   const [show, setShow] = useState(true);
   const dispatch = useDispatch(); // Corrected: Call useDispatch as a function
 
+
   const user = useSelector((state) => state.user.user);
 
   const handelAlbumRedirect = (id) => {
@@ -34,6 +35,10 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
     setInputValue("");
     setShow(false);
     navigate(`/artist/${id}`);
+  };
+  const handelBuyNowClick = (song) => {
+    setShow(false);
+    navigate(`/purchased?id=${encodeURIComponent(song._id)}`);
   };
 
   const formatDate = (dateString) => {
