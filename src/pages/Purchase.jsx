@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 
+
 import {
   addSongToQueue,
   setIsPlaying,
@@ -81,7 +82,7 @@ const Purchase = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/v1/payment/create-checkout-session",
+        `${apiUrl}api/v1/payment/create-checkout-session`,
         {
           method: "POST",
           headers: {

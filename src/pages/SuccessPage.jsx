@@ -16,13 +16,13 @@ const SuccessPage = () => {
     const fetchSessionData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/v1/payment/stripe/session/${sessionId}`,
+          `${apiUrl}api/v1/payment/stripe/session/${sessionId}`,
           { withCredentials: true }
         );
         setSongData(data);
 
         const purchaseRes = await axios.post(
-          "http://localhost:5000/api/v1/user/addPurchaseSong",
+          `${apiUrl}api/v1/user/addPurchaseSong`,
           { songId: data.songId },
           { withCredentials: true }
         );

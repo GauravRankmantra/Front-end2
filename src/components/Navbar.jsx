@@ -18,6 +18,7 @@ import { fetchSearchResults, setSearchQuery } from "../features/searchSlice";
 import SearchResultsDisplay from "./SearchResultsDisplay";
 
 import { IoDiamondOutline } from "react-icons/io5";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -73,7 +74,7 @@ const Navbar = () => {
     useEffect(() => {
       const validateUser = async () => {
         try {
-          const { data } = await axios.get("http://localhost:5000/api/v1/auth", {
+          const { data } = await axios.get(`${apiUrl}api/v1/auth`, {
             withCredentials: true,
           });
           dispatch(setUser(data.user));
