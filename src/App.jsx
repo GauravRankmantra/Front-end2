@@ -29,6 +29,8 @@ import History from "./components/History";
 import Favourites from "./components/Favourites";
 import Purchase from "./pages/Purchase";
 import SuccessPage from "./pages/SuccessPage";
+import FeaturedPlaylist from "./pages/FeaturedPlaylist";
+import PlaylistInfo from "./components/Album/PlaylistInfo";
 
 const App = () => {
   const user = useSelector((state) => state.user.user); // Get user from Redux store
@@ -47,6 +49,7 @@ const App = () => {
           <Route path="/albums" element={<Album />} />
           <Route path="/song/:id" element={<SongInfo />} />
           <Route path="/album/:id" element={<AlbumInfo />} />
+          <Route path="/playlist/:id" element={<PlaylistInfo />} />
           <Route path="/artists" element={<Artist />} />
           <Route path="/artist/:id" element={<ArtistInfo />} />
           <Route path="/genres" element={<Genre />} />
@@ -58,6 +61,7 @@ const App = () => {
 
           <Route path="/favourites" element={<Favourites/>}/>
           <Route path="/create-playlist" element={<CreatePlaylist />} />
+          <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
           <Route path="/downloads" element={<Download />} />
           <Route path="/search" element={<SearchResults />} />
         </Route>

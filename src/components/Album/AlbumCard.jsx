@@ -4,12 +4,12 @@ import { AiFillPlayCircle } from "react-icons/ai";
 import AlbumActions from "./AlbumActions";
 import SongShimmer from "../Shimmer/SongShimmer";
 
-const Recently = ({ heading, link }) => {
+const Recently = ({ heading, link, type }) => {
   const scrollContainerRef = useRef(null);
   const [albums, setalbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
+
   const navigate = useNavigate();
   const [currentAlbum, setCurrentAlbum] = useState(null);
 
@@ -43,17 +43,22 @@ const Recently = ({ heading, link }) => {
     scrollContainerRef.current?.scrollBy({ left: 180, behavior: "smooth" });
   };
 
-  const handlealbumClick = (album) => {
-    navigate(`/album/${album._id}`);
+  const handelClick = (album) => {
+    console.log("inside click")
+    if (type == "playlist") {
+
+      navigate(`/playlist/${album._id}`);
+      return;
+    } else {
+      navigate(`/album/${album._id}`);
+    }
   };
 
   const handleMenuToggle = (album) => {
     if (currentAlbum && currentAlbum._id === album._id) {
       setCurrentAlbum(null);
-
     } else {
       setCurrentAlbum(album);
-
     }
   };
   return (
@@ -87,76 +92,75 @@ const Recently = ({ heading, link }) => {
       {loading ? (
         <SongShimmer /> // Show shimmer when loading
       ) : (
+        <div className="relative">
+          {/* Scrollable album List */}
+          <div
+            ref={scrollContainerRef}
+            className="flex space-x-6 py-4 w-full overflow-x-scroll scroll-smooth no-scrollbar"
+          >
+            {error && <p className="text-white">Error: {error}</p>}
 
-      <div className="relative">
-        {/* Scrollable album List */}
-        <div
-          ref={scrollContainerRef}
-          className="flex space-x-6 py-4 w-full overflow-x-scroll scroll-smooth no-scrollbar"
-        >
-
-          {error && <p className="text-white">Error: {error}</p>}
-
-          {!loading && !error && albums.length > 0
-            ? albums.map((album) => (
-                <div
-                  key={album._id}
-                  className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
-                >
+            {!loading && !error && albums.length > 0
+              ? albums.map((album) => (
                   <div
-                    className="relative overflow-hidden rounded-[10px] aspect-square group"
-                    onMouseLeave={() => setCurrentAlbum(null)} 
+                    key={album._id}
+                    className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[190px] group cursor-pointer"
                   >
-                    <img
-                      className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
-                      src={album.coverImage || "https://dummyimage.com/150x150"}
-                      alt={album.title}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <AiFillPlayCircle
-                        className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
-                        onClick={() => handlealbumClick(album)}
+                    <div
+                      className="relative overflow-hidden rounded-[10px] aspect-square group"
+                      onMouseLeave={() => setCurrentAlbum(null)}
+                    >
+                      <img
+                        className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
+                        src={
+                          album.coverImage || "https://dummyimage.com/150x150"
+                        }
+                        alt={album.title}
                       />
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="absolute top-2 right-2 w-5 h-5 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
-                        onClick={() => handleMenuToggle(album)}
-                      >
-                        <circle cx="12" cy="12" r="2" fill="currentColor" />
-                        <circle cx="5" cy="12" r="2" fill="currentColor" />
-                        <circle cx="19" cy="12" r="2" fill="currentColor" />
-                      </svg>
-
-
-                      {currentAlbum && currentAlbum._id === album._id && (
-                        <AlbumActions
-                          onClose={() => setCurrentAlbum(null)}
-                          album={currentAlbum}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <AiFillPlayCircle
+                          className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                          onClick={() => handelClick(album)}
                         />
-                      )}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="absolute top-2 right-2 w-5 h-5 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                          onClick={() => handleMenuToggle(album)}
+                        >
+                          <circle cx="12" cy="12" r="2" fill="currentColor" />
+                          <circle cx="5" cy="12" r="2" fill="currentColor" />
+                          <circle cx="19" cy="12" r="2" fill="currentColor" />
+                        </svg>
+
+                        {currentAlbum && currentAlbum._id === album._id && (
+                          <AlbumActions
+                            onClose={() => setCurrentAlbum(null)}
+                            album={currentAlbum}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-left mt-4">
+                      <h1 className="text-[14px] mb-[5px]">
+                        <a href="#" className="text-white hover:text-[#3bc8e7]">
+                          {album.title}
+                        </a>
+                      </h1>
+                      <p className="text-[#dedede] text-[12px]">
+                        {album?.artist?.fullName}
+                      </p>
                     </div>
                   </div>
-
-                  <div className="text-left mt-4">
-                    <h1 className="text-[14px] mb-[5px]">
-                      <a href="#" className="text-white hover:text-[#3bc8e7]">
-                        {album.title}
-                      </a>
-                    </h1>
-                    <p className="text-[#dedede] text-[12px]">
-                      {album?.artist?.fullName}
-                    </p>
-                  </div>
-                </div>
-              ))
-            : !loading &&
-              !error && <p className="text-white">No albums available</p>}
+                ))
+              : !loading &&
+                !error && <p className="text-white">No albums available</p>}
+          </div>
         </div>
-      </div>
       )}
 
       <button

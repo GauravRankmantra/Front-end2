@@ -2,18 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { toast } from "react-toastify";
-
-
-
+import LoginCard from "../components/LoginCard";
+import { setShowLoginPopup } from "./uiSlice";
 
 const isAuthenticated = async () => {
   try {
     const response = await axios.get(`${apiUrl}api/v1/auth`, {
       withCredentials: true,
     });
-    return response.data.user; 
+    return response.data.user;
   } catch (error) {
-    return false; 
+    return false;
   }
 };
 const incresePlayCont = async (songId) => {
@@ -59,10 +58,12 @@ const getInitialMusicState = () => {
 };
 export const addSongToQueueWithAuth = (song) => async (dispatch) => {
   if (await isAuthenticated()) {
-    incresePlayCont(song._id)
+    incresePlayCont(song._id);
     dispatch(musicSlice.actions.addSongToQueue(song));
   } else {
-    toast.error("Please login to add songs to queue.");
+    dispatch(setShowLoginPopup(true));
+
+   
   }
 };
 
@@ -90,7 +91,6 @@ export const addPlaylistToQueueWithAuth = (playlist) => async (dispatch) => {
   }
 };
 
-
 const initialState = getInitialMusicState();
 initialState.isPlaying = false;
 
@@ -101,7 +101,6 @@ const musicSlice = createSlice({
     // Adding a song to the queue
     addSongToQueue: (state, action) => {
       const song = action.payload;
-      
 
       // Handle artist field properly for both array and object cases
       let artist = [];
@@ -109,14 +108,17 @@ const musicSlice = createSlice({
       if (Array.isArray(song.artist)) {
         // If artist is an array, store an array of artist objects
         artist = song.artist.map((artistObj) => ({
-          
           _id: artistObj._id,
           fullName: artistObj.fullName || "Unknown Artist",
         }));
-    
-      } else if (song.artist?.fullName ||song.artist) {
+      } else if (song.artist?.fullName || song.artist) {
         // If artist is a single object, store it as an array with one object
-        artist = [{ _id: song.artist._id, fullName: song.artist.fullName ||song.artist}];
+        artist = [
+          {
+            _id: song.artist._id,
+            fullName: song.artist.fullName || song.artist,
+          },
+        ];
       } else {
         // Default case when no artist info is available
         artist = [{ _id: "unknown", fullName: "Unknown Artist" }];
@@ -153,7 +155,6 @@ const musicSlice = createSlice({
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
 
-
     toggleRepeat: (state) => {
       state.isRepeating = !state.isRepeating;
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
@@ -178,7 +179,6 @@ const musicSlice = createSlice({
 
     addPlaylistToQueue: (state, action) => {
       const songs = action.payload;
-     
 
       // Sanitize the songs to extract necessary fields, including low and high audioUrls and artist
       const sanitizedSongs = songs.map((song) => {
@@ -241,8 +241,7 @@ const musicSlice = createSlice({
         localStorage.setItem("musicPlayerData", JSON.stringify(state));
       }
     },
-    
-    
+
     playNextSong: (state) => {
       if (state.currentSongIndex < state.playlist.length - 1) {
         state.currentSongIndex += 1;
@@ -282,32 +281,26 @@ const musicSlice = createSlice({
 });
 
 export const addSongToHistory = (song) => async (dispatch) => {
-
   if (await isAuthenticated()) {
+    try {
+      const songId = song._id;
+      const res = await axios.post(
+        `${apiUrl}api/v1/user/addHistory`,
+        { songId },
+        { withCredentials: true }
+      );
 
-  try {
- 
-    const songId = song._id;
-    const res = await axios.post(
-      `${apiUrl}api/v1/user/addHistory`,
-      { songId },
-      { withCredentials: true }
-    );
-
-    if (res.status === 200) {
-      dispatch(addRecentlyPlayed(song)); // Ensure this action is being called
-     
-    } else {
-      toast.error("Failed to add song to history.");
+      if (res.status === 200) {
+        dispatch(addRecentlyPlayed(song)); // Ensure this action is being called
+      } else {
+        toast.error("Failed to add song to history.");
+      }
+    } catch (error) {
+      console.error("Failed to add song to history:", error);
+      toast.error("Error connecting to the server.");
     }
-  } catch (error) {
-    console.error("Failed to add song to history:", error);
-    toast.error("Error connecting to the server.");
   }
-}
 };
-
-
 
 export const {
   addSongToQueue,

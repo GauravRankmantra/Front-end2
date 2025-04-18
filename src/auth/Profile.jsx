@@ -65,7 +65,7 @@ const Profile = () => {
       localStorage.removeItem("musicPlayerData");
       dispatch(clearQueue())
       dispatch(logoutUser());
-    }, 1000);
+    }, 500);
 
     navigate("/");
   };
