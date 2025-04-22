@@ -56,19 +56,21 @@ const getInitialMusicState = () => {
     };
   }
 };
-export const addSongToQueueWithAuth = (song) => async (dispatch) => {
-  if (await isAuthenticated()) {
+export const addSongToQueueWithAuth = (song) => (dispatch, getState) => {
+  const { isAuthenticated } = getState().auth;
+
+  if (isAuthenticated) {
     incresePlayCont(song._id);
     dispatch(musicSlice.actions.addSongToQueue(song));
   } else {
     dispatch(setShowLoginPopup(true));
-
-   
   }
 };
 
+
 export const playNextSongWithAuth = () => async (dispatch) => {
-  if (await isAuthenticated()) {
+  const { isAuthenticated } = getState().auth;
+  if (isAuthenticated) {
     dispatch(musicSlice.actions.playNextSong());
   } else {
     toast.error("Please login to play the next song.");
@@ -76,7 +78,9 @@ export const playNextSongWithAuth = () => async (dispatch) => {
 };
 
 export const playPrevSongWithAuth = () => async (dispatch) => {
-  if (await isAuthenticated()) {
+  const { isAuthenticated } = getState().auth;
+
+  if (isAuthenticated) {
     dispatch(musicSlice.actions.playPrevSong());
   } else {
     toast.error("Please login to play the previous song.");

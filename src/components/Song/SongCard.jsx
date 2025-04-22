@@ -116,9 +116,9 @@ const Recently = ({ heading, link, showGrid }) => {
               {error && <p className="text-white">Error: {error}</p>}
 
               {!loading && !error && songs?.length > 0
-                ? songs.map((song) => (
+                ? songs.map((song,index) => (
                     <div
-                      key={song._id}
+                      key={index}
                       className="relative flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] group "
                     >
                       <div

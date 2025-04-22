@@ -5,7 +5,7 @@ import musicReducer from "./features/musicSlice.js";
 import searchReducer from "./features/searchSlice.js";
 import playlistReducer from "./features/playlistSlice.js";
 import uiReducer from "./features/uiSlice.js";
-
+import authReducer from "./features/authSlice.js";
 
 // Configure the store and add your reducers
 const store = configureStore({
@@ -14,9 +14,9 @@ const store = configureStore({
     musicPlayer: musicReducer,
     search: searchReducer,
     playlist: playlistReducer,
-    ui:uiReducer
+    ui: uiReducer,
+    auth: authReducer,
   },
-  
 });
 
 export default store;

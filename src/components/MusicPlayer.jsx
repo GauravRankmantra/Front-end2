@@ -56,7 +56,7 @@ const MusicSidebar = ({ song }) => {
 
   const handleShare = ({ songId, albumId }) => {
     // Define the base URL dynamically
-    const publicBaseUrl = `https://odgmusic.netlify.app`;
+    const publicBaseUrl = `https://odgmusic.com`;
     const shareUrl = albumId
       ? `${publicBaseUrl}/album/${albumId}`
       : `${publicBaseUrl}/song/${songId}`;
@@ -540,7 +540,7 @@ const MusicPlayer = () => {
 
   if (!currentSong) {
     return (
-      <div className="fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-between items-center text-white z-50 text-center">
+      <div className="fixed bottom-0 left-0 w-full bg-gray-800  flex justify-between items-center text-white z-50 text-center">
         {/* <p className="text-white text-center font-bold">
           No song is currently playing
         </p> */}

@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Error from "../components/Error";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
+import { logout } from "../features/authSlice";
 import { clearQueue } from "../features/musicSlice";
 import axios from "axios";
 import SongCard from "../components/Song/SongCard";
@@ -40,7 +42,6 @@ const Profile = () => {
           { withCredentials: true }
         );
         if (response?.data && response?.data?.data) {
-        
           setPlaylist(response.data.data);
         } else {
           setError("No songs available");
@@ -63,16 +64,16 @@ const Profile = () => {
     setTimeout(() => {
       localStorage.removeItem("user");
       localStorage.removeItem("musicPlayerData");
-      dispatch(clearQueue())
+      dispatch(clearQueue());
+      dispatch(logout());
       dispatch(logoutUser());
     }, 500);
 
     navigate("/");
   };
   const handleSubmit = (e) => {
-
     e.preventDefault();
-   
+
     handelChangePass(newPassword, oldPassword);
   };
 
@@ -136,6 +137,10 @@ const Profile = () => {
     const { name, value } = event.target;
     setUpdatedInfo((prev) => ({ ...prev, [name]: value }));
   };
+
+  if (error) {
+    return <Error />;
+  }
 
   if (!userInfo) {
     return <p className="text-5xl text-center">Loading...</p>;
@@ -288,12 +293,12 @@ const Profile = () => {
                           onClick={() => setShowOldPassword(!showOldPassword)}
                         >
                           {showOldPassword ? (
-                            <FaEye
+                            <FaEye className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <FaEyeSlash
                               className="h-5 w-5"
                               aria-hidden="true"
                             />
-                          ) : (
-                            <FaEyeSlash className="h-5 w-5" aria-hidden="true" />
                           )}
                         </button>
                       </div>
@@ -321,12 +326,12 @@ const Profile = () => {
                           onClick={() => setShowNewPassword(!showNewPassword)}
                         >
                           {showNewPassword ? (
-                            <FaEye
+                            <FaEye className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <FaEyeSlash
                               className="h-5 w-5"
                               aria-hidden="true"
                             />
-                          ) : (
-                            <FaEyeSlash className="h-5 w-5" aria-hidden="true" />
                           )}
                         </button>
                       </div>

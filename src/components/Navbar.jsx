@@ -70,21 +70,21 @@ const Navbar = () => {
 
   // Check if user is authenticated
   const user = useSelector((state) => state.user.user);
-    // 🔒 Token validation on mount
-    useEffect(() => {
-      const validateUser = async () => {
-        try {
-          const { data } = await axios.get(`${apiUrl}api/v1/auth`, {
-            withCredentials: true,
-          });
-          dispatch(setUser(data.user));
-        } catch (error) {
-          console.log("User not authenticated");
-        }
-      };
-  
-      validateUser();
-    }, [dispatch]);
+  // 🔒 Token validation on mount
+  useEffect(() => {
+    const validateUser = async () => {
+      try {
+        const { data } = await axios.get(`${apiUrl}api/v1/auth`, {
+          withCredentials: true,
+        });
+        dispatch(setUser(data.user));
+      } catch (error) {
+        console.log("User not authenticated");
+      }
+    };
+
+    validateUser();
+  }, [dispatch]);
 
   return (
     <div>
@@ -116,7 +116,10 @@ const Navbar = () => {
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">
             <div className="relative text-white capitalize cursor-pointer group">
-              <div id="google_translate_element" className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-10"></div>
+              <div
+                id="google_translate_element"
+                className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-10"
+              ></div>
             </div>
 
             {user ? (
@@ -146,12 +149,35 @@ const Navbar = () => {
 
           {/* Mobile Icons */}
           <div className="lg:hidden flex items-center space-x-4 ml-4">
-            <div className="text-white" onClick={() => navigate("/login")}>
-              <FaUserAlt size={20} className="cursor-pointer" title="Login" />
-            </div>
-            <div className="text-white" onClick={() => navigate("/register")}>
-              <FaUserPlus size={24} className="cursor-pointer" title="Signup" />
-            </div>
+            {user ? (
+              <Link
+                to="/profile"
+                className="ms_btn bg-[#3bc8e7] text-sm text-white text-center py-[6px] px-[15px] rounded-[20px] transition-all duration-400 ease-in-out hover:shadow-lg"
+              >
+                Profile
+              </Link>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <div className="text-white" onClick={() => navigate("/login")}>
+                  <FaUserAlt
+                    size={20}
+                    className="cursor-pointer"
+                    title="Login"
+                  />
+                </div>
+                <div
+                  className="text-white"
+                  onClick={() => navigate("/register")}
+                >
+                  <FaUserPlus
+                    size={24}
+                    className="cursor-pointer"
+                    title="Signup"
+                  />
+                </div>
+              </div>
+            )}
+
             <button
               className="flex items-center space-x-4"
               onClick={toggleSidebar}

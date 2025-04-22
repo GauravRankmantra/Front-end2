@@ -2,9 +2,9 @@ const handleShare = ({ songId, albumId }) => {
     try {
       let shareUrl;
       if (songId && albumId) {
-        shareUrl = `https://odgmusic.netlify.app/song/${songId}`;
+        shareUrl = `https://odgmusic.com/song/${songId}`;
       } else if (albumId) {
-        shareUrl = `https://odgmusic.netlify.app/album/${albumId}`;
+        shareUrl = `https://odgmusic.com/album/${albumId}`;
       } else {
         throw new Error("Either songId or albumId must be provided.");
       }

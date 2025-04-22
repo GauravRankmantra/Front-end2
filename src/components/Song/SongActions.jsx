@@ -257,7 +257,7 @@ const SongActions = ({ onClose, song }) => {
 
   const handleShare = ({ songId, albumId }) => {
     // Define the base URL dynamically
-    const publicBaseUrl = `https://odgmusic.netlify.app`;
+    const publicBaseUrl = `https://odgmusic.com`;
     const shareUrl = albumId
       ? `${publicBaseUrl}/album/${albumId}`
       : `${publicBaseUrl}/song/${songId}`;

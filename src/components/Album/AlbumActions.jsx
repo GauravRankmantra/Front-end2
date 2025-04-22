@@ -216,7 +216,7 @@ const AlbumActions = ({ onClose, album }) => {
   };
 
   const handleShare = ({ albumId }) => {
-    const shareUrl = `https://odgmusic.netlify.app/album/${albumId}`;
+    const shareUrl = `https://odgmusic.com/album/${albumId}`;
     const message = encodeURIComponent(
       `Check out this amazing album on odg music: ${shareUrl}`
     );

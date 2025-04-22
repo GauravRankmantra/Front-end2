@@ -10,10 +10,12 @@ import formatDuration from "../utils/formatDuration";
 import WeekShimmer from "./WeekShimmer";
 import { setShowLoginPopup } from "../features/uiSlice";
 import LoginCard from "./LoginCard";
+import SongAction from "./Song/SongActions"
 
 const WeeklyTop15 = ({ link, heading }) => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState(null);
   const [currentSong, setCurrentSong] = useState(null); // Track the currently playing song
   const dispatch = useDispatch();
@@ -52,6 +54,13 @@ const WeeklyTop15 = ({ link, heading }) => {
 
     dispatch(setIsPlaying(true));
   };
+  const handleMenuToggle = (song) => {
+    if (currentSong && currentSong._id === song._id) {
+      setCurrentSong(null);
+    } else {
+      setCurrentSong(song);
+    }
+  };
 
   return (
     <>
@@ -83,9 +92,9 @@ const WeeklyTop15 = ({ link, heading }) => {
               {!loading && !error && songs.length > 0
                 ? songs.map((song, index) => (
                     <div
-                      key={song._id}
-                      onClick={() => handleSongClick(song)}
-                      className={`relative group flex items-center p-4  rounded-lg transition-colors duration-300 cursor-pointer hover:bg-gray-700`}
+                      key={index}
+                      // onClick={() => handleSongClick(song)}
+                      className={`relative group flex items-center p-4  rounded-lg transition-colors duration-300  hover:bg-gray-700`}
                     >
                       {/* Bottom Divider */}
                       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#8e8e8e] to-transparent"></div>
@@ -109,7 +118,7 @@ const WeeklyTop15 = ({ link, heading }) => {
                           className="w-full h-full object-cover rounded-lg shadow-lg transition-opacity duration-300 group-hover:opacity-70"
                         />
                         <AiFillPlayCircle
-                          className="absolute inset-0 w-full h-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          className="absolute cursor-pointer inset-0 w-full h-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           onClick={() => handleSongClick(song)}
                         />
                       </div>
@@ -130,8 +139,25 @@ const WeeklyTop15 = ({ link, heading }) => {
                       </div>
 
                       {/* Options Button */}
-                      <div className="ml-4 flex-shrink-0 block lg:hidden xl:hidden 2xl:block">
-                        <button className="text-xl text-white">...</button>
+                      <div className="ml-4 flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          onClick={() => handleMenuToggle(song)}
+                        >
+                          <circle cx="12" cy="12" r="2" fill="currentColor" />
+                          <circle cx="5" cy="12" r="2" fill="currentColor" />
+                          <circle cx="19" cy="12" r="2" fill="currentColor" />
+                        </svg>
+                        {currentSong && currentSong._id === song._id && (
+                          <SongAction
+                            onClose={() => setCurrentSong(null)}
+                            song={currentSong}
+                          />
+                        )}
                       </div>
                     </div>
                   ))

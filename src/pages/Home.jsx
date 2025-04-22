@@ -7,10 +7,12 @@ import img728 from "../assets/img/dummy.png";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
 import logo from "../assets/img/logo.jpeg";
+import { useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Home = () => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="py-6 lg:py-16  bg-[#14182A] scroll-smooth ">
@@ -41,18 +43,18 @@ const Home = () => {
                   Games and many more...
                 </p>
                 <div className="ms_banner_btn flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0">
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
                     Listen Now
-                  </a>
-                  <a
-                    href="#"
+                  </button>
+                  <button
+                    onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
                     Add To Queue
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

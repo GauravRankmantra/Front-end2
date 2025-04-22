@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -31,9 +31,19 @@ import Purchase from "./pages/Purchase";
 import SuccessPage from "./pages/SuccessPage";
 import FeaturedPlaylist from "./pages/FeaturedPlaylist";
 import PlaylistInfo from "./components/Album/PlaylistInfo";
+import Contact from "./pages/Contact";
+import Privicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import { checkAuth } from "./features/authSlice";
+
+
 
 const App = () => {
-  const user = useSelector((state) => state.user.user); // Get user from Redux store
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, []);
 
   return (
     <Router>
@@ -58,8 +68,11 @@ const App = () => {
           <Route path="/history" element={<History />} />
           <Route path="/purchased" element={<Purchase />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy-policy" element={<Privicy />} />
+          <Route path="/terms-and-conditions" element={<Terms />} />
 
-          <Route path="/favourites" element={<Favourites/>}/>
+          <Route path="/favourites" element={<Favourites />} />
           <Route path="/create-playlist" element={<CreatePlaylist />} />
           <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
           <Route path="/downloads" element={<Download />} />
