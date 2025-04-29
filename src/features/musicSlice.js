@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import LoginCard from "../components/LoginCard";
 import { setShowLoginPopup } from "./uiSlice";
 
@@ -66,7 +66,6 @@ export const addSongToQueueWithAuth = (song) => (dispatch, getState) => {
     dispatch(setShowLoginPopup(true));
   }
 };
-
 
 export const playNextSongWithAuth = () => async (dispatch) => {
   const { isAuthenticated } = getState().auth;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import formatDuration from "../utils/formatDuration";
 import { useDispatch, useSelector } from "react-redux";
-import cart from "../assets/svg/cart.svg";
+import cart from "../assets/svg/artist.svg";
 import {
   addSongToQueue,
   setIsPlaying,

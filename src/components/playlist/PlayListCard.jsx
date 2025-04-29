@@ -2,7 +2,7 @@ import React from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { FaTrashAlt } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import {
@@ -20,7 +20,7 @@ const PlayListCard = ({ playlist, onClose, onPlaylistDeleted }) => {
   const handelPlaylistClick = (songs) => {
     try {
       dispatch(clearQueue());
-     
+
       dispatch(addPlaylistToQueue(songs));
       dispatch(setIsPlaying(true));
     } catch (error) {
@@ -32,36 +32,36 @@ const PlayListCard = ({ playlist, onClose, onPlaylistDeleted }) => {
     const isConfirmed = window.confirm(
       `Are you sure you want to delete the playlist "${playlist?.name}"?`
     );
-  
+
     if (isConfirmed) {
       try {
         const response = await axios.delete(
           `${apiUrl}api/v1/playlist/delete${playlist._id}`,
           { withCredentials: true }
         );
-  
+
         if (response.data.success) {
-          toast.success('Playlist deleted successfully!', {
-            position: 'top-right',
+          toast.success("Playlist deleted successfully!", {
+            position: "top-right",
             autoClose: 3000,
           });
-  
+
           if (onPlaylistDeleted) {
             onPlaylistDeleted();
           }
-  
+
           if (onClose) {
             onClose();
           }
         } else {
-          toast.error(response.data.message || 'Failed to delete playlist.', {
-            position: 'top-right',
+          toast.error(response.data.message || "Failed to delete playlist.", {
+            position: "top-right",
           });
         }
       } catch (error) {
-        console.error('Error deleting playlist:', error);
-        toast.error('An error occurred while deleting the playlist.', {
-          position: 'top-right',
+        console.error("Error deleting playlist:", error);
+        toast.error("An error occurred while deleting the playlist.", {
+          position: "top-right",
         });
       }
     }

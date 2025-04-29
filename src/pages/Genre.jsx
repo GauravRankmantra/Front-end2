@@ -1,6 +1,7 @@
 import React from "react";
 import TopGenres from "../components/TopGenres";
 import AlbumCard from "../components/Album/AlbumCard";
+import Loading from "../components/Loading"
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Genre = () => {

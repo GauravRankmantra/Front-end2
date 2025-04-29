@@ -11,7 +11,7 @@ const TopTrack = () => {
           heading={"Weekly top 15"}
 
           link={
-            `${apiUrl}api/v1/song/top15`}
+            `${apiUrl}api/v1/song/weeklyTop15`}
         />
       </div>
 

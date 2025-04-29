@@ -1,24 +1,19 @@
 import React, { useState } from "react";
-import styles from "./SignUp.module.css";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notify } from "./toast";
+import { toast, Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { setUser } from "../features/userSlice";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
-import facebook from "../assets/img/facebook.png";
 import google from "../assets/img/google.png";
+import facebook from "../assets/img/facebook.png";
+import loginBg from "../assets/loginBg.jpg";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Login = () => {
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+  const [data, setData] = useState({ email: "", password: "" });
   const [touched, setTouched] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -27,106 +22,97 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
+  const validateEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase());
+
+  const notify = (msg, type = "error") => {
+    toast[type](msg, {
+      style: {
+        background: "#1E293B",
+        color: "#fff",
+        border: "1px solid #0ea5e9",
+        padding: "10px 16px",
+      },
+      duration: 3000,
+    });
   };
 
-  const checkData = async (obj) => {
-    const { email, password } = obj;
-
+  const checkData = async ({ email, password }) => {
     if (!validateEmail(email)) {
-      notify("Please enter a valid email address", "error");
+      notify("Please enter a valid email address");
       return;
     }
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
+      const res = await axios.post(
         `${apiUrl}api/v1/auth/login`,
-        {
-          email: email.toLowerCase(),
-          password,
-        },
+        { email: email.toLowerCase(), password },
         { withCredentials: true }
       );
 
-      if (response.data) {
-        dispatch(setUser(response.data.user));
+      if (res.data) {
+        dispatch(setUser(res.data.user));
         notify("You logged into your account successfully", "success");
         navigate("/profile");
       } else {
-        notify("Your password or email is incorrect", "error");
+        notify("Your password or email is incorrect");
       }
-    } catch (error) {
-      console.error("Error during login:", error);
-
-      if (error.response) {
-        notify(
-          error.response.data.message ||
-            "Something went wrong, please try again",
-          error
-        );
-      } else {
-        notify("Something went wrong, please try again", "error");
-      }
+    } catch (err) {
+      notify(
+        err?.response?.data?.message || "Something went wrong, please try again"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const changeHandler = (event) => {
-    setData({ ...data, [event.target.name]: event.target.value });
+  const changeHandler = (e) =>
+    setData({ ...data, [e.target.name]: e.target.value });
+  const focusHandler = (e) => setTouched({ ...touched, [e.target.name]: true });
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (captchaValid) checkData(data);
+    else if (usingOauth) notify("Redirecting...", "success");
+    else notify("Please complete the captcha verification");
   };
 
-  const focusHandler = (event) => {
-    setTouched({ ...touched, [event.target.name]: true });
-  };
-
-  const submitHandler = (event) => {
-    event.preventDefault();
-    if (captchaValid) {
-      checkData(data);
-    } else if (usingOauth) {
-      notify("Redirecting...", "success");
-    } else {
-      notify("Please complete the captcha verification", "error");
-    }
-  };
-
-  const onRecaptchaSuccess = () => {
-    setCaptchaValid(true);
-  };
-
-  const onRecaptchaExpired = () => {
-    setCaptchaValid(false);
-    notify("Captcha expired, please verify again", "error");
-  };
-
-  // Redirect to Google OAuth
   const handleGoogleLogin = () => {
     setUsingOauth(true);
-
     window.open(`${apiUrl}api/v1/auth/google`, "_self");
   };
 
-  // Redirect to Facebook OAuth
   const handleFacebookLogin = () => {
     setUsingOauth(true);
     window.open(`${apiUrl}api/v1/auth/facebook`, "_self");
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-cyan-950 p-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen p-4"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <form
-        className="bg-cyan-600 rounded-lg shadow-lg p-8 w-full max-w-md"
+        className="relative bg-cyan-700/30 border border-cyan-500 rounded-lg shadow-lg p-8 w-full max-w-md"
         onSubmit={submitHandler}
         autoComplete="off"
       >
         <h2 className="text-3xl text-white font-semibold mb-6 text-center">
           Sign In
         </h2>
+
         <div className="mb-4">
+          <label
+            htmlFor="email"
+            className="block text-white text-sm font-bold mb-2"
+          >
+            <FaEnvelope className="inline mr-2" /> E-mail
+          </label>
           <input
             type="text"
             name="email"
@@ -134,11 +120,17 @@ const Login = () => {
             placeholder="E-mail"
             onChange={changeHandler}
             onFocus={focusHandler}
-            autoComplete="off"
             className="w-full p-3 rounded-md bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
         <div className="mb-4 relative">
+          <label
+            htmlFor="password"
+            className="block text-white text-sm font-bold mb-2"
+          >
+            <FaLock className="inline mr-2" /> Password
+          </label>
           <input
             type={passwordVisible ? "text" : "password"}
             name="password"
@@ -150,7 +142,7 @@ const Login = () => {
           />
           <div
             onClick={() => setPasswordVisible(!passwordVisible)}
-            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-2xl text-blue-400"
+            className="absolute right-3 top-10 transform -translate-y-1/2 cursor-pointer text-xl text-blue-400"
           >
             {passwordVisible ? <FaEye /> : <FaEyeSlash />}
           </div>
@@ -159,12 +151,15 @@ const Login = () => {
         <div className="mb-6">
           <ReCAPTCHA
             sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-            onChange={onRecaptchaSuccess}
-            onExpired={onRecaptchaExpired}
+            onChange={() => setCaptchaValid(true)}
+            onExpired={() => {
+              setCaptchaValid(false);
+              notify("Captcha expired, please verify again");
+            }}
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 relative">
           <button
             type="submit"
             disabled={!captchaValid}
@@ -172,52 +167,56 @@ const Login = () => {
               captchaValid ? "bg-black" : "bg-gray-500 cursor-not-allowed"
             }`}
           >
-            {isLoading ? "Logging In..." : "Login"}
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-cyan-500 mx-auto mt-2"></div>
+            ) : (
+              "Login"
+            )}
           </button>
-          {isLoading && (
-            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500 mx-auto mt-2"></div>
-          )}
+         
+
+          {/* 👇 Hot Toast Portal Positioned Below Button */}
+          <div className="absolute w-full left-0 mt-3">
+            <Toaster position="bottom-center" />
+          </div>
         </div>
 
-        {/* Google/Facebook Login buttons */}
+        {/* Google / Facebook Buttons */}
         <div className="mb-6">
           <button
-            className="w-full mb-4 flex items-center justify-center py-3 px-4 rounded-lg shadow-xl transition-colors duration-300 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="button"
             onClick={handleGoogleLogin}
+            className="w-full mb-4 flex items-center justify-center py-3 px-4 rounded-lg shadow-xl bg-white text-gray-700 hover:bg-gray-100"
           >
             <img className="w-6 h-6 mr-2" src={google} alt="Google logo" />
             <span className="font-semibold">Continue with Google</span>
           </button>
 
           <button
-            className="w-full flex items-center justify-center py-3 px-4 rounded-lg shadow-xl transition-colors duration-300 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="button"
             onClick={handleFacebookLogin}
+            className="w-full flex items-center justify-center py-3 px-4 rounded-lg shadow-xl bg-blue-600 text-white hover:bg-blue-700"
           >
             <img className="w-6 h-6 mr-2" src={facebook} alt="Facebook logo" />
             <span className="font-semibold">Continue with Facebook</span>
           </button>
-
-          {/* <p className="text-gray-100 text-sm mt-4">
-              By continuing, you agree to our <a href="/terms" className="text-gray-500 hover:underline">Terms</a> and <a href="/privacy" className="text-gray-500 hover:underline">Privacy Policy</a>.
-          </p> */}
         </div>
 
-        <div className="flex flex-col space-y-2 text-center">
-          <span className="text-gray-100">
+        <div className="text-center text-gray-100 space-y-2">
+          <p>
             Don't have an account?{" "}
             <Link to="/register" className="text-yellow-300 hover:underline">
               Create account
             </Link>
-          </span>
-          <span className="text-gray-100">
+          </p>
+          <p>
             Forget password?{" "}
             <Link to="/forget_pass" className="text-yellow-300 hover:underline">
               Click here
             </Link>
-          </span>
+          </p>
         </div>
       </form>
-      <ToastContainer />
     </div>
   );
 };

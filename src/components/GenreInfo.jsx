@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   addSongToQueue,
+  clearQueue,
+  addPlaylistToQueueWithAuth,
   setIsPlaying,
-  addSongToQueueWithAuth,
-  playNextSongWithAuth,
 } from "../features/musicSlice";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
+import Loading from "../components/Loading";
 
 const GenreInfo = () => {
   const { name } = useParams();
@@ -16,6 +17,30 @@ const GenreInfo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
+  const [genres, setGenres] = useState([]);
+    const [disableBtn, setDisableBtn] = useState(false);
+
+  const location = useLocation();
+  const id = location.state?.genreId;
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}api/v1/genre/${id}`); // Send genreId as a path parameter
+        setGenres(res.data.data); // Assuming your backend returns { success: true, data: genre }
+        console.log("Fetched genre:", res.data.data); // Optional: Log the fetched data
+      } catch (err) {
+        console.error("Failed to fetch genre:", err);
+        // Optionally set an error state to display an error message to the user
+        // setError("Failed to load genre.");
+      }
+    };
+
+    if (id) {
+      // Only fetch if genreId is available
+      fetchGenres();
+    }
+  }, [id]);
 
   const handleResponse = (response) => {
     const songsData = response.data.songs;
@@ -44,7 +69,7 @@ const GenreInfo = () => {
   }, [name]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {
@@ -55,12 +80,44 @@ const GenreInfo = () => {
     dispatch(addSongToQueueWithAuth(song));
     dispatch(setIsPlaying(true));
   };
+  const handelPlayAll = () => {
+    dispatch(clearQueue());
+
+    dispatch(addPlaylistToQueueWithAuth(songs));
+    dispatch(setIsPlaying(true));
+
+    setDisableBtn(!disableBtn);
+  };
 
   return (
     <div className="relative mx-4 mt-14 sm:mx-10 lg:mx-10">
-      <div className="w-full mb-6">
+      <div className="flex items-center justify-center border border-gray-700">
+        <img className=" w-[30%] " src={genres.image}></img>
+        <div className="text-white p-2 space-y-5">
+          <h1 className="md:text-4xl text-2xl text-cyan-500 font-bold">{genres.name}</h1>
+          <p className="md:w-[50%] text-sm md:text-lg text-gray-500">{genres.discription}</p>
+          <div>
+            <button
+              disabled={disableBtn}
+              onClick={handelPlayAll}
+              className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 3v18l15-9L5 3z" />
+              </svg>
+              Play All
+            </button>
+
+          </div>
+        </div>
+      </div>
+      <div className="w-full my-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
-          {name}
+          Songs
           <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
       </div>

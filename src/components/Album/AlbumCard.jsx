@@ -44,14 +44,13 @@ const Recently = ({ heading, link, type }) => {
   };
 
   const handelClick = (album) => {
-    console.log("inside click")
     if (type == "playlist") {
-
       navigate(`/playlist/${album._id}`);
-      return;
     } else {
       navigate(`/album/${album._id}`);
     }
+    // Go to the top of the screen after navigation
+    window.scrollTo(0, 0);
   };
 
   const handleMenuToggle = (album) => {
@@ -62,7 +61,7 @@ const Recently = ({ heading, link, type }) => {
     }
   };
   return (
-    <div className="relative mx-2 sm:mx-10 lg:mx-10">
+    <div className="relative mx-2 sm:mx-10 lg:mx-10 ">
       <div className="w-full mb-6">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
           {heading}

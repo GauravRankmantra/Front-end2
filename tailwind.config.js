@@ -3,6 +3,14 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        'josefin-m': ['JosefinSansM', 'sans-serif'],
+        'josefin-r': ['JosefinSansR', 'sans-serif'],
+        'josefin-sb': ['JosefinSansSb', 'sans-serif'],
+        'josefin-b': ['JosefinSansB', 'sans-serif'],
+        // You can also add a default sans-serif if you like
+        // 'sans': ['JosefinSansR', ...defaultTheme.fontFamily.sans],
+      },
       animation: {
         fadeIn: "fadeIn 0.1s ease-in-out",
       },

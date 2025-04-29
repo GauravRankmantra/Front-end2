@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Error from "../components/Error";
+import { checkAuth } from "../features/authSlice.js";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
@@ -32,6 +33,11 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [logoutLoading, setlogoutLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +62,7 @@ const Profile = () => {
   }, []);
 
   const handleLogout = async () => {
+    setlogoutLoading(true);
     await axios.post(
       `${apiUrl}api/v1/auth/logout`,
       {},
@@ -68,7 +75,7 @@ const Profile = () => {
       dispatch(logout());
       dispatch(logoutUser());
     }, 500);
-
+    setlogoutLoading(false);
     navigate("/");
   };
   const handleSubmit = (e) => {
@@ -137,10 +144,6 @@ const Profile = () => {
     const { name, value } = event.target;
     setUpdatedInfo((prev) => ({ ...prev, [name]: value }));
   };
-
-  if (error) {
-    return <Error />;
-  }
 
   if (!userInfo) {
     return <p className="text-5xl text-center">Loading...</p>;
@@ -234,7 +237,11 @@ const Profile = () => {
                     className="bg-red-600 text-white py-2 px-10 rounded-3xl hover:bg-red-700 transition duration-200"
                     onClick={handleLogout}
                   >
-                    LogOut
+                    {logoutLoading ? (
+                      <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    ) : (
+                      "LogOut"
+                    )}
                   </button>
                 </div>
               </form>

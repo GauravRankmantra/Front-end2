@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaSearch, FaEdit, FaTrashAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import Loading from "../Loading";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -38,7 +38,6 @@ const CreatePlaylist = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    
     if (!searchQuery.trim()) {
       dispatch(fetchTopSongs()).then(() => setLoading(false));
     } else {

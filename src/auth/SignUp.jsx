@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import { notify } from "./toast";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaPlus,
+} from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { validate } from "./validate";
+import toast, { Toaster } from "react-hot-toast";
+
 import google from "../assets/img/google.png";
 import facebook from "../assets/img/facebook.png";
+import loginBg from "../assets/loginBg.jpg";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SignUp = () => {
@@ -22,6 +30,10 @@ const SignUp = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
   const navigate = useNavigate();
+
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+
   const [touched, setTouched] = useState({
     fullName: false,
     email: false,
@@ -31,6 +43,34 @@ const SignUp = () => {
   const [coverImagePreview, setCoverImagePreview] = useState(
     "https://dummyimage.com/150x150"
   );
+
+  const showToast = (message, type = "success") => {
+    toast.custom(
+      (t) => (
+        <div
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 px-4 py-3`}
+        >
+          <div className="flex-1 w-0">
+            <p className="text-sm font-medium text-gray-900">
+              {type === "success" ? "Success" : "Error"}
+            </p>
+            <p className="mt-1 text-sm text-gray-500">{message}</p>
+          </div>
+          <div className="ml-4 flex-shrink-0 flex">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      ),
+      { position: "bottom-center" }
+    );
+  };
 
   useEffect(() => {
     setErrors(validate(data, "signUp"));
@@ -53,14 +93,12 @@ const SignUp = () => {
 
   const onRecaptchaExpired = () => {
     setCaptchaValid(false);
-    notify("Captcha expired, please verify again", "error");
+    toast.error("Captcha expired, please verify again");
   };
   const validateEmail = (email) => {
-    const emailRegex =
-      /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   };
-
   const handleEmailBlur = async () => {
     if (validateEmail(data.email)) {
       setIsEmailValid(true);
@@ -71,16 +109,15 @@ const SignUp = () => {
 
         if (response.data.data.exists) {
           setEmailExists(true);
-          notify("Email is already registered!", "error");
+          toast.error("Email is already registered!");
         } else {
           setEmailExists(false);
         }
       } catch (error) {
-        notify("Network error, please try again!", "error");
+        toast.error("Network error, please try again!");
       }
     } else {
       setIsEmailValid(false);
-      notify("Enter a valid Gmail, Yahoo, or Outlook email", "error");
     }
   };
 
@@ -93,6 +130,7 @@ const SignUp = () => {
       errors.password
     )
       return;
+    setOtpLoading(true);
 
     try {
       const response = await axios.post(`${apiUrl}api/v1/user/get-otp`, {
@@ -101,18 +139,19 @@ const SignUp = () => {
       if (response.data.success) {
         setOtp(response.data.data.otp);
         setStep(2);
-        notify("OTP sent to your email", "success");
+        toast.success("OTP sent to your email");
       }
     } catch (error) {
-      notify("Failed to send OTP, try again!", "error");
+      toast.error("Failed to send OTP, try again!");
+    } finally {
+      setOtpLoading(false);
     }
   };
 
   const verifyOtp = async () => {
-
-
     if (userOtp === otp) {
-      notify("OTP verified successfully!", "success");
+      // toast.success("OTP verified successfully!");
+      setVerifyLoading(true);
 
       try {
         const formData = new FormData();
@@ -130,47 +169,38 @@ const SignUp = () => {
         });
 
         if (response.data.success) {
-          notify("You signed up successfully", "success");
+          toast.success("You signed up successfully");
           setTimeout(() => {
             navigate("/login");
-          }, 2000);
+          }, 500);
         } else {
-          notify(response.data.message || "Something went wrong", "warning");
+          toast.error(response.data.message || "Something went wrong");
         }
       } catch (error) {
-        console.error("error while signup", error);
-        if (error.response) {
-          notify(
-            error.response.data.message ||
-              "Server error. Please try again later.",
-            "error"
-          );
-        } else if (
-          error?.response?.data?.error?.errorResponse?.code === 11000
-        ) {
-          notify("Email alredy registered . ", "error");
+        console.error("Signup error", error);
+        if (error.response?.data?.error?.errorResponse?.code === 11000) {
+          toast.error("Email already registered");
         } else {
-          notify("Server error. Please try again later.", "error");
+          toast.error("Server error. Please try again later.");
         }
+      } finally {
+        setVerifyLoading(false);
       }
     } else {
-      notify("Invalid OTP, please try again!", "error");
+      toast.error("Invalid OTP, please try again!");
     }
   };
 
   const handleGoogleLogin = (event) => {
     event.preventDefault();
-  
 
     window.open(`${apiUrl}api/v1/auth/google`, "_self");
-   
   };
 
   const handleFacebookLogin = (event) => {
     event.preventDefault();
-    
+
     window.open(`${apiUrl}api/v1/auth/facebook`, "_self");
-  
   };
 
   const handleCoverImageChange = (event) => {
@@ -182,9 +212,16 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-cyan-950 p-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen p-4"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <form
-        className="bg-cyan-600 rounded-lg shadow-xl p-8 w-full max-w-md"
+        className=" bg-cyan-700/30 border border-cyan-500 rounded-lg shadow-xl p-8 w-full max-w-md"
         autoComplete="off"
       >
         <h2 className="text-3xl text-gray-200 font-semibold mb-6 text-center">
@@ -221,7 +258,7 @@ const SignUp = () => {
                 htmlFor="fullName"
                 className="block text-gray-200 text-sm font-bold mb-2"
               >
-                Full Name
+                <FaUser className="inline mr-2" /> Full Name
               </label>
               <input
                 type="text"
@@ -231,9 +268,7 @@ const SignUp = () => {
                 placeholder="Enter your full name"
                 onChange={changeHandler}
                 onBlur={() => setTouched({ ...touched, fullName: true })}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  errors.fullName ? "border-red-500" : ""
-                }`}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline `}
               />
               {touched.fullName && errors.fullName && (
                 <p className="text-red-500 text-xs italic">{errors.fullName}</p>
@@ -245,7 +280,7 @@ const SignUp = () => {
                 htmlFor="email"
                 className="block text-gray-200 text-sm font-bold mb-2"
               >
-                Email
+                <FaEnvelope className="inline mr-2" /> Email
               </label>
               <input
                 type="email"
@@ -258,11 +293,7 @@ const SignUp = () => {
                   setTouched({ ...touched, email: true });
                 }}
                 onChange={changeHandler}
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                  errors.email || (touched.email && !isEmailValid) || emailExists
-                    ? "border-red-500"
-                    : ""
-                }`}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline `}
               />
               {touched.email && errors.email && (
                 <p className="text-red-500 text-xs italic">{errors.email}</p>
@@ -284,7 +315,7 @@ const SignUp = () => {
                 htmlFor="password"
                 className="block text-gray-200 text-sm font-bold mb-2"
               >
-                Password
+                <FaLock className="inline mr-2" /> Password
               </label>
               <input
                 type={passwordVisible ? "text" : "password"}
@@ -325,7 +356,7 @@ const SignUp = () => {
             <button
               type="button"
               onClick={sendOtp}
-              className={`bg-cyan-400 hover:bg-cyan-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
+              className={`bg-cyan-400 hover:bg-cyan-700 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full flex justify-center items-center ${
                 !captchaValid ||
                 errors.fullName ||
                 errors.email ||
@@ -334,14 +365,22 @@ const SignUp = () => {
                   : ""
               }`}
               disabled={
+                otpLoading ||
                 !captchaValid ||
                 errors.fullName ||
                 errors.email ||
                 errors.password
               }
             >
-              Get OTP
+              {otpLoading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+              ) : (
+                "Get OTP"
+              )}
             </button>
+
+            {/* Toast rendered near this button */}
+            <Toaster position="bottom-center" />
           </>
         )}
         {step === 2 && (
@@ -349,7 +388,7 @@ const SignUp = () => {
             <div className="mb-4">
               <label
                 htmlFor="otp"
-                className="block text-gray-700 text-sm font-bold mb-2"
+                className="block text-gray-100 text-sm font-bold mb-2"
               >
                 Enter OTP
               </label>
@@ -366,10 +405,17 @@ const SignUp = () => {
             <button
               type="button"
               onClick={verifyOtp}
-              className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full flex justify-center items-center"
+              disabled={verifyLoading}
             >
-              Verify OTP
+              {verifyLoading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+              ) : (
+                "Verify OTP"
+              )}
             </button>
+
+            <Toaster position="bottom-center" />
           </>
         )}
       </form>
@@ -398,8 +444,6 @@ const SignUp = () => {
           Sign In
         </Link>
       </h1>
-
-      <ToastContainer />
     </div>
   );
 };

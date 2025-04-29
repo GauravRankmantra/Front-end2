@@ -6,7 +6,7 @@ import {
   addSongToHistory,
   addSongToQueueWithAuth,
 } from "../../features/musicSlice";
-import cart from "../../assets/svg/cart.svg";
+import cart from "../../assets/svg/artist.svg";
 import { useDispatch, useSelector } from "react-redux";
 import SongAction from "./SongActions";
 import { AiFillPlayCircle } from "react-icons/ai";
@@ -35,17 +35,24 @@ const Recently = ({ heading, link, showGrid }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(link, { withCredentials: true });
-        if (response.data || response.data.data) {
-          setSongs(response.data.data);
+
+        if (response.data && response.data.data) {
+          const sortedSongs = [...response.data.data].sort(
+            (a, b) => b.plays - a.plays
+          );
+          // Sort by plays descending
+
+          setSongs(sortedSongs);
         } else {
           setError("No songs available");
         }
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
+
     fetchData();
   }, [link]);
 
@@ -116,7 +123,7 @@ const Recently = ({ heading, link, showGrid }) => {
               {error && <p className="text-white">Error: {error}</p>}
 
               {!loading && !error && songs?.length > 0
-                ? songs.map((song,index) => (
+                ? songs.map((song, index) => (
                     <div
                       key={index}
                       className="relative flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] group "
@@ -140,7 +147,7 @@ const Recently = ({ heading, link, showGrid }) => {
                           {song.price > 0 && (
                             <>
                               {user?.purchasedSongs?.includes(song._id) ? (
-                                <div className="absolute flex justify-center items-center space-x-1 bottom-1 bg-green-600 text-white rounded-xl px-3 py-1">
+                                <div className="absolute  flex  justify-center items-center space-x-1 bottom-1 bg-green-600 text-white rounded-xl px-3 py-1">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="w-5 h-5 text-white"
@@ -158,7 +165,7 @@ const Recently = ({ heading, link, showGrid }) => {
                                   <span>Purchased</span>
                                 </div>
                               ) : (
-                                <div className="absolute flex justify-center items-center space-x-1 bottom-1 bg-blue-600 text-white rounded-xl px-3 py-1">
+                                <div className="absolute   flex justify-center items-center space-x-1 bottom-1 bg-blue-600 text-white rounded-xl px-3 py-1">
                                   <img
                                     src={cart}
                                     className="w-5 h-5 text-white"
@@ -274,5 +281,4 @@ const Recently = ({ heading, link, showGrid }) => {
     </>
   );
 };
-
 export default Recently;

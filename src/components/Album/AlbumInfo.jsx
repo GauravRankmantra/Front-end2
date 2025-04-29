@@ -9,6 +9,7 @@ import AlbumCard from "./AlbumCard";
 import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
 import { addPlaylistToQueue, clearQueue ,setIsPlaying,addPlaylistToQueueWithAuth } from "../../features/musicSlice";
+import Loading from "../Loading";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumInfo = () => {
@@ -111,7 +112,7 @@ const AlbumInfo = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <h1 className="text-2xl font-bold">Loading.... </h1>
+    <Loading/>
       </div>
     );
   }

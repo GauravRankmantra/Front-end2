@@ -7,13 +7,18 @@ import {
   AiOutlineShareAlt,
 } from "react-icons/ai";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../../modals/ShareModal";
 import addLike from "../../utils/addLike";
-import { addSongToQueue, setIsPlaying,addSongToQueueWithAuth } from "../../features/musicSlice";
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToQueueWithAuth,
+} from "../../features/musicSlice";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
@@ -23,6 +28,8 @@ const SongActions = ({ onClose, song }) => {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [pModelOpen, setPModelOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   const songId = song._id;
   const dispatch = useDispatch();
 
@@ -97,15 +104,7 @@ const SongActions = ({ onClose, song }) => {
       );
 
       if (response.data.isPurchased) {
-        toast.success("Download started", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success("Download started");
 
         // Fetch the blob data
         const audioResponse = await axios.get(song.audioUrls.high, {
@@ -126,15 +125,7 @@ const SongActions = ({ onClose, song }) => {
         window.URL.revokeObjectURL(url); // Release the blob URL
         document.body.removeChild(downloadLink);
       } else if (response.data.isPurchased === false) {
-        toast.error("Download not allowed. Purchase the song first.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("Download not allowed. Purchase the song first.");
       }
     } catch (error) {
       if (
@@ -142,26 +133,10 @@ const SongActions = ({ onClose, song }) => {
         error.response.data &&
         error.response.data.message === "Unauthorized: You Need to Login"
       ) {
-        toast.error("Please login to download the song.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("Please login to download the song.");
       } else {
         console.error("Error checking purchase status", error);
-        toast.error("An error occurred while checking purchase status.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("An error occurred while checking purchase status.");
       }
     }
   };
@@ -174,57 +149,27 @@ const SongActions = ({ onClose, song }) => {
   const handleAddToFav = (songId) => {
     addLike({ songId })
       .then((response) => {
-
-        toast.success("Added to favorites!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success("Added to favorites!");
         onClose();
       })
       .catch((error) => {
         // Handle errors
 
-        toast.success(error.response.data.message, {
-          // Show error message
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(error.response.data.message);
       });
   };
 
   const handleAddToQueue = () => {
     try {
+      if (!isAuthenticated) {
+        toast.error("You Need To Login ");
+        return;
+      }
       dispatch(addSongToQueueWithAuth(song));
       dispatch(setIsPlaying(false));
-      toast.success("Added to queue!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success("Added to queue!");
     } catch (error) {
-      toast.error(error?.response?.data?.message, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(error?.response?.data?.message);
     }
 
     onClose();
@@ -240,18 +185,14 @@ const SongActions = ({ onClose, song }) => {
       const playlists = playlistsRes?.data?.data;
 
       if (!playlists || playlists.length === 0) {
-        toast.error("You don't have any playlists yet.", {
-          position: "top-right",
-        });
+        toast.error("You don't have any playlists yet.");
         return;
       }
       setUserPlaylists(playlists);
       setPModelOpen(true); // Open the playlist selection modal
     } catch (error) {
       console.error("Error fetching playlists:", error);
-      toast.error(error.response.data.message, {
-        position: "top-right",
-      });
+      toast.error(error.response.data.message);
     }
   };
 
@@ -288,7 +229,7 @@ const SongActions = ({ onClose, song }) => {
     <>
       <div
         ref={dropdownRef}
-        className="absolute md:overflow-hidden overflow-scroll right-8 w-24 h-28 md:w-auto md:h-auto m-auto md:max-w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 animate-fade-in"
+        className="absolute md:overflow-hidden overflow-scroll right-8 w-24 h-28 md:w-auto md:h-auto m-auto md:max-w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 animate-fade-in"
       >
         <div className="md:py-1">
           <button

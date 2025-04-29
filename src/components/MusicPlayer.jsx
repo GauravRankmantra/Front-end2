@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import ShareModal from "../modals/ShareModal";
 const apiUrl = import.meta.env.VITE_API_URL;
+import { FaChevronDown } from "react-icons/fa";
+import { CiSettings } from "react-icons/ci";
+
 import "../index.css";
 import {
   FaPlay,
@@ -18,7 +21,7 @@ import { IoCloudDownloadOutline } from "react-icons/io5";
 import { MdOutlineExpandCircleDown } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
-import playIcon from "../assets/svg/play_icon.svg";
+
 import { GoPlay } from "react-icons/go";
 import { IoPauseCircleOutline } from "react-icons/io5";
 import { FaChevronUp } from "react-icons/fa6";
@@ -41,10 +44,11 @@ import {
   toggleRepeat,
   shufflePlaylist,
 } from "../features/musicSlice";
+import { useNavigate } from "react-router-dom";
 
-const MusicSidebar = ({ song }) => {
+const MusicSidebar = ({ song, show }) => {
   const [expand, setExpand] = useState(false);
- 
+
   const dropdownRef = useRef(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [shareData, setShareData] = useState(null);
@@ -52,7 +56,7 @@ const MusicSidebar = ({ song }) => {
   const [pModelOpen, setPModelOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const songId = song._id;
-
+  const navigate = useNavigate();
 
   const handleShare = ({ songId, albumId }) => {
     // Define the base URL dynamically
@@ -87,7 +91,7 @@ const MusicSidebar = ({ song }) => {
     addLike({ songId })
       .then((response) => {
         // Handle the successful response
-       
+
         toast.success("Added to favorites!", {
           position: "top-right",
           autoClose: 3000,
@@ -269,7 +273,7 @@ const MusicSidebar = ({ song }) => {
   return (
     <div
       className={` transition-all shadow-2xl py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
-        expand ? "max-w-max" : "w-20 lg:w-24 xl:w-2/12"
+        expand || show ? "max-w-max" : "w-16 lg:w-24 xl:w-2/12"
       }`}
     >
       <div className="w-full relative flex items-center">
@@ -296,7 +300,11 @@ const MusicSidebar = ({ song }) => {
                 song.artist.map((artistObj, index) => (
                   <span
                     key={index}
-                    onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
+                    onClick={() => {
+                      if (artistObj.fullName !== "Unknown Artist") {
+                        navigate(`/artist/${artistObj._id}`);
+                      }
+                    }}
                     className="cursor-pointer hover:underline"
                   >
                     {artistObj.fullName}
@@ -314,40 +322,52 @@ const MusicSidebar = ({ song }) => {
 
         {/* Action Buttons Section */}
         <div
-          className={`flex-grow overflow-scroll no-scrollbar hidden md:hidden lg:flex  justify-around items-center ml-10 space-x-6 transition-opacity duration-300 ${
-            expand ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
+          className={`flex-grow overflow-scroll no-scrollbar flex  justify-around items-center  space-x-6 transition-opacity duration-300 ${
+            expand || show
+              ? "opacity-100 visible ml-0"
+              : "opacity-0 invisible ml-10"
+          }
+          
+          `}
         >
           <button
             onClick={handleDownloadClick}
-            className="flex items-center space-x-2 text-sm"
+            className={`flex ${
+              show && `flex-col space-x-1`
+            } justify-center items-center space-x-2 text-sm`}
           >
             <IoCloudDownloadOutline className="w-5 h-5" />
-            <span className="text-lg">Download</span>
+            <span className="lg:text-lg text-xs">Download</span>
           </button>
 
           <button
             onClick={handleAddToFav}
-            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+            className={`flex ${
+              show && "flex-col pl-0 space-x-1"
+            } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <CiHeart className="w-5 h-5" />
-            <span className="text-lg">Favorite</span>
+            <span className="lg:text-lg text-xs">Favorite</span>
           </button>
 
           <button
             onClick={handleAddToPlaylist}
-            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+            className={`flex ${
+              show && "flex-col pl-0 space-x-1"
+            } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <MdOutlinePlaylistAdd className="w-5 h-5" />
-            <span className="text-lg">Add to Playlist</span>
+            <span className="lg:text-lg text-xs">Add to Playlist</span>
           </button>
 
           <button
             onClick={() => handleShare({ songId: song._id })}
-            className="flex items-center space-x-2 text-sm border-l border-gray-100 pl-4"
+            className={`flex ${
+              show && "flex-col pl-0 space-x-1"
+            } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <IoCloudDownloadOutline className="w-5 h-5" />
-            <span className="text-lg">Share</span>
+            <span className="lg:text-lg text-xs">Share</span>
           </button>
         </div>
 
@@ -401,23 +421,25 @@ const MusicPlayer = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [openQuality, setOpenQuality] = useState(false);
   const [quality, setQuality] = useState("high");
-
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showsetting, setShowSetting] = useState(false);
 
   const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
   const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
 
-
   const handelQualityClick = (type) => {
     setQuality(type);
     if (audioRef.current && currentSong) {
-      const newSrc = type === "low" ? currentSong.audioUrls.low : currentSong.audioUrls.high;
+      const newSrc =
+        type === "low" ? currentSong.audioUrls.low : currentSong.audioUrls.high;
       if (audioRef.current.src !== newSrc) {
-        
         audioRef.current.src = newSrc;
- 
+
         audioRef.current.load();
         if (isPlaying) {
-          audioRef.current.play().catch((err) => console.error("Play error:", err));
+          audioRef.current
+            .play()
+            .catch((err) => console.error("Play error:", err));
         }
       }
     }
@@ -436,7 +458,6 @@ const MusicPlayer = () => {
   const handelQueueSongClick = (song) => {
     dispatch(addSongToHistory(song));
     dispatch(addSongToQueueWithAuth(song));
-
 
     dispatch(setIsPlaying(true));
   };
@@ -479,7 +500,6 @@ const MusicPlayer = () => {
       }
     }
   }, [currentSong, isPlaying]);
-
 
   const handleTimeUpdate = () => {
     if (audioRef.current && !isDragging) {
@@ -550,17 +570,66 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className="fixed bottom-0 mb-0 left-0 w-full bg-gray-600 py-4 md:py-0 flex justify-between items-center text-white z-50 text-center"
+      className={`fixed   bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
+        isExpanded ? "h-max py-5 " : " py-0 h-20"
+      }`}
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`, // Add linear gradient for black overlay
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="relative flex w-full items-center md:pr-16 pr-10">
-        <MusicSidebar song={currentSong} />
+      <div
+        className={`relative flex w-full items-center ${
+          isExpanded ? "flex-col pl-5 pr-5 md:pr-16" : "pl-0 pr-10 md:pr-16"
+        }`}
+      >
+        {!isExpanded && <MusicSidebar song={currentSong} />}
 
-        <div className="w-full flex justify-between  items-center ml-[20%] md:ml-[10%] xl:ml-[20%] lg:ml-[15%]  md:px-8 md:py-4 rounded-lg shadow-md">
+        {isExpanded && (
+          <div className="border border-gray-500/30 shadow-2xl flex w-full relative flex-col justify-center  items-center space-x-4 pl-4  ">
+            <img
+              src={currentSong.coverImage}
+              alt={currentSong.title}
+              className="w-44 h-44 rounded-lg shadow-xl object-cover"
+            />
+            <button
+              className="text-gray-100 space-x-1 bg-cyan-500 flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
+              onClick={togglePlaylist}
+            >
+              <FaChevronCircleUp className="w-3 h-3" />
+              <h1 className="text-xs md:text-sm">Queue</h1>{" "}
+            </button>
+            <CiSettings
+              onClick={() => setShowSetting(!showsetting)}
+              className="absolute left-0 top-1 w-8 h-8 text-cyan-500"
+            />
+            <div className="absolute left-0 top-10">
+              {showsetting && (
+                <MusicSidebar song={currentSong} show={showsetting} />
+              )}
+            </div>
+
+            <div className="flex flex-col text-left">
+              <h2 className="text-xl font-semibold">{currentSong.title}</h2>
+              <p className="text-sm text-center text-gray-300">
+                {Array.isArray(currentSong.artist)
+                  ? currentSong.artist.map((a) => a.fullName).join(", ")
+                  : currentSong.artist?.fullName || currentSong.artist}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`w-full   flex items-center 
+          ${
+            isExpanded
+              ? "flex-col ml-0 justify-center "
+              : "  justify-between ml-[20%] md:ml-[10%] xl:ml-[20%] lg:ml-[15%]"
+          } 
+          md:px-8 md:py-4 rounded-lg shadow-md`}
+        >
           {/* Controls (Previous, Play/Pause, Next) */}
           <div className="flex justify-center items-center md:space-x-4">
             <button
@@ -589,7 +658,11 @@ const MusicPlayer = () => {
             onEnded={handleNext}
           />
           {/* Progress Bar */}
-          <div className=" flex-grow flex translate-x-4 md:translate-x-0 items-center md:mx-4">
+          <div
+            className={` flex-grow flex items-center md:mx-4 ${
+              isExpanded ? "w-full translate-x-0" : "translate-x-4"
+            } md:translate-x-0`}
+          >
             <div className=" flex justify-between items-center w-full md:px-4">
               <span className="text-xs text-gray-100">
                 {formatDuration(currentTime)}
@@ -610,7 +683,7 @@ const MusicPlayer = () => {
           </div>
         </div>
 
-        <div className="relative hidden md:w-52 md:flex items-center justify-center">
+        <div className=" relative hidden md:w-52 md:flex items-center justify-center">
           <FaVolumeUp
             className="text-white cursor-pointer w-5 h-5"
             onClick={toggleSlider}
@@ -627,7 +700,7 @@ const MusicPlayer = () => {
             />
           </div>
         </div>
-        <div className="lg:flex space-x-3 hidden ">
+        <div className="lg:flex  space-x-3 hidden ">
           <div className="rounded-full p-1 border ">
             <IoShuffleOutline className="w-5 h-5" />
           </div>
@@ -693,6 +766,12 @@ const MusicPlayer = () => {
           >
             Clear queue
           </button>
+          <button
+            className="bg-red-500 text-white p-2 rounded-full"
+            onClick={() => setIsPlaylistOpen(false)}
+          >
+            X
+          </button>
         </div>
 
         <ul className="space-y-4 ">
@@ -752,6 +831,14 @@ const MusicPlayer = () => {
           ))}
         </ul>
       </div>
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`absolute ${
+          isExpanded ? "top-6" : "bottom-0"
+        } right-1 md:hidden bg-cyan-600 hover:bg-cyan-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg`}
+      >
+        {isExpanded ? <FaChevronDown /> : <FaChevronUp />}
+      </button>
     </div>
   );
 };

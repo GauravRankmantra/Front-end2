@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { PlayCircle, Heart, MoreHorizontal, AudioLines } from "lucide-react"; // Lucide-react icons
 import { useDispatch, useSelector } from "react-redux";
+import ShareModal from "../../modals/ShareModal";
+import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 
 import {
   addSongToQueue,
@@ -31,6 +33,7 @@ const SongList = ({ songs, artist }) => {
 
   const handleMouseLeave = () => {
     setHoveredSongIndex(null);
+    setPlayingSong(null);
   };
 
   return (
@@ -91,10 +94,12 @@ const SongList = ({ songs, artist }) => {
               <td className="p-4">
                 <div className="ml-4 flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
                   {playing && playing._id === song._id && (
-                    <SongAction
-                      onClose={() => setPlayingSong(null)}
-                      song={currentSong}
-                    />
+                    <div className="translate-x-1 w-full">
+                      <SongAction
+                        onClose={() => setPlayingSong(null)}
+                        song={playing}
+                      />
+                    </div>
                   )}
 
                   <svg

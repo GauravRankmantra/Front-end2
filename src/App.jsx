@@ -35,6 +35,7 @@ import Contact from "./pages/Contact";
 import Privicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import { checkAuth } from "./features/authSlice";
+import PurchasedTracks from "./components/PurchasedTracks";
 
 
 
@@ -66,7 +67,7 @@ const App = () => {
           <Route path="/genre/:name" element={<GenreInfo />} />
           <Route path="/top_track" element={<TopTrack />} />
           <Route path="/history" element={<History />} />
-          <Route path="/purchased" element={<Purchase />} />
+          <Route path="/purchased-tracks" element={<PurchasedTracks />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<Privicy />} />

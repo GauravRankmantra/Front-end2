@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const DownloadPage = () => {
+const PurchasedTracks = () => {
   const user = useSelector((state) => state.user.user);
   const [songs, setSongs] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -100,7 +100,7 @@ const DownloadPage = () => {
   return (
     <div className="w-full mt-20 mb-6 px-4">
       <h1 className="text-lg pb-2 relative inline-block text-[#3bc8e7]">
-        Your Downloaded Tracks
+        Your Purchased Tracks
         <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
       </h1>
 
@@ -166,4 +166,4 @@ const DownloadPage = () => {
   );
 };
 
-export default DownloadPage;
+export default PurchasedTracks;

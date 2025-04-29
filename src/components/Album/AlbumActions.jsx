@@ -7,11 +7,11 @@ import {
   AiOutlineShareAlt,
 } from "react-icons/ai";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../../modals/ShareModal";
-import { addPlaylistToQueue, setIsPlaying } from "../../features/musicSlice";
-import { useDispatch } from "react-redux";
+import { addPlaylistToQueueWithAuth, setIsPlaying } from "../../features/musicSlice";
+import { useDispatch, useSelector } from "react-redux";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -27,6 +27,7 @@ const AlbumActions = ({ onClose, album }) => {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [pModelOpen, setPModelOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   //   useEffect(() => {
   //     const handleClickOutside = (event) => {
@@ -72,10 +73,7 @@ const AlbumActions = ({ onClose, album }) => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(downloadLink);
       } else if (response.data.isPurchased === false) {
-        toast.error("Download not allowed. Purchase the album first.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        toast.error("Download not allowed. Purchase the album first.");
       }
     } catch (error) {
       if (
@@ -83,10 +81,7 @@ const AlbumActions = ({ onClose, album }) => {
         error.response.data &&
         error.response.data.message === "Unauthorized: You Need to Login"
       ) {
-        toast.error("Please login to download the album.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        toast.error("Please login to download the album.");
       } else {
         console.error("Error checking purchase status", error);
         toast.error("An error occurred while checking purchase status.", {
@@ -103,6 +98,10 @@ const AlbumActions = ({ onClose, album }) => {
   };
 
   const handleAddToFav = () => {
+      if (!isAuthenticated) {
+            toast.error("You Need To Login ");
+            return;
+          }
     toast.success("Added to favorites!", {
       position: "top-right",
       autoClose: 3000,
@@ -112,30 +111,27 @@ const AlbumActions = ({ onClose, album }) => {
 
   const handleAddToQueue = async () => {
     try {
+        if (!isAuthenticated) {
+              toast.error("You Need To Login ");
+              return;
+            }
       const res = await axios.get(`${apiUrl}api/v1/albums/${albumId}`);
       const songs = res?.data?.data?.songs;
 
       if (!songs || songs.length === 0) {
-        toast.error("This album doesn't contain any songs.", {
-          position: "top-right",
-        });
+        toast.error("This album doesn't contain any songs.");
         return;
       }
 
       setSong(songs);
-      dispatch(addPlaylistToQueue(songs));
+      dispatch(addPlaylistToQueueWithAuth(songs));
       dispatch(setIsPlaying(true));
 
-      toast.success("Added all songs to queue!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.success("Added all songs to queue!");
       onClose();
     } catch (error) {
       console.error("Error fetching album songs:", error);
-      toast.error("Failed to add songs to queue. Please try again.", {
-        position: "top-right",
-      });
+      toast.error("Failed to add songs to queue. Please try again.");
     }
   };
 
@@ -150,18 +146,14 @@ const AlbumActions = ({ onClose, album }) => {
       const playlists = playlistsRes?.data?.data;
 
       if (!playlists || playlists.length === 0) {
-        toast.error("You don't have any playlists yet.", {
-          position: "top-right",
-        });
+        toast.error("You don't have any playlists yet.");
         return;
       }
       setUserPlaylists(playlists);
       setPModelOpen(true); // Open the playlist selection modal
     } catch (error) {
       console.error("Error fetching playlists:", error);
-      toast.error("Failed to fetch playlists. Please try again.", {
-        position: "top-right",
-      });
+      toast.error("Failed to fetch playlists. Please try again.");
     }
   };
 

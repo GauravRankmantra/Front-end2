@@ -10,18 +10,62 @@ import {
   FaHeadphones,
   FaAngleRight,
 } from "react-icons/fa";
+import axios from "axios";
+
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchSearchResults, setSearchQuery } from "../features/searchSlice";
 import SearchResultsDisplay from "./SearchResultsDisplay";
+import artist from "../assets/svg/artist.svg";
+import createPlaylist from "../assets/svg/createPlaylist.svg";
+import download from "../assets/svg/download.svg";
+import fav from "../assets/svg/fav.svg";
+import featurePlaylist from "../assets/svg/featurePlaylist.svg";
+import genre from "../assets/svg/genre.svg";
+import history from "../assets/svg/history.svg";
+import home from "../assets/svg/home.svg";
+import purchased from "../assets/svg/purchased.svg";
+import topTracks from "../assets/svg/topTracks.svg";
+import album from "../assets/svg/album.svg";
+import { NavLink } from "react-router-dom";
 
 import { IoDiamondOutline } from "react-icons/io5";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+  const [songs, setSongs] = useState([]);
+  const [error2, setError2] = useState(null);
+
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}api/v1/song/top15`, {
+          withCredentials: true,
+        });
+
+        if (response.data && response.data.data) {
+          const sortedSongs = [...response.data.data].sort(
+            (a, b) => b.plays - a.plays
+          );
+          // Sort by plays descending
+
+          console.log("titeeeds", sortedSongs);
+
+          setSongs(sortedSongs);
+        } else {
+          setError2("No songs available");
+        }
+      } catch (err) {
+        setError2(err.message);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
@@ -35,12 +79,12 @@ const Navbar = () => {
 
   // Toggles Sidebar
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setOpenMenu(!openMenu);
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setSidebarOpen(false);
+        setOpenMenu(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -49,7 +93,7 @@ const Navbar = () => {
     };
   }, []);
   const closeSidebar = () => {
-    setSidebarOpen(false);
+    setOpenMenu(false);
   };
 
   const formatDate = (dateString) => {
@@ -86,9 +130,38 @@ const Navbar = () => {
     validateUser();
   }, [dispatch]);
 
+
+  const navItems = [
+      {
+        to: "/",
+        icon: home,
+        text: "discover",
+      },
+      { to: "/albums", icon: album, text: "albums" },
+      { to: "/artists", icon: artist, text: "artists" },
+      { to: "/genres", icon: genre, text: "genres" },
+      { to: "/top_track", icon: topTracks, text: "top_tracks" },
+    ];
+  
+    const secondaryNavItems = [
+      { to: "/downloads", icon: download, text: "downloads" },
+      { to: "/purchased-tracks", icon: purchased, text: "purchased" },
+      { to: "/favourites", icon: fav, text: "favourites" },
+      { to: "/history", icon: history, text: "history" },
+    ];
+  
+    const playlistNavItems = [
+      {
+        to: "/featured-playlist",
+        icon: featurePlaylist,
+        text: "featured playlist",
+      },
+      { to: "/create-playlist", icon: createPlaylist, text: "create playlist" },
+    ];
+
   return (
     <div>
-      <div className="fixed bg-[#1b2039] py-5 px-8 right-0 left-0 top-0 z-[1000]">
+      <div className="fixed font-josefin-sb bg-[#1b2039] py-5 px-8 right-0 left-0 top-0 z-[1000]">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-12 w-full lg:w-auto">
             {/* Search Box */}
@@ -105,10 +178,10 @@ const Navbar = () => {
               </span>
             </div>
 
-            <div className="hidden lg:flex items-center text-white text-md">
-              <span className="text-[#3bc8e7] w-full">Trending Songs :</span>
+            <div className="hidden overflow-hidden lg:flex justify-between items-center text-white text-md">
+              <span className="text-[#3bc8e7]">Trending Songs :</span>
               <span className="ml-4 min-w-full">
-                <a href="#">Dream your moments, Until I Met You, Gimme...</a>
+                {songs?.map((song) => song.title).join(", ")}
               </span>
             </div>
           </div>
@@ -204,11 +277,11 @@ const Navbar = () => {
         <SearchResultsDisplay results={results} setInputValue={setInputValue} />
       )}
 
-      {sidebarOpen && (
+      {openMenu && (
         <div
           ref={sidebarRef}
           className={`fixed top-10 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            openMenu ? "translate-x-0" : "-translate-x-full"
           } lg:hidden`}
         >
           {/* Toggle Button */}
@@ -237,29 +310,91 @@ const Navbar = () => {
             </div>
 
             {/* Sidebar Links */}
-            <ul className="space-y-5 mt-10 w-full">
-              {[
-                { to: "/", icon: <FaHome />, text: "Discover" },
-                { to: "/albums", icon: <FaMusic />, text: "Albums" },
-                { to: "/artists", icon: <FaUser />, text: "Artists" },
-                { to: "/genres", icon: <FaHeadphones />, text: "Genres" },
-                {
-                  to: "/top_track",
-                  icon: <IoDiamondOutline />,
-                  text: "Top Tracks",
-                },
-              ].map((item, index) => (
-                <li key={index} className="w-full">
-                  <Link
-                    to={item.to}
-                    className="flex items-center text-[#cdcdcd] text-sm py-2 px-4 hover:bg-[#2cc8e5] hover:text-white rounded-lg transition-all duration-300"
-                    onClick={closeSidebar}
+            <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
+          <ul className={`${isAuthenticated?'space-y-3' :'space-y-10'} `}>
+            {navItems.map((item, index) => (
+              <li key={index}>
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                      isActive ? "bg-[#2cc8e5] text-white" : ""
+                    }`
+                  }
+                >
+                  <img
+                    src={item.icon}
+                    alt={item.text}
+                    className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                  />
+                  <span
+                    className={`${openMenu ? "block" : "hidden"} flex-grow`}
                   >
-                    {item.icon} <span className="ml-4">{item.text}</span>
-                  </Link>
+                    {item.text}
+                  </span>
+                </NavLink>
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
+              </li>
+            ))}
+          </ul>
+
+          {isAuthenticated && (
+            <ul className="mt-10 space-y-3">
+              {secondaryNavItems.map((item, index) => (
+                <li key={index}>
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                        isActive ? "bg-[#2cc8e5] text-white" : ""
+                      }`
+                    }
+                  >
+                    <img
+                      src={item.icon}
+                      alt={item.text}
+                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                    />
+                    <span
+                      className={`${openMenu ? "block" : "hidden"} flex-grow`}
+                    >
+                      {item.text}
+                    </span>
+                  </NavLink>
+                  <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
                 </li>
               ))}
             </ul>
+          )}
+
+          {isAuthenticated && (
+            <ul className="mt-10 space-y-3">
+              {playlistNavItems.map((item, index) => (
+                <li key={index}>
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                        isActive ? "bg-[#2cc8e5] text-white" : ""
+                      }`
+                    }
+                  >
+                    <img
+                      src={item.icon}
+                      alt={item.text}
+                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                    />
+                    <span
+                      className={`${openMenu ? "block" : "hidden"} flex-grow`}
+                    >
+                      {item.text}
+                    </span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
           </div>
         </div>
       )}
