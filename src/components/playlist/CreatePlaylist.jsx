@@ -4,6 +4,7 @@ import { FaSearch, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import Loading from "../Loading";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 import {
   setPlaylistName,
@@ -17,6 +18,7 @@ import {
 
 const CreatePlaylist = () => {
   const dispatch = useDispatch();
+    const { t } = useTranslation();
   const {
     name,
     songs,
@@ -95,7 +97,7 @@ const CreatePlaylist = () => {
 
   return (
     <div className="max-w-2xl mt-24 mx-auto p-6 bg-gray-800 text-white space-y-2 rounded-lg shadow-2xl">
-      <h1 className="text-2xl font-bold mb-4">Create Playlist</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("createPlaylist")}</h1>
       {loading && <Loading />}
       {!loading && (
         <>
@@ -147,7 +149,7 @@ const CreatePlaylist = () => {
           </div>
           <input
             type="text"
-            placeholder="Enter playlist name"
+            placeholder={t("playlistName")}
             value={name}
             onChange={(e) => dispatch(setPlaylistName(e.target.value))}
             className="w-full p-2 mb-4 text-black rounded-md"
@@ -155,7 +157,7 @@ const CreatePlaylist = () => {
 
           <textarea
             type="text"
-            placeholder="description"
+            placeholder={t("description")}
             value={description}
             onChange={(e) => dispatch(setDescription(e.target.value))}
             className="w-full p-2 mb-4 text-black rounded-md"
@@ -163,7 +165,7 @@ const CreatePlaylist = () => {
           <div className="flex items-center gap-2 mb-4">
             <input
               type="text"
-              placeholder="Search songs"
+              placeholder={t("searchSong")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full p-2 text-black rounded-md"
@@ -172,7 +174,7 @@ const CreatePlaylist = () => {
               <FaSearch className="text-white" />
             </button>
           </div>
-          <p className="mb-2">Selected Songs: {songs.length}/20</p>
+          <p className="mb-2">{t("selectedSongs")}: {songs.length}/20</p>
           {playlistLoading && <p>Loading songs...</p>}
           {error && <p className="text-red-500">Error: {error}</p>}
           <div className="max-h-64 overflow-y-auto bg-gray-800 p-2 space-y-2 rounded-md no-scrollbar">
@@ -224,7 +226,7 @@ const CreatePlaylist = () => {
             }`}
             disabled={!isFormValid}
           >
-            Create Playlist
+            {t("createPlaylist")}
           </button>
         </>
       )}

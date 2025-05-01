@@ -36,7 +36,7 @@ const Purchase = () => {
       setError(null);
 
       try {
-        console.log("Fetching song with ID:", id);
+      
     
         const response = await axios.get(`${apiUrl}api/v1/song/${id}`); // Or use query params: `YOUR_API_ENDPOINT?id=${id}`
 

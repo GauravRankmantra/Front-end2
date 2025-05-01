@@ -11,6 +11,8 @@ import {
   FaAngleRight,
 } from "react-icons/fa";
 import axios from "axios";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+
 
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
@@ -30,6 +32,7 @@ import purchased from "../assets/svg/purchased.svg";
 import topTracks from "../assets/svg/topTracks.svg";
 import album from "../assets/svg/album.svg";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { IoDiamondOutline } from "react-icons/io5";
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -38,8 +41,27 @@ const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const [songs, setSongs] = useState([]);
   const [error2, setError2] = useState(null);
+  const { t } = useTranslation();
+  const [lanOpen, setLanOpen] = useState(false);
 
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const languages = [
+    { code: "en", label: "English", icon: "fi-us" },
+    { code: "fr", label: "French", icon: "fi-fr" },
+    { code: "es", label: "Spanish", icon: "fi-es" },
+    { code: "pt", label: "Portuguese", icon: "fi-pt" },
+    { code: "hi", label: "Hindi", icon: "fi-in" },
+    { code: "ru", label: "Russian", icon: "fi-de" },
+    { code: "de", label: "German", icon: "fi-us" },
+    { code: "zh", label: "Chinese", icon: "fi-cn" },
+  ];
+
+  const { i18n } = useTranslation();
+
+  const handleLanguageChange = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,8 +74,6 @@ const Navbar = () => {
             (a, b) => b.plays - a.plays
           );
           // Sort by plays descending
-
-          console.log("titeeeds", sortedSongs);
 
           setSongs(sortedSongs);
         } else {
@@ -130,34 +150,33 @@ const Navbar = () => {
     validateUser();
   }, [dispatch]);
 
-
   const navItems = [
-      {
-        to: "/",
-        icon: home,
-        text: "discover",
-      },
-      { to: "/albums", icon: album, text: "albums" },
-      { to: "/artists", icon: artist, text: "artists" },
-      { to: "/genres", icon: genre, text: "genres" },
-      { to: "/top_track", icon: topTracks, text: "top_tracks" },
-    ];
-  
-    const secondaryNavItems = [
-      { to: "/downloads", icon: download, text: "downloads" },
-      { to: "/purchased-tracks", icon: purchased, text: "purchased" },
-      { to: "/favourites", icon: fav, text: "favourites" },
-      { to: "/history", icon: history, text: "history" },
-    ];
-  
-    const playlistNavItems = [
-      {
-        to: "/featured-playlist",
-        icon: featurePlaylist,
-        text: "featured playlist",
-      },
-      { to: "/create-playlist", icon: createPlaylist, text: "create playlist" },
-    ];
+     {
+       to: "/",
+       icon: home,
+       text: t("discover"),
+     },
+     { to: "/albums", icon: album, text: t("albums") },
+     { to: "/artists", icon: artist, text: t("artist") },
+     { to: "/genres", icon: genre, text: t("genres") },
+     { to: "/top_track", icon: topTracks, text: t("topTracks") },
+   ];
+ 
+   const secondaryNavItems = [
+     { to: "/downloads", icon: download, text: t("downloads") },
+     { to: "/purchased-tracks", icon: purchased, text: t("purchased") },
+     { to: "/favourites", icon: fav, text: t("favorites") },
+     { to: "/history", icon: history, text: t("history") },
+   ];
+ 
+   const playlistNavItems = [
+     {
+       to: "/featured-playlist",
+       icon: featurePlaylist,
+       text: t("featuredPlaylist"),
+     },
+     { to: "/create-playlist", icon: createPlaylist, text: t("createPlaylist") },
+   ];
 
   return (
     <div>
@@ -169,7 +188,7 @@ const Navbar = () => {
               <input
                 type="text"
                 className="form-control py-2 pl-3 pr-12 text-sm text-[#777] bg-white rounded-[5px] border-none w-full sm:w-[180px] lg:w-full"
-                placeholder="Search Music Here.."
+                placeholder={t("searchMusicHere")}
                 value={inputValue}
                 onChange={handleInputChange}
               />
@@ -179,28 +198,47 @@ const Navbar = () => {
             </div>
 
             <div className="hidden overflow-hidden lg:flex justify-between items-center text-white text-md">
-              <span className="text-[#3bc8e7]">Trending Songs :</span>
-              <span className="ml-4 min-w-full">
-                {songs?.map((song) => song.title).join(", ")}
+              <span className="text-[#3bc8e7]">{t("trendingSongs")}</span>
+              <span className="ml-4">
+                {songs
+                  ?.slice(0, 5)
+                  .map((song) => song.title)
+                  .join(", ")}
+                {songs?.length > 5 && "..."}
               </span>
             </div>
           </div>
 
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">
-            <div className="relative text-white capitalize cursor-pointer group">
-              <div
-                id="google_translate_element"
-                className="absolute right-20 bottom-0 translate-y-5 w-10 h-10 z-10"
-              ></div>
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => setLanOpen(!lanOpen)}
+                className="border border-gray-700 p-2 text-white rounded shadow"
+              >
+                🌐 {t("language")}
+              </button>
+              {lanOpen && (
+                <div className="absolute w-max mt-2 bg-white border rounded shadow z-10">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                    >
+                      <span class={`fi ${lang.icon} fis`}></span> {lang.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {user ? (
+            {isAuthenticated ? (
               <Link
                 to="/profile"
                 className="ms_btn bg-[#3bc8e7] text-white text-center py-[8px] px-[20px] rounded-[20px] transition-all duration-400 ease-in-out hover:shadow-lg"
               >
-                Profile
+                {t("profile")}
               </Link>
             ) : (
               <div className="hidden lg:flex space-x-4">
@@ -311,90 +349,96 @@ const Navbar = () => {
 
             {/* Sidebar Links */}
             <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
-          <ul className={`${isAuthenticated?'space-y-3' :'space-y-10'} `}>
-            {navItems.map((item, index) => (
-              <li key={index}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
-                      isActive ? "bg-[#2cc8e5] text-white" : ""
-                    }`
-                  }
-                >
-                  <img
-                    src={item.icon}
-                    alt={item.text}
-                    className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                  />
-                  <span
-                    className={`${openMenu ? "block" : "hidden"} flex-grow`}
-                  >
-                    {item.text}
-                  </span>
-                </NavLink>
-                <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
-              </li>
-            ))}
-          </ul>
-
-          {isAuthenticated && (
-            <ul className="mt-10 space-y-3">
-              {secondaryNavItems.map((item, index) => (
-                <li key={index}>
-                  <NavLink
-                    to={item.to}
-                    className={({ isActive }) =>
-                      `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
-                        isActive ? "bg-[#2cc8e5] text-white" : ""
-                      }`
-                    }
-                  >
-                    <img
-                      src={item.icon}
-                      alt={item.text}
-                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                    />
-                    <span
-                      className={`${openMenu ? "block" : "hidden"} flex-grow`}
+              <ul
+                className={`${isAuthenticated ? "space-y-3" : "space-y-10"} `}
+              >
+                {navItems.map((item, index) => (
+                  <li key={index}>
+                    <NavLink
+                      to={item.to}
+                      className={({ isActive }) =>
+                        `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                          isActive ? "bg-[#2cc8e5] text-white" : ""
+                        }`
+                      }
                     >
-                      {item.text}
-                    </span>
-                  </NavLink>
-                  <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
-                </li>
-              ))}
-            </ul>
-          )}
+                      <img
+                        src={item.icon}
+                        alt={item.text}
+                        className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                      />
+                      <span
+                        className={`${openMenu ? "block" : "hidden"} flex-grow`}
+                      >
+                        {item.text}
+                      </span>
+                    </NavLink>
+                    <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
+                  </li>
+                ))}
+              </ul>
 
-          {isAuthenticated && (
-            <ul className="mt-10 space-y-3">
-              {playlistNavItems.map((item, index) => (
-                <li key={index}>
-                  <NavLink
-                    to={item.to}
-                    className={({ isActive }) =>
-                      `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
-                        isActive ? "bg-[#2cc8e5] text-white" : ""
-                      }`
-                    }
-                  >
-                    <img
-                      src={item.icon}
-                      alt={item.text}
-                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                    />
-                    <span
-                      className={`${openMenu ? "block" : "hidden"} flex-grow`}
-                    >
-                      {item.text}
-                    </span>
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+              {isAuthenticated && (
+                <ul className="mt-10 space-y-3">
+                  {secondaryNavItems.map((item, index) => (
+                    <li key={index}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                            isActive ? "bg-[#2cc8e5] text-white" : ""
+                          }`
+                        }
+                      >
+                        <img
+                          src={item.icon}
+                          alt={item.text}
+                          className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                        />
+                        <span
+                          className={`${
+                            openMenu ? "block" : "hidden"
+                          } flex-grow`}
+                        >
+                          {item.text}
+                        </span>
+                      </NavLink>
+                      <div className="h-[1px] bg-gradient-to-r from-transparent via-[#45f3ff] to-transparent opacity-50"></div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {isAuthenticated && (
+                <ul className="mt-10 space-y-3">
+                  {playlistNavItems.map((item, index) => (
+                    <li key={index}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                            isActive ? "bg-[#2cc8e5] text-white" : ""
+                          }`
+                        }
+                      >
+                        <img
+                          src={item.icon}
+                          alt={item.text}
+                          className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
+                        />
+                        <span
+                          className={`${
+                            openMenu ? "block" : "hidden"
+                          } flex-grow`}
+                        >
+                          {item.text}
+                        </span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}

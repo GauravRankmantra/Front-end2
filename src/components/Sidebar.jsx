@@ -16,8 +16,10 @@ import album from "../assets/svg/album.svg";
 import { IoDiamondOutline } from "react-icons/io5";
 import logo from "../assets/img/logo.jpeg";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
+    const { t } = useTranslation();
   const [openMenu, setOpenMenu] = useState(false);
   const sidebarRef = useRef(null);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -44,28 +46,28 @@ const Sidebar = () => {
     {
       to: "/",
       icon: home,
-      text: "discover",
+      text: t("discover"),
     },
-    { to: "/albums", icon: album, text: "albums" },
-    { to: "/artists", icon: artist, text: "artists" },
-    { to: "/genres", icon: genre, text: "genres" },
-    { to: "/top_track", icon: topTracks, text: "top_tracks" },
+    { to: "/albums", icon: album, text: t("albums") },
+    { to: "/artists", icon: artist, text: t("artist") },
+    { to: "/genres", icon: genre, text: t("genres") },
+    { to: "/top_track", icon: topTracks, text: t("topTracks") },
   ];
 
   const secondaryNavItems = [
-    { to: "/downloads", icon: download, text: "downloads" },
-    { to: "/purchased-tracks", icon: purchased, text: "purchased" },
-    { to: "/favourites", icon: fav, text: "favourites" },
-    { to: "/history", icon: history, text: "history" },
+    { to: "/downloads", icon: download, text: t("downloads") },
+    { to: "/purchased-tracks", icon: purchased, text: t("purchased") },
+    { to: "/favourites", icon: fav, text: t("favorites") },
+    { to: "/history", icon: history, text: t("history") },
   ];
 
   const playlistNavItems = [
     {
       to: "/featured-playlist",
       icon: featurePlaylist,
-      text: "featured playlist",
+      text: t("featuredPlaylist"),
     },
-    { to: "/create-playlist", icon: createPlaylist, text: "create playlist" },
+    { to: "/create-playlist", icon: createPlaylist, text: t("createPlaylist") },
   ];
 
   return (

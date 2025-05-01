@@ -114,7 +114,7 @@ const musicSlice = createSlice({
           _id: artistObj._id,
           fullName: artistObj.fullName || "Unknown Artist",
         }));
-      } else if (song.artist?.fullName || song.artist) {
+      } else if (song?.artist?.fullName || song.artist) {
         // If artist is a single object, store it as an array with one object
         artist = [
           {

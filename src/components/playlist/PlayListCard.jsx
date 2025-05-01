@@ -84,7 +84,7 @@ const PlayListCard = ({ playlist, onClose, onPlaylistDeleted }) => {
               aria-label={`Play playlist ${playlist?.name}`} // Added aria label
             />
             <FaTrashAlt
-              onClick={() => deletePlaylist(playlist)}
+              onClick={() => deletePlaylist(playlist,onPlaylistDeleted,onClose)}
               className="absolute top-2 right-2 w-5 h-5 text-white hover:text-red-400 cursor-pointer transform transition-transform duration-300 hover:scale-110"
               aria-label={`Delete playlist ${playlist?.name}`} // Added aria label
             />

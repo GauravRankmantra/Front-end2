@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../assets/img/logo.jpeg";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import {
   faFacebookF,
   faLinkedinIn,
@@ -17,10 +18,11 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contact, setContact] = useState(null);
+   const { t } = useTranslation();
   useEffect(() => {
     axios.get(`${apiUrl}api/v1/contact/contact-info`).then((res) => {
       setContact(res.data);
-      console.log("footer info contact", res.data);
+
     });
   }, []);
 
@@ -65,17 +67,14 @@ const Footer = () => {
             Odg Music
           </h3>
           <p className="text-white leading-6">
-            ODG Music is more than just a website it's a community built on a
-            shared love for music. Connect with fellow enthusiasts, share your
-            favorite tracks, and immerse yourself in the rhythm that unites us
-            all.
+          {t("footerP")}
           </p>
         </div>
 
         {/* Useful Links */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-            Useful Links
+          {t("usefulLinks")}
           </h3>
           <ul className="text-gray-100 space-y-4">
             <li>
@@ -138,15 +137,15 @@ const Footer = () => {
         {/* Subscribe */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-            Subscribe
+          {t("footerSubscribeH")}
           </h3>
           <p className="text-gray-300 mb-4">
-            Subscribe to our newsletter and get the latest updates and offers.
+          {t("footerSubscribeP")}
           </p>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
-              placeholder="Enter Your Name"
+              placeholder={t("yourName")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full p-2 mb-4 bg-gray-100 text-gray-700 rounded focus:outline-none"
@@ -154,7 +153,7 @@ const Footer = () => {
             />
             <input
               type="email"
-              placeholder="Enter Your Email"
+              placeholder={t("yourEmail")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 mb-4 bg-gray-100 text-gray-700 rounded focus:outline-none"
@@ -165,7 +164,7 @@ const Footer = () => {
               disabled={isSubmitting}
               className="w-full sm:w-6/12 bg-cyan-500 text-white py-2 rounded-3xl hover:bg-cyan-600 transition duration-200"
             >
-              {isSubmitting ? "Sending..." : "Send"}
+              {isSubmitting ? "Sending..." : t("send")}
             </button>
           </form>
         </div>
@@ -173,7 +172,7 @@ const Footer = () => {
         {/* Contact & Social */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-            Contact Us
+          {t("contactUs")}
           </h3>
           <p className="text-gray-300">
             <strong>Call Us:</strong> {contact?.phone}
@@ -185,7 +184,7 @@ const Footer = () => {
             <strong>Walk In:</strong> {contact?.address}
           </p>
 
-          <h3 className="text-cyan-400 text-xl mb-2">Follow Us</h3>
+          <h3 className="text-cyan-400 text-xl mb-2">{t("followUs")}</h3>
           <div className="flex space-x-3">
             <a
               href={contact?.facebook}

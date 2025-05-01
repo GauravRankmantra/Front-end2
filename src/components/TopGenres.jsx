@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
+import { useTranslation } from "react-i18next";
 
 const TopGenres = () => {
   const [genres, setGenres] = useState([]);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -24,7 +26,7 @@ const TopGenres = () => {
     <div className="text-white px-4 sm:px-10 py-10">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-xl font-semibold text-[#3bc8e7] relative">
-          Top Genres
+          {t("topGenres")}
           <div className="w-[120px] h-[2px] bg-gradient-to-r from-[#3bc8e7] to-transparent mt-2 rounded-xl"></div>
         </h2>
         {/* <a href="#" className="text-blue-400 hover:underline text-sm">
@@ -40,21 +42,26 @@ const TopGenres = () => {
           genres.map((genre, index) => (
             <div
               key={genre._id}
-              onClick={() => navigate(`/genre/${genre.name.toLowerCase()}`, { state: { genreId: genre._id } })}
-
+              onClick={() =>
+                navigate(`/genre/${genre.name.toLowerCase()}`, {
+                  state: { genreId: genre._id },
+                })
+              }
               className={`
-                relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer transition-all duration-300 
-                ${index % 5 === 0 ? "lg:col-span-2 lg:row-span-2" : "h-60"}
-              `}
+    relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer transition-all duration-300 
+    ${index % 5 === 0 ? "lg:col-span-2 lg:row-span-2" : "h-60"}
+  `}
             >
               <img
-                src={genre.image || "/default-genre.jpg"} // fallback image
+                src={genre.image || "/default-genre.jpg"}
                 alt={genre.name}
+                loading="lazy"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition duration-500"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-40 transition duration-300"></div>
-              <div className="absolute bottom-4 left-4">
-                <h3 className="text-xl font-bold">{genre.name}</h3>
+
+              {/* Genre Name with Background */}
+              <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-md">
+                <h3 className="text-xl font-bold text-white">{genre.name}</h3>
               </div>
             </div>
           ))

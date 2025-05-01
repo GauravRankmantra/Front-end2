@@ -7,6 +7,7 @@ import ShareModal from "../modals/ShareModal";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { FaChevronDown } from "react-icons/fa";
 import { CiSettings } from "react-icons/ci";
+import { useTranslation } from "react-i18next";
 
 import "../index.css";
 import {
@@ -48,6 +49,7 @@ import { useNavigate } from "react-router-dom";
 
 const MusicSidebar = ({ song, show }) => {
   const [expand, setExpand] = useState(false);
+  const { t } = useTranslation();
 
   const dropdownRef = useRef(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -81,7 +83,7 @@ const MusicSidebar = ({ song, show }) => {
     // Open the Share Modal
     openShareModal({ shareUrl, socialMediaLinks });
   };
-
+  console.log("song info at music sidebar ", song);
   const openShareModal = ({ shareUrl, socialMediaLinks }) => {
     setShareData({ shareUrl, socialMediaLinks });
     setModalOpen(true);
@@ -303,6 +305,7 @@ const MusicSidebar = ({ song, show }) => {
                     onClick={() => {
                       if (artistObj.fullName !== "Unknown Artist") {
                         navigate(`/artist/${artistObj._id}`);
+                        console.log(artistObj.fullName, " ", artistObj._id);
                       }
                     }}
                     className="cursor-pointer hover:underline"
@@ -337,7 +340,7 @@ const MusicSidebar = ({ song, show }) => {
             } justify-center items-center space-x-2 text-sm`}
           >
             <IoCloudDownloadOutline className="w-5 h-5" />
-            <span className="lg:text-lg text-xs">Download</span>
+            <span className="lg:text-sm text-xs"> {t("download")}</span>
           </button>
 
           <button
@@ -347,7 +350,7 @@ const MusicSidebar = ({ song, show }) => {
             } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <CiHeart className="w-5 h-5" />
-            <span className="lg:text-lg text-xs">Favorite</span>
+            <span className="lg:text-sm text-xs">{t("addToFav")}</span>
           </button>
 
           <button
@@ -357,7 +360,7 @@ const MusicSidebar = ({ song, show }) => {
             } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <MdOutlinePlaylistAdd className="w-5 h-5" />
-            <span className="lg:text-lg text-xs">Add to Playlist</span>
+            <span className="lg:text-sm text-xs"> {t("addToPlaylist")}</span>
           </button>
 
           <button
@@ -367,7 +370,7 @@ const MusicSidebar = ({ song, show }) => {
             } justify-center items-center space-x-2 text-sm border-l border-gray-100 pl-4`}
           >
             <IoCloudDownloadOutline className="w-5 h-5" />
-            <span className="lg:text-lg text-xs">Share</span>
+            <span className="lg:text-sm text-xs">{t("share")}</span>
           </button>
         </div>
 
@@ -423,6 +426,7 @@ const MusicPlayer = () => {
   const [quality, setQuality] = useState("high");
   const [isExpanded, setIsExpanded] = useState(false);
   const [showsetting, setShowSetting] = useState(false);
+    const { t } = useTranslation();
 
   const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
   const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
@@ -598,7 +602,7 @@ const MusicPlayer = () => {
               onClick={togglePlaylist}
             >
               <FaChevronCircleUp className="w-3 h-3" />
-              <h1 className="text-xs md:text-sm">Queue</h1>{" "}
+              <h1 className="text-xs md:text-sm">{t("queue")}</h1>
             </button>
             <CiSettings
               onClick={() => setShowSetting(!showsetting)}
@@ -612,7 +616,7 @@ const MusicPlayer = () => {
 
             <div className="flex flex-col text-left">
               <h2 className="text-xl font-semibold">{currentSong.title}</h2>
-              <p className="text-sm text-center text-gray-300">
+              <p className="text-sm text-center text-gray-300 ">
                 {Array.isArray(currentSong.artist)
                   ? currentSong.artist.map((a) => a.fullName).join(", ")
                   : currentSong.artist?.fullName || currentSong.artist}
@@ -713,7 +717,7 @@ const MusicPlayer = () => {
               onClick={() => setOpenQuality(!openQuality)}
             >
               <FaChevronCircleUp className="w-3 h-3" />
-              <h1 className="text-xs md:text-sm">Quality</h1>{" "}
+              <h1 className="text-xs md:text-sm">{t("quality")}</h1>{" "}
             </button>
             {openQuality && (
               <div className="absolute bottom-7 mt-2 bg-gray-100 rounded-md shadow-lg p-2 w-32">
@@ -746,7 +750,7 @@ const MusicPlayer = () => {
               onClick={togglePlaylist}
             >
               <FaChevronCircleUp className="w-3 h-3" />
-              <h1 className="text-xs md:text-sm">Queue</h1>{" "}
+              <h1 className="text-xs md:text-sm">{t("queue")}</h1>
             </button>
           </div>
         </div>
@@ -759,7 +763,7 @@ const MusicPlayer = () => {
         } w-80 h-3/4 z-50 overflow-y-auto rounded-lg`}
       >
         <div className=" sticky flex justify-between items-center mb-4">
-          <h4 className="text-white text-lg font-semibold">Queue</h4>
+          <h4 className="text-white text-lg font-semibold">{t("queue")}</h4>
           <button
             className="text-yellow-400"
             onClick={() => dispatch(clearQueue())}

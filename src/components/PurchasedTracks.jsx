@@ -5,10 +5,12 @@ import { PlayCircle, MoreHorizontal, Download } from "lucide-react";
 import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const PurchasedTracks = () => {
+     const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
   const [songs, setSongs] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -100,7 +102,7 @@ const PurchasedTracks = () => {
   return (
     <div className="w-full mt-20 mb-6 px-4">
       <h1 className="text-lg pb-2 relative inline-block text-[#3bc8e7]">
-        Your Purchased Tracks
+        {t("youtPurchasedTrack")}
         <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
       </h1>
 
@@ -112,11 +114,11 @@ const PurchasedTracks = () => {
             <thead className="text-xs uppercase text-gray-500">
               <tr>
                 <th className="p-4 w-10">#</th>
-                <th className="p-4">Song Title</th>
-                <th className="p-4">Artist</th>
-                <th className="p-4">Duration</th>
-                <th className="p-4">Download</th>
-                <th className="p-4">More</th>
+                <th className="p-4">{t("songTitle")}</th>
+                <th className="p-4">{t("artist")}</th>
+                <th className="p-4">{t("duration")}</th>
+                <th className="p-4">{t("downloads")}</th>
+                <th className="p-4">{t("more")}</th>
               </tr>
             </thead>
             <tbody>

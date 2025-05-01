@@ -28,7 +28,7 @@ const GenreInfo = () => {
       try {
         const res = await axios.get(`${apiUrl}api/v1/genre/${id}`); // Send genreId as a path parameter
         setGenres(res.data.data); // Assuming your backend returns { success: true, data: genre }
-        console.log("Fetched genre:", res.data.data); // Optional: Log the fetched data
+       
       } catch (err) {
         console.error("Failed to fetch genre:", err);
         // Optionally set an error state to display an error message to the user

@@ -10,7 +10,7 @@ import formatDuration from "../utils/formatDuration";
 import WeekShimmer from "./WeekShimmer";
 import { setShowLoginPopup } from "../features/uiSlice";
 import LoginCard from "./LoginCard";
-import SongAction from "./Song/SongActions"
+import SongAction from "./Song/SongActions";
 
 const WeeklyTop15 = ({ link, heading }) => {
   const [songs, setSongs] = useState([]);
@@ -128,8 +128,10 @@ const WeeklyTop15 = ({ link, heading }) => {
                         <p className="font-bold text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap">
                           {song.title}
                         </p>
-                        <p className="text-xs lg:text-sm   text-gray-400 text-ellipsis overflow-hidden whitespace-nowrap">
-                          {song.artist}
+                        <p className="text-xs lg:text-sm text-gray-400 text-ellipsis overflow-hidden whitespace-nowrap">
+                          {Array.isArray(song.artist)
+                            ? song?.artist.map((a) => a.fullName).join(", ")
+                            : song?.artist?.fullName || song?.artist}
                         </p>
                       </div>
 

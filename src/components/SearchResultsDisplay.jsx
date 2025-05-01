@@ -82,7 +82,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
           <div className="mb-8 w-full border-b border-gray-600">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">Artist</h2>
             <div className="flex flex-col  space-x-8 md:space-y-0 space-y-8 ">
-              {results.artists.map((artist) => (
+              {results?.artists?.map((artist) => (
                 <div
                   key={artist._id}
                   className="bg-gray-800 flex flex-col md:space-y-0 space-y-8   lg:flex-row justify-evenly items-center rounded-lg shadow-md md:p-4 p-1 transition-transform duration-300"
@@ -93,13 +93,13 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                   >
                     <img
                       src={
-                        artist.coverImage || "https://dummyimage.com/150x150"
+                        artist?.coverImage || "https://dummyimage.com/150x150"
                       }
-                      alt={artist.fullName}
+                      alt={artist?.fullName}
                       className="w-24 h-24 object-cover rounded-full mb-4"
                     />
                     <h3 className="text-lg  font-semibold text-white">
-                      {artist.fullName}
+                      {artist?.fullName}
                     </h3>
                   </div>
 
@@ -108,7 +108,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                       Songs
                     </h1>
                     <div className="grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
-                      {artist.songs.map((song) => (
+                      {artist?.songs?.map((song) => (
                         <div
                           key={song._id}
                           onClick={() => handleSongClick(song)}
@@ -136,7 +136,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                       Albums
                     </h1>
                     <div className=" grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
-                      {artist.albums.map((album) => (
+                      {artist?.albums?.map((album) => (
                         <div
                           key={album._id}
                           onClick={() => {
@@ -175,7 +175,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
           <div className="mb-8  w-full border-b border-gray-600 ">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">Albums</h2>
             <div className="flex flex-col shadow-2xl justify-start  w-full">
-              {results.albums.map((album) => (
+              {results?.albums?.map((album) => (
                 <div
                   key={album._id}
                   className="bg-gray-800 mx-5 space-x-5 border border-gray-600 flex flex-col md:flex-row space-y-4 md:space-y-0 justify-center items-center rounded-lg shadow-md p-4 transition-transform duration-300"
@@ -205,22 +205,22 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                         By{" "}
                         <span
                           onClick={() =>
-                            handleartistClick(album.artistInfo._id)
+                            handleartistClick(album?.artistInfo?._id)
                           }
                           className="underline text-gray-400 cursor-pointer"
                         >
-                          {album.artistInfo.fullName}
+                          {album?.artistInfo?.fullName}
                         </span>
                       </h3>
                     </div>
                   </div>
                   <div></div>
                   <div>
-                    {album.songs?.length > 0 && (
+                    {album?.songs?.length > 0 && (
                       <div className="mx-1">
                         <h1 className="text-center">Songs</h1>
                         <div className=" grid grid-cols-2 gap-2 rounded-xl shadow-2xl p-2">
-                          {album.songs.map((song) => (
+                          {album?.songs?.map((song) => (
                             <div
                               key={song._id}
                               onClick={() => handleSongClick(song)}
@@ -256,7 +256,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
           <div className="mb-8 border-b border-gray-600">
             <h2 className="text-xl font-semibold mb-4 text-cyan-400">Songs</h2>
             <div className="flex flex-col ">
-              {results.songs.map((song) => (
+              {results?.songs?.map((song) => (
                 <div
                   key={song._id}
                   className="bg-gray-800  flex mx-5 flex-col border border-gray-600 rounded-lg shadow-md p-4 transition-transform duration-300 "
@@ -264,8 +264,8 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                   <div className=" flex items-center space-x-2">
                     <img
                       onClick={() => handleSongClick(song)}
-                      src={song.coverImage || "https://dummyimage.com/151x151"}
-                      alt={song.title}
+                      src={song?.coverImage || "https://dummyimage.com/151x151"}
+                      alt={song?.title}
                       className="w-24  h-24 object-cover rounded-md mb-4 cursor-pointer"
                     />
 
@@ -277,15 +277,15 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                         {song.title}
                       </h3>
                       <p className="text-gray-400">
-                        Duration: {formatDuration(song.duration)}
+                        Duration: {formatDuration(song?.duration)}
                       </p>
                       <p className="text-gray-400">
                         By{" "}
                         <span
-                          onClick={() => handleartistClick(song.artistInfo._id)}
+                          onClick={() => handleartistClick(song?.artistInfo?._id)}
                           className="text-gray-400 cursor-pointer underline"
                         >
-                          {song.artistInfo.fullName}
+                          {song?.artistInfo?.fullName}
                         </span>
                       </p>
                     </div>
@@ -327,32 +327,32 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
 
                   </div>
 
-                  {song.albumInfo && (
+                  {song?.albumInfo && (
                     <div className="mt-2 ">
                       <h4 className="text-md font-semibold text-gray-200">
                         Album:
                       </h4>
                       <div
                         onClick={() => {
-                          handelAlbumRedirect(song.albumInfo._id);
+                          handelAlbumRedirect(song?.albumInfo?._id);
                         }}
                         className="flex items-center justify-start space-x-1"
                       >
                         <img
                           src={
-                            song.albumInfo.coverImage ||
+                            song?.albumInfo?.coverImage ||
                             "https://dummyimage.com/151x151"
                           }
-                          alt={song.albumInfo.title}
+                          alt={song?.albumInfo?.title}
                           className="w-16 h-16 rounded-md mt-2"
                         />
                         <div>
                           <p className="text-gray-400">
-                            {song.albumInfo.title}
+                            {song?.albumInfo?.title}
                           </p>
                           <p className="text-gray-400">
                             Release Date:{" "}
-                            {formatDate(song.albumInfo.releaseDate)}
+                            {formatDate(song?.albumInfo?.releaseDate)}
                           </p>
                         </div>
                       </div>

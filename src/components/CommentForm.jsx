@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted prop
+const CommentForm = ({ albumId, onCommentPosted }) => {
+  // Added onCommentPosted prop
   //   const user = useSelector((state) => state?.user?.user);
 
   // States for form data and errors
@@ -13,6 +14,7 @@ const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted
   const [email, setEmail] = useState("");
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
+  const [commenting, setCommenting] = useState(false);
 
   // Function to validate and submit the form
   const handleSubmit = async (e) => {
@@ -25,6 +27,7 @@ const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted
     }
 
     try {
+      setCommenting(true);
       // Clear error if validation passes
       setError("");
 
@@ -43,15 +46,7 @@ const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted
       );
 
       // Handle the success response (e.g., show a success message or reset form)
-      toast.success("Comment submitted successfully!", { // Use toast here
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success("Comment submitted successfully!");
 
       // Trigger re-render in parent component
       onCommentPosted(); // Call the callback function
@@ -66,6 +61,8 @@ const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted
       setError(
         "Something went wrong while submitting the comment. Please try again."
       );
+    } finally {
+      setCommenting(false);
     }
   };
 
@@ -112,12 +109,16 @@ const CommentForm = ({ albumId, onCommentPosted }) => { // Added onCommentPosted
 
         {/* Submit Button */}
         <div className="w-full md:w-auto">
-          <button
-            type="submit"
-            className="bg-cyan-500 p-2 rounded-xl text-white w-full md:w-auto"
-          >
-            Post your comment
-          </button>
+          {commenting ? (
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-cyan-500 mx-auto mt-2"></div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-cyan-500 p-2 rounded-xl text-white w-full md:w-auto"
+            >
+              Post your comment
+            </button>
+          )}
         </div>
 
         {/* Error Message */}

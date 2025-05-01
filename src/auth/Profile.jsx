@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Error from "../components/Error";
 import { checkAuth } from "../features/authSlice.js";
+import { useTranslation } from "react-i18next";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/userSlice";
@@ -19,6 +20,7 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [viewAll, setViewAll] = useState(false);
   const scrollContainerRef = useRef(null);
+   const { t } = useTranslation();
 
   const userInfo = useSelector((state) => state.user.user);
 
@@ -154,7 +156,7 @@ const Profile = () => {
       <div className="bg-[#14182A]  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full sm:w-10/12 md:w-6/12 mx-auto py-10 scroll-smooth no-scrollbar">
           <h1 className="text-center text-2xl text-white mt-10 mb-5">
-            Edit Profile
+            {t("editProfile")}
           </h1>
           <div className="relative ">
             <div className=" bg-[#1c223b] p-6 sm:p-10 shadow-2xl rounded-xl">
@@ -184,7 +186,7 @@ const Profile = () => {
                 <div className="grid grid-cols-1 gap-6 mb-6">
                   <div>
                     <label className="text-cyan-400 text-lg" htmlFor="name">
-                      Your Name *
+                     {t("yourName")} *
                     </label>
                     <input
                       type="text"
@@ -198,7 +200,7 @@ const Profile = () => {
 
                   <div>
                     <label className="text-cyan-400 text-lg" htmlFor="email">
-                      Your Email *
+                      {t("yourEmail")} *
                     </label>
                     <input
                       type="email"
@@ -229,7 +231,7 @@ const Profile = () => {
                     onClick={() => setPassModel(true)}
                     className="bg-cyan-500 text-white py-2 px-6 rounded-3xl hover:bg-cyan-600 transition duration-200"
                   >
-                    Change password
+                    {t("changePassword")}
                   </button>
 
                   <button
@@ -240,7 +242,7 @@ const Profile = () => {
                     {logoutLoading ? (
                       <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                     ) : (
-                      "LogOut"
+                      t("logOut")
                     )}
                   </button>
                 </div>
@@ -274,7 +276,7 @@ const Profile = () => {
                   >
                     <div className="text-center">
                       <h2 className="text-2xl font-semibold text-cyan-500">
-                        Change Password
+                      {t("changePassword")}
                       </h2>
                     </div>
 
@@ -365,12 +367,12 @@ const Profile = () => {
         </div>
         <div className="w-full  m-auto mt-5">
           <SongCard
-            heading={"Recently played"}
+            heading={t("recentlyPlayed")}
             link={`${apiUrl}api/v1/user/gethistory`}
           />
         </div>
         <div className="w-full m-auto mt-5">
-          <SongCard heading={"Liked Songs"} link={`${apiUrl}api/v1/like`} />
+          <SongCard heading={t("likedSongs")} link={`${apiUrl}api/v1/like`} />
         </div>
       </div>
     </>

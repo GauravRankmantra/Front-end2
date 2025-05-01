@@ -9,6 +9,9 @@ import TopGenres from "../components/TopGenres";
 import logo from "../assets/img/logo.jpeg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ArtistCard from "../components/ArtistCard";
+import { useTranslation } from "react-i18next";
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -16,6 +19,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const { t } = useTranslation();
   const fetchData = async () => {
     try {
       const res = await axios.get(`${apiUrl}api/v1/home/heroSection`);
@@ -80,13 +84,13 @@ const Home = () => {
                     onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
-                    Listen Now
+                   {t("listenNow")}
                   </button>
                   <button
                     onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
-                    Explore Now
+                    {t('exploreNow')}
                   </button>
                 </div>
               </div>
@@ -96,7 +100,7 @@ const Home = () => {
 
         <div className="my-4">
           <SongCard
-            heading={"Top 15 Songs"}
+            heading={t("top15Songs")}
             link={`${apiUrl}api/v1/song/top15`}
           />
         </div>
@@ -104,18 +108,30 @@ const Home = () => {
 
       <div className="my-4">
         <WeeklyTop15
-          heading={"Weekly top 15"}
+          heading={t("weeklyTop15")}
           link={`${apiUrl}api/v1/song/weeklyTop15`}
         />
       </div>
       <div className="my-10">
         <AlbumCard
-          heading={"Feature Albums"}
+          heading={t("featuredAlbum")}
           link={`${apiUrl}api/v1/albums/featureAlbums`}
         />
       </div>
-      <div className="flex justify-center my-4">
-        <img src={img728} className="md:w-9/12  h-20 object-cover"></img>
+      <div className="my-14">
+        <ArtistCard
+          heading={t("featuredArtist")}
+          link={`${apiUrl}api/v1/user/featuredArtists`}
+        />
+      </div>
+      <div className="flex relative rounded-md justify-center my-4">
+        <img
+          src={img728}
+          loading="lazy"
+          className="w-full rounded-md h-20 md:h-28 object-cover bottom-0"
+          alt="Advertisement"
+        />
+        <div className="absolute inset-0 bg-black/40 w-full h-full"></div>
       </div>
       <div className="my-4">
         <NewReleases />
@@ -128,7 +144,6 @@ const Home = () => {
           className=" relative w-24 h-20 rounded-full shadow-2xl opacity-80"
           src={logo}
         ></img>
-        <div className="absolute w-28 h-20 rounded-full border border-gray-400 shadow-2xl"></div>
       </div>
     </>
   );

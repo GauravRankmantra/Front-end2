@@ -10,11 +10,13 @@ import {
   addSongToHistory,
   addSongToQueueWithAuth,
 } from "../features/musicSlice.js";
+import { useTranslation } from "react-i18next";
 
 const NewReleases = () => {
   const dispatch = useDispatch();
   const [songs, setSongs] = useState([]);
   const [viewMore, setViewMore] = useState(false);
+    const { t } = useTranslation();
 
   const viewMoreClick = () => {
     setViewMore(!viewMore);
@@ -46,7 +48,7 @@ const NewReleases = () => {
         <div className="flex justify-between items-center mb-4">
           <div className="w-full mb-6">
             <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
-              New Releases
+              {t("newReleases")}
               <div className="absolute bottom-0  w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
             </h1>
           </div>

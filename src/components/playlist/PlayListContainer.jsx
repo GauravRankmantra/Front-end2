@@ -2,14 +2,17 @@ import React, { useRef, useState, useEffect } from "react";
 import PlayListCard from "../playlist/PlayListCard";
 import { AiOutlinePlus } from "react-icons/ai"; 
 
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const PlayListContainer = ({ playlist: initialPlaylist }) => {
   const scrollContainerRef = useRef(null);
+   const { t } = useTranslation();
   const [playlists, setPlaylists] = useState(initialPlaylist); // Initialize with initialPlaylist
   const [loading, setLoading] = useState(true);
   const [currentSong, setCurrentSong] = useState(null);
@@ -63,11 +66,11 @@ const PlayListContainer = ({ playlist: initialPlaylist }) => {
     <div className="relative mx-2 sm:mx-10 lg:mx-10">
       <div className="w-full mb-6 flex justify-between items-center">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
-          Your Playlist's
+        {t("yourPlaylist")}
           <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
         </h1>
         <h1 className="text-[#3bc8e7] cursor-pointer" onClick={toggleViewAll}>
-          {viewAll ? "Hide" : "View All"}
+        {viewAll ? t("hide") : t("viewAll")}
         </h1>
       </div>
 

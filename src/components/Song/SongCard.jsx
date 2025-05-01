@@ -15,6 +15,7 @@ import SongShimmer from "../Shimmer/SongShimmer"; // Import the SongShimmer comp
 const apiUrl = import.meta.env.VITE_API_URL;
 import { setShowLoginPopup } from "../../features/uiSlice";
 import LoginCard from "../LoginCard";
+import { useTranslation } from "react-i18next";
 
 const Recently = ({ heading, link, showGrid }) => {
   const scrollContainerRef = useRef(null);
@@ -25,6 +26,7 @@ const Recently = ({ heading, link, showGrid }) => {
   const [viewAll, setViewAll] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+   const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
   const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
 
@@ -101,7 +103,7 @@ const Recently = ({ heading, link, showGrid }) => {
             className=" text-[#3bc8e7] cursor-pointer"
             onClick={toggleViewAll}
           >
-            {viewAll ? "Hide" : "View All"}
+            {viewAll ? t("hide") : t("viewAll")}
           </h1>
         </div>
 

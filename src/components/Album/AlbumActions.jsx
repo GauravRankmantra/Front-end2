@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import ShareModal from "../../modals/ShareModal";
+import { useTranslation } from "react-i18next";
 import { addPlaylistToQueueWithAuth, setIsPlaying } from "../../features/musicSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
@@ -17,6 +18,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const AlbumActions = ({ onClose, album }) => {
   const dropdownRef = useRef(null);
+    const { t } = useTranslation();
   const [isModalOpen, setModalOpen] = useState(false);
   const [shareData, setShareData] = useState(null);
   const albumId = album?._id;
@@ -240,35 +242,35 @@ const AlbumActions = ({ onClose, album }) => {
             onClick={handleAddToFav}
           >
             <AiOutlineHeart className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
-            Add To Fav
+            {t("addToFav")}
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleAddToQueue}
           >
             <AiOutlinePlus className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
-            Add To Queue
+            {t("addToQueue")}
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleDownloadClick}
           >
             <AiOutlineDownload className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
-            Download
+            {t("download")}
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleAddToPlaylist}
           >
             <AiOutlineUnorderedList className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
-            Add To Playlist
+            {t("addToPlaylist")}
           </button>
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={() => handleShare({ albumId: "67d01b3117cdbb2f4ea0c29b" })}
           >
             <AiOutlineShareAlt className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
-            Share
+            {t("share")}
           </button>
           {isModalOpen && shareData && (
             <ShareModal
