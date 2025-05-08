@@ -13,6 +13,7 @@ import SignUp from "./auth/SignUp";
 import Album from "./pages/Albums";
 import Profile from "./auth/Profile";
 import Layout from "./Layout";
+import LayoutProfile from "./LayoutProfile";
 import SongInfo from "./components/Song/SongInfo";
 import AlbumInfo from "./components/Album/AlbumInfo";
 import ArtistInfo from "./components/ArtistInfo";
@@ -36,11 +37,14 @@ import Privicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import { checkAuth } from "./features/authSlice";
 import PurchasedTracks from "./components/PurchasedTracks";
-
-
+import Dashboard from "./components/Profile/Dashbord";
+import ActivityTracker from "./components/ActivityTracker";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
+
+
+  console.log("user from app", user);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
@@ -48,13 +52,14 @@ const App = () => {
 
   return (
     <Router>
+       {user && <ActivityTracker userId={user._id} />}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route
+          {/* <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/login" />}
-          />
+          /> */}
 
           <Route path="/Oauth" element={<OAuthRedirectHandler />} />
           <Route path="/albums" element={<Album />} />
@@ -78,6 +83,16 @@ const App = () => {
           <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
           <Route path="/downloads" element={<Download />} />
           <Route path="/search" element={<SearchResults />} />
+        </Route>
+        <Route element={<LayoutProfile />}>
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard /> : <Navigate to="/login" />}
+          />
+                    <Route
+            path="/profile"
+            element={user ? <Profile /> : <Navigate to="/login" />}
+          />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom"; 
 import { FaAngleRight } from "react-icons/fa";
 import artist from "../assets/svg/artist.svg";
 import createPlaylist from "../assets/svg/createPlaylist.svg";
@@ -23,6 +23,9 @@ const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const sidebarRef = useRef(null);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const location = useLocation();
+
+  const isProfileRoute = location.pathname === "/profile"; 
 
   const toggleSidebar = useCallback(() => {
     setOpenMenu((prevOpenMenu) => !prevOpenMenu);
@@ -73,13 +76,14 @@ const Sidebar = () => {
   return (
     <div
       ref={sidebarRef}
-      className={`fixed top-5 bottom-0 z-50 bg-[#1b2039] ${
+      className={` fixed top-5 bottom-0 z-50 bg-[#1b2039] ${
         openMenu ? "w-[200px]" : "w-[80px]"
       } transition-all duration-300 shadow-lg hidden lg:block`}
     >
       <div
+
         onClick={toggleSidebar}
-        className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center"
+        className={`${isProfileRoute&&'hidden'} absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center`}
       >
         <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-transform duration-500 hover:rotate-180" />
       </div>

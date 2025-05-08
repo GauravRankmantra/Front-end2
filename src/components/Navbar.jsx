@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-
+import LanguageSelector from "./LanguageSelector";
 
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
@@ -43,7 +43,6 @@ const Navbar = () => {
   const [error2, setError2] = useState(null);
   const { t } = useTranslation();
   const [lanOpen, setLanOpen] = useState(false);
-
 
   const languages = [
     { code: "en", label: "English", icon: "fi-us" },
@@ -151,32 +150,32 @@ const Navbar = () => {
   }, [dispatch]);
 
   const navItems = [
-     {
-       to: "/",
-       icon: home,
-       text: t("discover"),
-     },
-     { to: "/albums", icon: album, text: t("albums") },
-     { to: "/artists", icon: artist, text: t("artist") },
-     { to: "/genres", icon: genre, text: t("genres") },
-     { to: "/top_track", icon: topTracks, text: t("topTracks") },
-   ];
- 
-   const secondaryNavItems = [
-     { to: "/downloads", icon: download, text: t("downloads") },
-     { to: "/purchased-tracks", icon: purchased, text: t("purchased") },
-     { to: "/favourites", icon: fav, text: t("favorites") },
-     { to: "/history", icon: history, text: t("history") },
-   ];
- 
-   const playlistNavItems = [
-     {
-       to: "/featured-playlist",
-       icon: featurePlaylist,
-       text: t("featuredPlaylist"),
-     },
-     { to: "/create-playlist", icon: createPlaylist, text: t("createPlaylist") },
-   ];
+    {
+      to: "/",
+      icon: home,
+      text: t("discover"),
+    },
+    { to: "/albums", icon: album, text: t("albums") },
+    { to: "/artists", icon: artist, text: t("artist") },
+    { to: "/genres", icon: genre, text: t("genres") },
+    { to: "/top_track", icon: topTracks, text: t("topTracks") },
+  ];
+
+  const secondaryNavItems = [
+    { to: "/downloads", icon: download, text: t("downloads") },
+    { to: "/purchased-tracks", icon: purchased, text: t("purchased") },
+    { to: "/favourites", icon: fav, text: t("favorites") },
+    { to: "/history", icon: history, text: t("history") },
+  ];
+
+  const playlistNavItems = [
+    {
+      to: "/featured-playlist",
+      icon: featurePlaylist,
+      text: t("featuredPlaylist"),
+    },
+    { to: "/create-playlist", icon: createPlaylist, text: t("createPlaylist") },
+  ];
 
   return (
     <div>
@@ -218,6 +217,8 @@ const Navbar = () => {
               >
                 🌐 {t("language")}
               </button>
+
+              {/* <LanguageSelector /> */}
               {lanOpen && (
                 <div className="absolute w-max mt-2 bg-white border rounded shadow z-10">
                   {languages.map((lang) => (
@@ -235,7 +236,7 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <Link
-                to="/profile"
+                to="/dashboard"
                 className="ms_btn bg-[#3bc8e7] text-white text-center py-[8px] px-[20px] rounded-[20px] transition-all duration-400 ease-in-out hover:shadow-lg"
               >
                 {t("profile")}

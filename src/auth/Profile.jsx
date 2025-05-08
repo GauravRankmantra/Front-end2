@@ -127,17 +127,17 @@ const Profile = () => {
     }
   };
 
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImage(reader.result);
-  //       setUpdatedInfo((prev) => ({ ...prev, coverImage: reader.result }));
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+        setUpdatedInfo((prev) => ({ ...prev, coverImage: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const toggleViewAll = () => {
     setViewAll(!viewAll); // Toggle the view state
   };
@@ -153,7 +153,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className="bg-[#14182A]  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
+      <div className="bg-[#14182A] border  flex flex-col items-center justify-center  md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full sm:w-10/12 md:w-6/12 mx-auto py-10 scroll-smooth no-scrollbar">
           <h1 className="text-center text-2xl text-white mt-10 mb-5">
             {t("editProfile")}
@@ -214,18 +214,7 @@ const Profile = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-center sm:space-x-4 space-y-4 sm:space-y-0">
-                  {/* <button
-                    type="submit"
-                    className="bg-cyan-500 text-white py-2 px-10 rounded-3xl hover:bg-cyan-600 transition duration-200"
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-gray-600 text-white py-2 px-10 rounded-3xl hover:bg-gray-700 transition duration-200"
-                  >
-                    Cancel
-                  </button> */}
+
 
                   <button
                     onClick={() => setPassModel(true)}
@@ -361,7 +350,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="p-2  shadow-2xl bg-[#171c32] rounded-2xl  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
+      {/* <div className="p-2  shadow-2xl bg-[#171c32] rounded-2xl  flex flex-col items-center justify-center lg:px-36 md:px-0 mt-10 scroll-smooth no-scrollbar">
         <div className="w-full m-auto">
           <PlayListContainer playlist={playlist} key={playlist._id} />
         </div>
@@ -374,7 +363,7 @@ const Profile = () => {
         <div className="w-full m-auto mt-5">
           <SongCard heading={t("likedSongs")} link={`${apiUrl}api/v1/like`} />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

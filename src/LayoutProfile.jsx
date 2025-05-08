@@ -10,8 +10,10 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 import "react-toastify/dist/ReactToastify.css";
 import CookieConsent from "./components/CookieConsent";
+import RightSidebar from "./components/Profile/RightSidebar";
+import LeftSidebar from "./components/Profile/LeftSidebar";
 
-const Layout = () => {
+const LayoutProfile = () => {
   useEffect(() => {
     const hasVisited = localStorage.getItem("hasVisitedToday");
     const today = new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
@@ -44,12 +46,13 @@ const Layout = () => {
       <div className="top-0">
         <Navbar />
       </div>
-
+    
       <div className="flex flex-1 scroll-smooth no-scrollbar">
-        <Sidebar />
-        <div className="flex-auto mx-2 font-josefin-sb sm:mx-10 font- lg:mx-36 mt-12 overflow-hidden  ">
+      <LeftSidebar />
+        <div className="flex-1 ml-0  px-4 mt-20 overflow-y-auto font-josefin-sb">
           <Outlet />
         </div>
+        <RightSidebar />
       </div>
       <MusicPlayer />
       <CookieConsent />
@@ -58,4 +61,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default LayoutProfile;

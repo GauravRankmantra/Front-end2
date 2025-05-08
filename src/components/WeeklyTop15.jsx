@@ -3,6 +3,7 @@ import {
   addSongToQueue,
   setIsPlaying,
   addSongToQueueWithAuth,
+  addSongToHistory,
 } from "../features/musicSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
@@ -49,7 +50,9 @@ const WeeklyTop15 = ({ link, heading }) => {
 
   const handleSongClick = (song) => {
     setCurrentSong(song._id);
+
     dispatch(addSongToQueueWithAuth(song));
+    dispatch(addSongToHistory(song));
     setLoginPopupSong(song);
 
     dispatch(setIsPlaying(true));
