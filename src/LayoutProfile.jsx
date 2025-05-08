@@ -46,14 +46,24 @@ const LayoutProfile = () => {
       <div className="top-0">
         <Navbar />
       </div>
-    
-      <div className="flex flex-1 scroll-smooth no-scrollbar">
-      <LeftSidebar />
-        <div className="flex-1 ml-0  px-4 mt-20 overflow-y-auto font-josefin-sb">
+
+      <div className="flex flex-row min-h-screen mt-20 scroll-smooth no-scrollbar">
+        {/* Left Sidebar - Fixed */}
+        <div className="w-64 fixed top-20 bottom-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar hidden md:block">
+          <LeftSidebar />
+        </div>
+
+        {/* Main Outlet Content */}
+        <div className="flex-1 mx-0 px-4 md:ml-64 lg:mr-72 mt-0 font-josefin-sb">
           <Outlet />
         </div>
-        <RightSidebar />
+
+        {/* Right Sidebar - Fixed */}
+        <div className="w-72 hidden fixed font-josefin-sb top-20 bottom-0 right-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar  lg:block">
+          <RightSidebar />
+        </div>
       </div>
+
       <MusicPlayer />
       <CookieConsent />
       <Footer />

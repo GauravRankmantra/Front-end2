@@ -30,7 +30,11 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
   { name: "My Profile", path: "/profile", icon: <FaUser /> },
-  { name: "Purchased Songs", path: "/purchased-songs", icon: <FaMusic /> },
+  {
+    name: "Purchased Songs",
+    path: "/dashboard/purchased-songs",
+    icon: <FaMusic />,
+  },
   { name: "Messages", path: "/messages", icon: <FaEnvelope /> },
   { name: "Event", path: "/messages", icon: <MdEvent /> },
   { name: "Live", path: "/messages", icon: <MdLiveTv /> },
@@ -46,6 +50,7 @@ const LeftSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logoutLoading, setlogoutLoading] = useState(false);
+  const user = useSelector((state) => state.user.user);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -80,15 +85,25 @@ const LeftSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed mt-20  top-0 bottom-0  w-64 bg-[#1b2039] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out
+        className={`fixed  h-m top-0 bottom-0  w-64 bg-[#141834] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out
     ${
       isOpen ? "translate-x-0" : "-translate-x-full"
     } md:translate-x-0 md:static md:block`}
       >
         {/* Profile Info */}
         <div className="flex flex-col items-center p-6 border-b border-gray-700">
-          <FaUser className="w-12 h-12 text-white" />
-          <h2 className="mt-3 font-semibold text-lg text-white">User Name</h2>
+          {user.coverImage  ? (
+            <img
+              src={user.coverImage}
+              className="rounded-full object-cover w-20 h-20"
+            ></img>
+          ) : (
+            <FaUser className="text-6xl border border-gray-500 rounded-full p-1 "/>
+          )}
+
+          <h2 className="mt-3 font-semibold text-lg text-white">
+            {user.fullName}
+          </h2>
           {/* <p className="text-sm text-gray-400">User</p>{" "} */}
           {/* Added user role/type */}
           <div className="mt-4 flex gap-4">

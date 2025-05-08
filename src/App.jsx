@@ -39,10 +39,10 @@ import { checkAuth } from "./features/authSlice";
 import PurchasedTracks from "./components/PurchasedTracks";
 import Dashboard from "./components/Profile/Dashbord";
 import ActivityTracker from "./components/ActivityTracker";
+import PurchasedSongs from "./components/Profile/PurchasedSongs";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
-
 
   console.log("user from app", user);
   const dispatch = useDispatch();
@@ -52,7 +52,7 @@ const App = () => {
 
   return (
     <Router>
-       {user && <ActivityTracker userId={user._id} />}
+      {user && <ActivityTracker userId={user._id} />}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -89,9 +89,13 @@ const App = () => {
             path="/dashboard"
             element={user ? <Dashboard /> : <Navigate to="/login" />}
           />
-                    <Route
+          <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/purchased-songs"
+            element={user ? <PurchasedSongs /> : <Navigate to="/login" />}
           />
         </Route>
         <Route path="/login" element={<Login />} />
