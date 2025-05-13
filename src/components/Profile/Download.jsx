@@ -14,12 +14,13 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../Loading";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const PurchasedSongs = () => {
+const Download = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-  const [songs, setSongs] = useState(null);
-  const [topSongs, setTopSongs] = useState(null);
+  const [songs, setSongs] = useState([]);
+  const [topSongs, setTopSongs] = useState([]);
+
   const handleDownload = async (song) => {
 
     const songId = song._id;
@@ -103,6 +104,7 @@ const PurchasedSongs = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch purchased songs
         const purchasedResponse = await axios.get(
           `${apiUrl}api/v1/user/getPurchasedSong`,
           {
@@ -175,12 +177,12 @@ const PurchasedSongs = () => {
         <div className="bg-gray-800 p-6 rounded-md shadow-md text-gray-100 flex flex-col items-center justify-center">
           <FaMusic className="text-5xl mb-4 text-gray-400" />
           <p className="text-center text-lg">
-            You haven't purchased any songs yet.
+            You haven't Download any songs yet.
           </p>
         </div>
       ) : (
         <ul className=" rounded-md shadow-md overflow-hidden">
-          <h1 className="text-white text-2xl mb-2">Purchased Songs</h1>
+          <h1 className="text-white text-2xl mb-2">Downloaded Songs</h1>
           {songs.map((song) => (
             <li
               key={song._id}
@@ -239,7 +241,6 @@ const PurchasedSongs = () => {
       )}
       <div className="mt-16">
         <h1 className="text-white text-2xl mb-2">Songs You may Like</h1>
-
         {topSongs === null ? (
           <Loading />
         ) : (
@@ -319,4 +320,4 @@ const PurchasedSongs = () => {
   );
 };
 
-export default PurchasedSongs;
+export default Download;

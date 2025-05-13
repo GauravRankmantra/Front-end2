@@ -16,7 +16,6 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
   const [show, setShow] = useState(true);
   const dispatch = useDispatch(); // Corrected: Call useDispatch as a function
 
-
   const user = useSelector((state) => state.user.user);
 
   const handelAlbumRedirect = (id) => {
@@ -281,15 +280,29 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                       </p>
                       <p className="text-gray-400">
                         By{" "}
-                        <span
-                          onClick={() => handleartistClick(song?.artistInfo?._id)}
-                          className="text-gray-400 cursor-pointer underline"
-                        >
-                          {song?.artistInfo?.fullName}
-                        </span>
+                        {Array.isArray(song?.artist) ? (
+                          song.artist.map((artist, index) => (
+                            <React.Fragment key={artist?._id || index}>
+                              <span
+                                onClick={() => handleartistClick(artist?._id)}
+                                className="text-gray-400 cursor-pointer underline"
+                              >
+                                {artist?.fullName}
+                              </span>
+                              {index < song.artist.length - 1 && ", "}
+                            </React.Fragment>
+                          ))
+                        ) : (
+                          <span
+                            onClick={() => handleartistClick(song?.artist?._id)}
+                            className="text-gray-400 cursor-pointer underline"
+                          >
+                            {song?.artist?.fullName}
+                          </span>
+                        )}
                       </p>
                     </div>
-                    
+
                     {song.price > 0 && (
                       <>
                         {user?.purchasedSongs?.includes(song._id) ? (
@@ -324,7 +337,6 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                         )}
                       </>
                     )}
-
                   </div>
 
                   {song?.albumInfo && (

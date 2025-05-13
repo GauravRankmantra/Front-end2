@@ -29,7 +29,21 @@ const DownloadPage = () => {
   };
 
   const handleDownload = async (song) => {
+
     const songId = song._id;
+    let artistIds = [];
+
+    if (typeof song.artist === "string") {
+      artistIds.push(song.artist._id);
+    } else if (Array.isArray(song.artist)) {
+      artistIds = song.artist
+        .filter((artist) => artist && artist._id)
+        .map((artist) => artist._id);
+    } else {
+      console.warn("song.artist is not a string or an array:", song.artist);
+      return;
+    }
+
     try {
       const response = await axios.get(
         `${apiUrl}api/v1/song/isPurchased/${songId}`,
@@ -40,6 +54,14 @@ const DownloadPage = () => {
 
       if (response.data.isPurchased) {
         toast.success("Download started");
+        try {
+          const response = await axios.post(
+            `${apiUrl}api/v1/userStats/addDownloadStats`,
+            { songId, artistIds }
+          );
+        } catch (error) {
+          console.log("error while update download stats", error);
+        }
         const audioResponse = await axios.get(song.audioUrls.high, {
           responseType: "blob",
         });

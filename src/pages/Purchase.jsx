@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 
-
 import {
   addSongToQueue,
   setIsPlaying,
@@ -36,8 +35,6 @@ const Purchase = () => {
       setError(null);
 
       try {
-      
-    
         const response = await axios.get(`${apiUrl}api/v1/song/${id}`); // Or use query params: `YOUR_API_ENDPOINT?id=${id}`
 
         setSongInfo(response.data.data);
@@ -45,7 +42,6 @@ const Purchase = () => {
         setError("Failed to fetch song information. Please try again later.");
         console.error("Fetch error:", err);
         if (err.response) {
-
           console.error("Response data:", err.response.data);
           console.error("Response status:", err.response.status);
           console.error("Response headers:", err.response.headers);
@@ -55,7 +51,6 @@ const Purchase = () => {
             setError("Server error occurred. Please try again later.");
           }
         } else if (err.request) {
-
           console.error("No response received:", err.request);
           setError("Network error. Please check your internet connection.");
         } else {
@@ -176,11 +171,15 @@ const Purchase = () => {
           </p>
           <p className="text-gray-600">
             <span className="font-semibold">Duration:</span>{" "}
-            {formatDuration(songInfo?.duration) || "N/A"}
+            {songInfo?.duration || "N/A"}
           </p>
-          <p className="text-xl text-green-600 font-semibold mt-2">
-            $ {songInfo?.price.toFixed(2)}
-          </p>
+          {songInfo.price ? (
+            <p className="text-xl text-green-600 font-semibold mt-2">
+              $ {songInfo?.price?.toFixed(2)}
+            </p>
+          ) : (
+            <p className="text-xl text-green-600 font-semibold mt-2">$ 0</p>
+          )}
         </div>
 
         <button

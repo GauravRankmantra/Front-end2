@@ -139,12 +139,11 @@ const Home = () => {
       <div className="my-10">
         <TopGenres />
       </div>
-      <div className="flex w-full flex-col items-center justify-center mt-10 ">
-        <img
-          className=" relative w-24 h-20 rounded-full shadow-2xl opacity-80"
-          src={logo}
-        ></img>
-      </div>
+      <div className="flex w-full flex-col items-center justify-center mt-10">
+      <video  src="https://res.cloudinary.com/dp2u6qwph/video/upload/v1746793469/ksw0jtrqqjraveexh4lg.mp4"  autoPlay loop muted width="100%">
+        Your browser does not support the video tag.
+      </video>
+    </div>
     </>
   );
 };

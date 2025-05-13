@@ -37,9 +37,19 @@ import Privicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import { checkAuth } from "./features/authSlice";
 import PurchasedTracks from "./components/PurchasedTracks";
+
 import Dashboard from "./components/Profile/Dashbord";
 import ActivityTracker from "./components/ActivityTracker";
 import PurchasedSongs from "./components/Profile/PurchasedSongs";
+import Message from "./components/Profile/Message";
+import Event from "./components/Profile/Event";
+import Live from "./components/Profile/Live";
+import Offers from "./components/Profile/Offers";
+import LikedSongs from "./components/Profile/LikedSongs";
+import DownloadDash from "./components/Profile/Download";
+import HistoryDash from "./components/Profile/History";
+import SellSongs from "./components/Profile/SellSongs";
+import SellSongLanding from "./components/SellSongLanding";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -76,6 +86,8 @@ const App = () => {
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<Privicy />} />
+          <Route path="/sell-songs" element={<SellSongLanding />} />
+          <Route path="purchased" element={<Purchase />} />
           <Route path="/terms-and-conditions" element={<Terms />} />
 
           <Route path="/favourites" element={<Favourites />} />
@@ -96,6 +108,39 @@ const App = () => {
           <Route
             path="/dashboard/purchased-songs"
             element={user ? <PurchasedSongs /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/messages"
+            element={user ? <Message /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/event"
+            element={user ? <Event /> : <Navigate to="/login" />}
+          />
+
+          <Route
+            path="/dashboard/sell-song"
+            element={user ? <SellSongs /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/live"
+            element={user ? <Live /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/offer"
+            element={user ? <Offers /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/history"
+            element={user ? <HistoryDash /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/liked"
+            element={user ? <LikedSongs /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/dashboard/download"
+            element={user ? <DownloadDash /> : <Navigate to="/login" />}
           />
         </Route>
         <Route path="/login" element={<Login />} />

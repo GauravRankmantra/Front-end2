@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const RightSidebar = () => {
   const [webUpdates, setWebUpdates] = useState([]);
@@ -74,7 +75,7 @@ const RightSidebar = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/web");
+      const response = await axios.get(`${apiUrl}api/v1/web`);
       if (response.data.success) {
         setWebUpdates(response.data.data);
       } else {
@@ -98,7 +99,7 @@ const RightSidebar = () => {
   }, [fetchWebUpdates]);
 
   return (
-    <div className=" mt-2 bg-[#141834] text-white shadow-lg py-4 px-2 space-y-6 overflow-y-auto">
+    <div className=" mt-2 bg-[#141834] text-white z-10 shadow-lg py-4 px-2 space-y-6 overflow-y-auto">
       {/* Website Updates Section */}
       <div className="mb-4 h-64 overflow-scroll no-scrollbar ">
         <h2 className="font-semibold text-lg mb-2 underline text-cyan-500">

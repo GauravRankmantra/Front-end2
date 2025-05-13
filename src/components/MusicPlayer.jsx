@@ -48,8 +48,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import MusicSidebar from "./MusicSidebar";
 
-
-
 const formatDuration = (time) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
@@ -70,7 +68,7 @@ const MusicPlayer = () => {
   const [quality, setQuality] = useState("high");
   const [isExpanded, setIsExpanded] = useState(false);
   const [showsetting, setShowSetting] = useState(false);
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
   const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
@@ -218,8 +216,8 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className={`fixed   bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
-        isExpanded ? "h-max py-5 " : " py-0 h-20"
+      className={`fixed bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
+        isExpanded ? "h-max py-5 border border-green-500 " : " py-0 h-20  border border-red-600"
       }`}
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`,
@@ -228,8 +226,8 @@ const MusicPlayer = () => {
       }}
     >
       <div
-        className={`relative flex w-full items-center ${
-          isExpanded ? "flex-col pl-5 pr-5 md:pr-16" : "pl-0 pr-10 md:pr-16"
+        className={`relative flex  w-full items-center ${
+          isExpanded ? "flex-col  pl-5 pr-5 md:pr-16" : "flex-row pl-0 pr-10 md:pr-16"
         }`}
       >
         {!isExpanded && <MusicSidebar song={currentSong} />}
@@ -270,7 +268,7 @@ const MusicPlayer = () => {
         )}
 
         <div
-          className={`w-full   flex items-center 
+          className={`w-full border   flex items-center 
           ${
             isExpanded
               ? "flex-col ml-0 justify-center "
@@ -481,7 +479,7 @@ const MusicPlayer = () => {
       </div>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`absolute ${
+        className={`absolute border ${
           isExpanded ? "top-6" : "bottom-0"
         } right-1 md:hidden bg-cyan-600 hover:bg-cyan-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg`}
       >

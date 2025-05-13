@@ -10,6 +10,8 @@ import {
   FaHeadphones,
   FaAngleRight,
 } from "react-icons/fa";
+import { TbMusicDollar } from "react-icons/tb";
+
 import axios from "axios";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import LanguageSelector from "./LanguageSelector";
@@ -130,6 +132,10 @@ const Navbar = () => {
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
+  const handleSellMusicClick = () => {
+    if (!isAuthenticated) navigate("/sell-songs");
+    else navigate("/dashboard/sell-song");
+  };
 
   // Check if user is authenticated
   const user = useSelector((state) => state.user.user);
@@ -179,7 +185,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed font-josefin-sb bg-[#1b2039] py-5 px-8 right-0 left-0 top-0 z-[1000]">
+      <div className="fixed font-josefin-sb bg-[#1b2039] py-5 px-8 right-0 left-0 top-0 z-[999]">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-12 w-full lg:w-auto">
             {/* Search Box */}
@@ -210,7 +216,21 @@ const Navbar = () => {
 
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">
-            <div className="relative inline-block text-left">
+            <div className="flex space-x-2 text-left">
+              <button
+                onClick={handleSellMusicClick}
+                className={`flex items-center gap-2 border border-cyan-500 bg-transparent text-cyan-500 p-2 rounded-md shadow-sm transition duration-200 ease-in-out hover:bg-cyan-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 
+                 
+                `}
+              >
+                <TbMusicDollar className="text-xl" />
+                <div className="flex flex-col items-center">
+                  <span className="text-sm font-semibold">
+                    Sell Your Music{" "}
+                  </span>
+                  <span className="text-sm font-semibold">With us</span>
+                </div>
+              </button>
               <button
                 onClick={() => setLanOpen(!lanOpen)}
                 className="border border-gray-700 p-2 text-white rounded shadow"

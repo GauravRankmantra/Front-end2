@@ -1,13 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Loading = () => {
+const Loading = ({ size = 48 }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+    <div className="flex items-center justify-center w-full h-full">
       <motion.div
-        className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"
+        className="rounded-full border-t-4 border-b-4 border-blue-500"
+        style={{
+          width: size,
+          height: size,
+          borderLeft: '2px solid transparent',
+          borderRight: '2px solid transparent',
+        }}
         animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.1,
+          ease: 'easeInOut',
+        }}
       />
     </div>
   );

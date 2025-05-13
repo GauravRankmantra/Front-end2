@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
@@ -15,6 +15,7 @@ import LeftSidebar from "./components/Profile/LeftSidebar";
 
 const LayoutProfile = () => {
   useEffect(() => {
+    
     const hasVisited = localStorage.getItem("hasVisitedToday");
     const today = new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
 
@@ -47,19 +48,20 @@ const LayoutProfile = () => {
         <Navbar />
       </div>
 
-      <div className="flex flex-row min-h-screen mt-20 scroll-smooth no-scrollbar">
+      <div className="flex flex-row min-h-screen mt-20 scroll-smooth no-scrollbar font-josefin-sb">
         {/* Left Sidebar - Fixed */}
-        <div className="w-64 fixed top-20 bottom-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar hidden md:block">
-          <LeftSidebar />
-        </div>
+        {/* <div className="w-64 fixed top-20 bottom-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar hidden md:block">
+        
+        </div> */}
+        <LeftSidebar />
 
         {/* Main Outlet Content */}
-        <div className="flex-1 mx-0 px-4 md:ml-64 lg:mr-72 mt-0 font-josefin-sb">
+        <div className="flex-1  md:ml-64 lg:mr-72 mt-0 font-josefin-sb">
           <Outlet />
         </div>
 
         {/* Right Sidebar - Fixed */}
-        <div className="w-72 hidden fixed font-josefin-sb top-20 bottom-0 right-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar  lg:block">
+        <div className="w-72 hidden font-josefin-sb fixed top-20 bottom-0 right-0 bg-[#1b2039] text-white shadow-lg z-40 overflow-y-auto no-scrollbar  lg:block">
           <RightSidebar />
         </div>
       </div>

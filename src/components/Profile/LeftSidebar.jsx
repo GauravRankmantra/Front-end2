@@ -15,11 +15,14 @@ import {
   FaHome, // Added for Home
   FaLeaf,
 } from "react-icons/fa";
+import { CgOptions } from "react-icons/cg";
+
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../features/userSlice";
 import { logout } from "../../features/authSlice";
 import { clearQueue } from "../../features/musicSlice";
+import { TbMusicDollar } from "react-icons/tb";
 
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { MdLiveTv } from "react-icons/md";
@@ -30,18 +33,23 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
   { name: "My Profile", path: "/profile", icon: <FaUser /> },
+  { name: "Sell Your Music", path: "/dashboard/sell-song", icon: <TbMusicDollar /> },
   {
     name: "Purchased Songs",
     path: "/dashboard/purchased-songs",
     icon: <FaMusic />,
   },
-  { name: "Messages", path: "/messages", icon: <FaEnvelope /> },
-  { name: "Event", path: "/messages", icon: <MdEvent /> },
-  { name: "Live", path: "/messages", icon: <MdLiveTv /> },
-  { name: "Offers", path: "/messages", icon: <MdOutlineLocalOffer /> },
-  { name: "History", path: "/history", icon: <FaHistory /> },
-  { name: "Liked Songs", path: "/liked-songs", icon: <FaHeart /> },
-  { name: "Downloaded Songs", path: "/downloads", icon: <FaDownload /> },
+  { name: "Messages", path: "/dashboard/messages", icon: <FaEnvelope /> },
+  { name: "Event", path: "/dashboard/event", icon: <MdEvent /> },
+  { name: "Live", path: "/dashboard/live", icon: <MdLiveTv /> },
+  { name: "Offers", path: "/dashboard/offer", icon: <MdOutlineLocalOffer /> },
+  { name: "History", path: "/dashboard/history", icon: <FaHistory /> },
+  { name: "Liked Songs", path: "/dashboard/liked", icon: <FaHeart /> },
+  {
+    name: "Downloaded Songs",
+    path: "/dashboard/download",
+    icon: <FaDownload />,
+  },
 ];
 
 const LeftSidebar = () => {
@@ -77,28 +85,32 @@ const LeftSidebar = () => {
     <>
       {/* Hamburger Button - Mobile */}
       <button
-        className="md:hidden fixed top-4 right-4 mt-24 z-50 text-white text-3xl"
+        className="fixed top-20 right-2 z-50 text-white text-2xl md:hidden"
         onClick={toggleSidebar}
       >
-        {isOpen ? <FaTimes /> : <FaBars />}
+        {isOpen ? <FaTimes /> : <CgOptions />}
       </button>
 
       {/* Sidebar */}
       <div
-        className={`fixed  h-m top-0 bottom-0  w-64 bg-[#141834] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out
+        className={`fixed top-0 bottom-0 mt-20 overflow-scroll no-scrollbar w-64 bg-[#141834] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out
     ${
-      isOpen ? "translate-x-0" : "-translate-x-full"
-    } md:translate-x-0 md:static md:block`}
+      isOpen
+        ? "translate-x-0 md:translate-x-0"
+        : " -translate-x-full md:translate-x-0"
+    }
+    md:block
+  `}
       >
         {/* Profile Info */}
         <div className="flex flex-col items-center p-6 border-b border-gray-700">
-          {user.coverImage  ? (
+          {user.coverImage ? (
             <img
               src={user.coverImage}
               className="rounded-full object-cover w-20 h-20"
             ></img>
           ) : (
-            <FaUser className="text-6xl border border-gray-500 rounded-full p-1 "/>
+            <FaUser className="text-6xl border border-gray-500 rounded-full p-1 " />
           )}
 
           <h2 className="mt-3 font-semibold text-lg text-white">
@@ -116,6 +128,7 @@ const LeftSidebar = () => {
             <Link to="/stemming" className="text-gray-300 hover:text-white">
               <TbLivePhotoFilled size={20} className="text-blue-500" />
             </Link>
+
             <button className="text-gray-300 hover:text-white">
               {logoutLoading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>

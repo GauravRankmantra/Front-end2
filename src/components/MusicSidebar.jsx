@@ -158,89 +158,76 @@ const MusicSidebar =React.memo( ({ song, show }) => {
     }
   };
 
-  const handelDownload = async () => {
+  const handleDownload = async () => {
+
+    const songId = song._id;
+    let artistIds = [];
+
+    console.log("songs at bottom ",song)
+    if (typeof song.artist === "string") {
+      artistIds.push(song.artist._id);
+    } else if (Array.isArray(song.artist)) {
+      artistIds = song.artist
+        .filter((artist) => artist && artist._id)
+        .map((artist) => artist._id);
+    } else {
+      console.warn("song.artist is not a string or an array:", song.artist);
+      return;
+    }
+
     try {
       const response = await axios.get(
-        `${apiUrl}api/v1/song/isPurchased/${song._id}`,
-        { withCredentials: true }
+        `${apiUrl}api/v1/song/isPurchased/${songId}`,
+        {
+          withCredentials: true,
+        }
       );
 
       if (response.data.isPurchased) {
-        toast.success("Download started", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-        // Fetch the blob data
+        toast.success("Download started");
+        try {
+          const response = await axios.post(
+            `${apiUrl}api/v1/userStats/addDownloadStats`,
+            { songId, artistIds }
+          );
+        } catch (error) {
+          console.log("error while update download stats", error);
+        }
         const audioResponse = await axios.get(song.audioUrls.high, {
-          responseType: "blob", // Important: Get the response as a blob
+          responseType: "blob",
         });
 
         const audioBlob = audioResponse.data;
-
-        // Create a download link for the blob
         const downloadLink = document.createElement("a");
-        const url = window.URL.createObjectURL(audioBlob); // Create a blob URL
+        const url = window.URL.createObjectURL(audioBlob);
         downloadLink.href = url;
-        downloadLink.download = `${song.title}.mp3`; // Set the desired filename
+        downloadLink.download = `${song.title}.mp3`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
-
-        // Clean up
-        window.URL.revokeObjectURL(url); // Release the blob URL
+        window.URL.revokeObjectURL(url);
         document.body.removeChild(downloadLink);
-      } else if (response.data.isPurchased === false) {
-        toast.error("Download not allowed. Purchase the song first.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      } else {
+        toast.error("Download not allowed. Purchase the song first.");
       }
     } catch (error) {
       if (
         error.response &&
-        error.response.data &&
-        error.response.data.message === "Unauthorized: You Need to Login"
+        error.response.data?.message === "Unauthorized: You Need to Login"
       ) {
-        toast.error("Please login to download the song.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("You need to login for this functionality.");
       } else {
-        console.error("Error checking purchase status", error);
-        toast.error("An error occurred while checking purchase status.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("An error occurred while checking purchase status.");
+        console.error(error);
       }
     }
   };
   const handleDownloadClick = async () => {
-    await handelDownload();
+    await handleDownload();
   };
 
   return (
     <div
-      className={` transition-all shadow-2xl py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+      className={` transition-all border shadow-2xl py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
         expand || show ? "max-w-max" : "w-16 lg:w-24 xl:w-2/12"
       }`}
     >

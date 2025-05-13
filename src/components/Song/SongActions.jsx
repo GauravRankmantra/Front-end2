@@ -98,53 +98,71 @@ const SongActions = ({ onClose, song }) => {
     onClose();
   };
 
-  const handelDownload = async () => {
+  const handleDownload = async () => {
+
+    const songId = song._id;
+    let artistIds = [];
+
+    if (typeof song.artist === "string") {
+      artistIds.push(song.artist._id);
+    } else if (Array.isArray(song.artist)) {
+      artistIds = song.artist
+        .filter((artist) => artist && artist._id)
+        .map((artist) => artist._id);
+    } else {
+      console.warn("song.artist is not a string or an array:", song.artist);
+      return;
+    }
+
     try {
       const response = await axios.get(
         `${apiUrl}api/v1/song/isPurchased/${songId}`,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
 
       if (response.data.isPurchased) {
         toast.success("Download started");
-
-        // Fetch the blob data
+        try {
+          const response = await axios.post(
+            `${apiUrl}api/v1/userStats/addDownloadStats`,
+            { songId, artistIds }
+          );
+        } catch (error) {
+          console.log("error while update download stats", error);
+        }
         const audioResponse = await axios.get(song.audioUrls.high, {
-          responseType: "blob", // Important: Get the response as a blob
+          responseType: "blob",
         });
 
         const audioBlob = audioResponse.data;
-
-        // Create a download link for the blob
         const downloadLink = document.createElement("a");
-        const url = window.URL.createObjectURL(audioBlob); // Create a blob URL
+        const url = window.URL.createObjectURL(audioBlob);
         downloadLink.href = url;
-        downloadLink.download = `${song.title}.mp3`; // Set the desired filename
+        downloadLink.download = `${song.title}.mp3`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
-
-        // Clean up
-        window.URL.revokeObjectURL(url); // Release the blob URL
+        window.URL.revokeObjectURL(url);
         document.body.removeChild(downloadLink);
-      } else if (response.data.isPurchased === false) {
+      } else {
         toast.error("Download not allowed. Purchase the song first.");
       }
     } catch (error) {
       if (
         error.response &&
-        error.response.data &&
-        error.response.data.message === "Unauthorized: You Need to Login"
+        error.response.data?.message === "Unauthorized: You Need to Login"
       ) {
-        toast.error("Please login to download the song.");
+        toast.error("You need to login for this functionality.");
       } else {
-        console.error("Error checking purchase status", error);
         toast.error("An error occurred while checking purchase status.");
+        console.error(error);
       }
     }
   };
 
   const handleDownloadClick = async () => {
-    await handelDownload();
+    await handleDownload();
     onClose();
   };
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   addSongToQueue,
   setIsPlaying,
@@ -26,9 +27,10 @@ const Recently = ({ heading, link, showGrid }) => {
   const [viewAll, setViewAll] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-   const { t } = useTranslation();
+  const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
   const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const [loginPopupSong, setLoginPopupSong] = useState(null);
 
@@ -59,7 +61,15 @@ const Recently = ({ heading, link, showGrid }) => {
   }, [link]);
 
   const handelBuyNowClick = (song) => {
-    navigate(`/purchased?id=${encodeURIComponent(song._id)}`);
+    if (isAuthenticated) {
+      navigate(`/purchased?id=${encodeURIComponent(song._id)}`);
+    } else {
+      toast.loading("Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+        toast.dismiss();
+      }, 700);
+    }
   };
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({ left: -180, behavior: "smooth" });
@@ -110,7 +120,7 @@ const Recently = ({ heading, link, showGrid }) => {
         {loading ? (
           <SongShimmer viewAll={viewAll} /> // Show shimmer when loading
         ) : (
-          <div className="relative">
+          <div className="relative ">
             <div
               ref={scrollContainerRef}
               className={`w-full transition-all duration-400 ${
@@ -128,10 +138,10 @@ const Recently = ({ heading, link, showGrid }) => {
                 ? songs.map((song, index) => (
                     <div
                       key={index}
-                      className="relative flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] group "
+                      className="relative  flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] group "
                     >
                       <div
-                        className="relative overflow-hidden rounded-[10px] aspect-square group"
+                        className="relative  overflow-hidden rounded-[10px] aspect-square group"
                         onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
                       >
                         <img
@@ -146,42 +156,6 @@ const Recently = ({ heading, link, showGrid }) => {
                             className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
                             onClick={() => handleSongClick(song)}
                           />
-                          {song.price > 0 && (
-                            <>
-                              {user?.purchasedSongs?.includes(song._id) ? (
-                                <div className="absolute  flex  justify-center items-center space-x-1 bottom-1 bg-green-600 text-white rounded-xl px-3 py-1">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5 text-white"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M5 13l4 4L19 7"
-                                    />
-                                  </svg>
-                                  <span>Purchased</span>
-                                </div>
-                              ) : (
-                                <div className="absolute   flex justify-center items-center space-x-1 bottom-1 bg-blue-600 text-white rounded-xl px-3 py-1">
-                                  <img
-                                    src={cart}
-                                    className="w-5 h-5 text-white"
-                                    alt="Cart"
-                                  />
-                                  <button
-                                    onClick={() => handelBuyNowClick(song)}
-                                  >
-                                    Buy Now
-                                  </button>
-                                </div>
-                              )}
-                            </>
-                          )}
 
                           <svg
                             width="24"
@@ -204,6 +178,44 @@ const Recently = ({ heading, link, showGrid }) => {
                             />
                           )}
                         </div>
+                        {song.price > 0 && (
+                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full  px-4 py-1 rounded-full flex items-center justify-center gap-2 text-white text-sm font-medium shadow-lg transition-all">
+                            {user?.purchasedSongs?.includes(song._id) ? (
+                              <div className="bg-green-600 px-3 py-1 rounded-full flex items-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={2}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                                <span>Purchased</span>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handelBuyNowClick(song)}
+                                className="bg-cyan-500 hover:bg-cyan-600 px-3 py-1 rounded-full flex items-center gap-2 transition-colors"
+                              >
+                                <img
+                                  src={cart}
+                                  className="w-4 h-4"
+                                  alt="Cart"
+                                />
+                                <span className="flex">
+                                  Buy_
+                                  <span className="hidden md:block"> Now</span>
+                                </span>
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       <div className="text-left mt-4">

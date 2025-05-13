@@ -27,33 +27,9 @@ import {
   YAxis,
 } from "recharts";
 import toast from "react-hot-toast";
+import Loading from "../Loading";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-
-const iconMap = {
-  songsThisMonth: <FaPlayCircle />,
-  timeSpent: <FaClock />,
-  likedSongs: <FaHeart />,
-  downloads: <FaDownload />,
-  totalSongsPlayed: <FaMusic />,
-  mostPlayedGenre: <FaList />,
-  mostLikedArtist: <FaStar />,
-  playlists: <FaList />,
-  recentHistory: <FaHistory />,
-  devices: <FaHeadphones />,
-};
-
-const ScrollDownAnimation = () => {
-  return (
-    <div className="relative w-8 h-8 md:w-10 md:h-10">
-      {/* First Arrow */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-4 border-white opacity-75 animate-bounce-slow"></div>
-
-      {/* Second Arrow (Slightly Offset) */}
-      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-4 border-white opacity-75 animate-bounce"></div>
-    </div>
-  );
-};
 
 const Dashboard = () => {
   const [info, setInfo] = useState(null);
@@ -144,19 +120,23 @@ const Dashboard = () => {
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50"];
 
   return (
-    <div className="px-4 py-6 text-white">
+    <div className="md:px-4 px-2  py-6 text-white">
       <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <FaTachometerAlt />
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <h1 className="md:text-2xl text-lg font-semibold tracking-tight">
+            Dashboard
+          </h1>
         </div>
-        <button className="bg-white text-cyan-500 font-semibold py-2 px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+        <button className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-1 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
           Explore More Tracks
         </button>
       </div>
 
       {loading ? (
-        <p className="text-gray-400">Loading dashboard...</p>
+        <p className="text-gray-400">
+          <Loading />
+        </p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
@@ -286,7 +266,7 @@ const Dashboard = () => {
                   <TbFaceIdError className="text-4xl text-red-300" />
                   <div>
                     <h1 className="text-red-400">
-                    You haven't purchased any songs yet.
+                      You haven't purchased any songs yet.
                     </h1>
                     <h2>Explore music and purchase songs</h2>
                   </div>
