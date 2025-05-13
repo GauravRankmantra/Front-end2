@@ -23,6 +23,11 @@ import { MdOutlineExpandCircleDown } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 
+import play from "../assets/svg/play.svg";
+import next from "../assets/svg/next.svg";
+import prev from "../assets/svg/prev.svg";
+import pause from "../assets/svg/pause.svg";
+
 import { GoPlay } from "react-icons/go";
 import { IoPauseCircleOutline } from "react-icons/io5";
 import { FaChevronUp } from "react-icons/fa6";
@@ -216,8 +221,8 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
-        isExpanded ? "h-max py-5 border border-green-500 " : " py-0 h-20  border border-red-600"
+      className={`fixed font-josefin-r bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
+        isExpanded ? "h-max py-5  " : " py-0 h-20  "
       }`}
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`,
@@ -226,14 +231,17 @@ const MusicPlayer = () => {
       }}
     >
       <div
-        className={`relative flex  w-full items-center ${
-          isExpanded ? "flex-col  pl-5 pr-5 md:pr-16" : "flex-row pl-0 pr-10 md:pr-16"
+        className={`relative  flex  h-[100%]  w-full items-center ${
+          isExpanded
+            ? "flex-col  pl-5 pr-5 md:pr-16"
+            : "flex-row pl-0 pr-10 md:pr-16"
         }`}
       >
         {!isExpanded && <MusicSidebar song={currentSong} />}
 
+{/* Mobile expand */}
         {isExpanded && (
-          <div className="border border-gray-500/30 shadow-2xl flex w-full relative flex-col justify-center  items-center space-x-4 pl-4  ">
+          <div className="border border-gray-500/30 shadow-2xl flex w-full relative flex-col justify-center  items-center space-y-4">
             <img
               src={currentSong.coverImage}
               alt={currentSong.title}
@@ -248,15 +256,17 @@ const MusicPlayer = () => {
             </button>
             <CiSettings
               onClick={() => setShowSetting(!showsetting)}
-              className="absolute left-0 top-1 w-8 h-8 text-cyan-500"
+              className="absolute -left-6 -top-5 w-6 h-6 text-cyan-500"
             />
             <div className="absolute left-0 top-10">
               {showsetting && (
-                <MusicSidebar song={currentSong} show={showsetting} />
+                <div className="relative w-[100%]">
+                  <MusicSidebar song={currentSong} show={showsetting} />
+                </div>
               )}
             </div>
 
-            <div className="flex flex-col text-left">
+            <div className="flex flex-col ">
               <h2 className="text-xl font-semibold">{currentSong.title}</h2>
               <p className="text-sm text-center text-gray-300 ">
                 {Array.isArray(currentSong.artist)
@@ -268,7 +278,7 @@ const MusicPlayer = () => {
         )}
 
         <div
-          className={`w-full border   flex items-center 
+          className={`w-full    flex items-center 
           ${
             isExpanded
               ? "flex-col ml-0 justify-center "
@@ -282,20 +292,20 @@ const MusicPlayer = () => {
               className="prev-btn text-gray-100 p-2 "
               onClick={handlePrev}
             >
-              <FaStepBackward size={24} />
+             <img src={prev} className=" w-5 h-5"></img>
             </button>
             <button
               className="play-btn text-gray-100 p-2 "
               onClick={handlePlayPause}
             >
               {isPlaying ? (
-                <IoPauseCircleOutline className="w-10 h-10" />
+                <img src={pause} className=" w-8 h-8"></img>
               ) : (
-                <GoPlay className="w-10 h-10" />
+                <img src={play} className=" w-8 h-8"></img>
               )}
             </button>
             <button className="next-btn text-gray-100 p-2" onClick={handleNext}>
-              <FaStepForward size={24} />
+               <img src={next} className=" w-5 h-5"></img>
             </button>
           </div>
           <audio
@@ -479,9 +489,9 @@ const MusicPlayer = () => {
       </div>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`absolute border ${
-          isExpanded ? "top-6" : "bottom-0"
-        } right-1 md:hidden bg-cyan-600 hover:bg-cyan-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg`}
+        className={`absolute  ${
+          isExpanded ? "top-5" : "bottom-0"
+        } right-1 md:hidden  text-cyan-500 rounded-full w-5 h-5 flex items-center justify-center shadow-lg`}
       >
         {isExpanded ? <FaChevronDown /> : <FaChevronUp />}
       </button>

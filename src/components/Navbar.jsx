@@ -204,7 +204,7 @@ const Navbar = () => {
 
             <div className="hidden overflow-hidden lg:flex justify-between items-center text-white text-md">
               <span className="text-[#3bc8e7]">{t("trendingSongs")}</span>
-              <span className="ml-4">
+              <span className="ml-4 font-josefin-sb">
                 {songs
                   ?.slice(0, 5)
                   .map((song) => song.title)
@@ -346,13 +346,13 @@ const Navbar = () => {
           {/* Toggle Button */}
           <div
             onClick={toggleSidebar}
-            className="absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
+            className="absolute  right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center hover:bg-[#2cc8e5] hover:text-white transition-colors duration-500"
           >
-            <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-all duration-500" />
+            <FaAngleRight className="text-cyan-500 text-[20px] ml-6 transition-all duration-500 rotate-180" />
           </div>
 
           {/* Sidebar Content */}
-          <div className="w-full px-4 h-full bg-[#1b2039] flex flex-col items-start pt-10">
+          <div className="w-full px-4 h-full bg-[#1b2039] flex font-josefin-sb flex-col items-start pt-10">
             {/* Logo */}
             <div className="flex justify-center items-center w-full">
               <Link
@@ -376,6 +376,7 @@ const Navbar = () => {
                 {navItems.map((item, index) => (
                   <li key={index}>
                     <NavLink
+                    onClick={closeSidebar}
                       to={item.to}
                       className={({ isActive }) =>
                         `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${

@@ -209,8 +209,8 @@ const Recently = ({ heading, link, showGrid }) => {
                                   alt="Cart"
                                 />
                                 <span className="flex">
-                                  Buy_
-                                  <span className="hidden md:block"> Now</span>
+                                  Buy
+                                  <span className="hidden md:block">_Now</span>
                                 </span>
                               </button>
                             )}

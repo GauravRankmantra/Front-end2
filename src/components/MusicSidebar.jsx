@@ -227,14 +227,14 @@ const MusicSidebar =React.memo( ({ song, show }) => {
 
   return (
     <div
-      className={` transition-all border shadow-2xl py-2 pr-2  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
-        expand || show ? "max-w-max" : "w-16 lg:w-24 xl:w-2/12"
+      className={` transition-all  font-josefin-r  shadow-2xl h-[100%]  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
+        expand || show ? "w-max" : "w-16 lg:w-24 xl:w-2/12"
       }`}
     >
       <div className="w-full relative flex items-center">
         <div className="flex-shrink-0 flex items-center space-x-4">
           <img
-            className="w-12 h-12 shadow-xl md:w-16 md:h-16 rounded-lg object-cover"
+            className="w-14 h-14 shadow-xl md:w-16 md:h-16 rounded object-cover"
             src={song.coverImage}
             alt={song.title}
           />
