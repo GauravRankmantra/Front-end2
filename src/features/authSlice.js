@@ -1,5 +1,6 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -27,6 +28,10 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+        authSuccess: (state) => {
+      state.user = null;
+      state.isAuthenticated = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -46,5 +51,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,authSuccess} = authSlice.actions;
 export default authSlice.reducer;

@@ -50,6 +50,10 @@ import DownloadDash from "./components/Profile/Download";
 import HistoryDash from "./components/Profile/History";
 import SellSongs from "./components/Profile/SellSongs";
 import SellSongLanding from "./components/SellSongLanding";
+import Withdrawal from "./components/Profile/Withdrawal";
+
+
+
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -58,9 +62,15 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
+      
   }, []);
 
   return (
+    <>
+
+
+
+  
     <Router>
       {user && <ActivityTracker userId={user._id} />}
       <Routes>
@@ -105,6 +115,13 @@ const App = () => {
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/login" />}
           />
+          
+                    
+          <Route
+            path="/dashboard/withdrawal"
+            element={user ? <Withdrawal /> : <Navigate to="/login" />}
+          />
+
           <Route
             path="/dashboard/purchased-songs"
             element={user ? <PurchasedSongs /> : <Navigate to="/login" />}
@@ -148,6 +165,7 @@ const App = () => {
         <Route path="/forget_pass" element={<ForgetPass />} />
       </Routes>
     </Router>
+      </>
   );
 };
 

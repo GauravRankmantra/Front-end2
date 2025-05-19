@@ -16,6 +16,8 @@ import {
   FaLeaf,
 } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
+import { MdAttachMoney } from "react-icons/md";
+
 
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,6 +36,7 @@ const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
   { name: "My Profile", path: "/profile", icon: <FaUser /> },
   { name: "Sell Your Music", path: "/dashboard/sell-song", icon: <TbMusicDollar /> },
+    { name: "Withdrawal Method", path: "/dashboard/withdrawal", icon: <MdAttachMoney /> },
   {
     name: "Purchased Songs",
     path: "/dashboard/purchased-songs",
@@ -44,6 +47,7 @@ const menuItems = [
   { name: "Live", path: "/dashboard/live", icon: <MdLiveTv /> },
   { name: "Offers", path: "/dashboard/offer", icon: <MdOutlineLocalOffer /> },
   { name: "History", path: "/dashboard/history", icon: <FaHistory /> },
+
   { name: "Liked Songs", path: "/dashboard/liked", icon: <FaHeart /> },
   {
     name: "Downloaded Songs",

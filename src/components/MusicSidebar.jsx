@@ -228,7 +228,7 @@ const MusicSidebar =React.memo( ({ song, show }) => {
   return (
     <div
       className={` transition-all  font-josefin-r  shadow-2xl h-[100%]  absolute z-10 rounded-e-2xl duration-300 flex bg-cyan-500 text-white items-center ${
-        expand || show ? "w-max" : "w-16 lg:w-24 xl:w-2/12"
+        expand || show ? "w-max" : "w-0 md:w-20 lg:w-24 xl:w-2/12"
       }`}
     >
       <div className="w-full relative flex items-center">

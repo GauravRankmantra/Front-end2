@@ -14,7 +14,7 @@ import { TbMusicDollar } from "react-icons/tb";
 
 import axios from "axios";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
-import LanguageSelector from "./LanguageSelector";
+
 
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
@@ -189,7 +189,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-12 w-full lg:w-auto">
             {/* Search Box */}
-            <div className="relative flex items-center w-full max-w-full sm:max-w-[300px]">
+            <div className=" flex justify-start items-center w-full max-w-full sm:max-w-[300px]">
               <input
                 type="text"
                 className="form-control py-2 pl-3 pr-12 text-sm text-[#777] bg-white rounded-[5px] border-none w-full sm:w-[180px] lg:w-full"
@@ -197,8 +197,8 @@ const Navbar = () => {
                 value={inputValue}
                 onChange={handleInputChange}
               />
-              <span className="absolute right-0 top-1/2 transform -translate-y-1/2 h-[36px] flex items-center justify-center bg-[#3bc8e7] rounded-r-[5px] px-3 cursor-pointer">
-                <FaSearch size={18} color="#fff" />
+              <span className=" rounded-r-[5px] px-3 py-2 cursor-pointer">
+                <FaSearch className="text-cyan-500 w-5 h-5" />
               </span>
             </div>
 
@@ -213,6 +213,7 @@ const Navbar = () => {
               </span>
             </div>
           </div>
+
 
           {/* Profile or Register/Login */}
           <div className="hidden lg:flex items-center space-x-8">

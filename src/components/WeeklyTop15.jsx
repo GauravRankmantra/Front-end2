@@ -70,7 +70,7 @@ const WeeklyTop15 = ({ link, heading }) => {
       {showLoginPopup && loginPopupSong && (
         <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />
       )}
-      <div className="bg-gray-900 text-gray-300 mx-2 sm:px-10 lg:px-10 py-4">
+      <div className="bg-gray-900 text-gray-300 mx-2 sm:px-10 lg:px-10 ">
         <div className="container mx-auto">
           {/* Heading Section */}
           <div className="w-full mb-6">
@@ -95,73 +95,89 @@ const WeeklyTop15 = ({ link, heading }) => {
               {!loading && !error && songs.length > 0
                 ? songs.map((song, index) => (
                     <div
-                      key={index}
-                      // onClick={() => handleSongClick(song)}
-                      className={`relative group flex items-center p-4  rounded-lg transition-colors duration-300  hover:bg-gray-700`}
+                      key={song._id}
+                      className="relative group flex items-center justify-between gap-4 px-4 py-3  border-b  border-cyan-500/20 transition duration-200"
                     >
-                      {/* Bottom Divider */}
-                      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#8e8e8e] to-transparent"></div>
-
-                      {/* Song Index */}
+                      {/* Index Number */}
                       <div
-                        className={`text-6xl md:text-4xl xl:text-6xl font-bold ${
+                        className={`text-4xl font-semibold w-8 text-right ${
                           currentSong === song._id
                             ? "text-cyan-500"
-                            : "text-white"
-                        } mr-4`}
+                            : "text-gray-300"
+                        }`}
                       >
                         {index + 1 < 10 ? `0${index + 1}` : index + 1}
                       </div>
 
-                      {/* Song Cover Image */}
-                      <div className="w-14 h-14 xl:w-20 xl:h-20 flex-shrink-0 mr-4 relative">
-                        <img
-                          src={song.coverImage}
-                          alt="Album"
-                          className="w-full h-full object-cover rounded-lg shadow-lg transition-opacity duration-300 group-hover:opacity-70"
-                        />
-                        <AiFillPlayCircle
-                          className="absolute cursor-pointer inset-0 w-full h-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          onClick={() => handleSongClick(song)}
-                        />
+                      {/* Song Cover + Info */}
+                      <div className="flex items-center gap-4 flex-grow min-w-0">
+                        {/* Cover Image */}
+                        <div className="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden">
+                          <img
+                            src={song.coverImage}
+                            alt={song.title}
+                            className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-70"
+                          />
+                          <AiFillPlayCircle
+                            onClick={() => handleSongClick(song)}
+                            className="absolute inset-0 w-full h-full text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          />
+                        </div>
+
+                        {/* Song Title & Artist */}
+                        <div className="flex flex-col justify-center min-w-0">
+                          <p
+                            className="text-sm font-semibold text-white truncate"
+                            title={song.title}
+                          >
+                            {song.title}
+                          </p>
+                          <p
+                            className="text-xs text-gray-400 truncate"
+                            title={
+                              Array.isArray(song.artist)
+                                ? song.artist.map((a) => a.fullName).join(", ")
+                                : song?.artist?.fullName || song?.artist
+                            }
+                          >
+                            {Array.isArray(song.artist)
+                              ? song.artist.map((a) => a.fullName).join(", ")
+                              : song?.artist?.fullName || song?.artist}
+                          </p>
+                        </div>
                       </div>
 
-                      {/* Song Info */}
-                      <div className="flex flex-col justify-between flex-grow overflow-hidden">
-                        <p className="font-bold text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap">
-                          {song.title}
-                        </p>
-                        <p className="text-xs lg:text-sm text-gray-400 text-ellipsis overflow-hidden whitespace-nowrap">
-                          {Array.isArray(song.artist)
-                            ? song?.artist.map((a) => a.fullName).join(", ")
-                            : song?.artist?.fullName || song?.artist}
-                        </p>
-                      </div>
-
-                      {/* Song Duration */}
-                      <div className="text-xs block sm:text-sm  lg:hidden xl:hidden 2xl:block text-gray-400 ml-4 flex-shrink-0">
+                      {/* Duration */}
+                      <div className="text-xs text-gray-400 hidden sm:block">
                         {formatDuration(song.duration)}
                       </div>
 
-                      {/* Options Button */}
-                      <div className="ml-4 flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                      {/* Action Menu */}
+                      <div className="relative shrink-0">
+                        <button
                           onClick={() => handleMenuToggle(song)}
+                          className="text-gray-400 hover:text-white transition"
                         >
-                          <circle cx="12" cy="12" r="2" fill="currentColor" />
-                          <circle cx="5" cy="12" r="2" fill="currentColor" />
-                          <circle cx="19" cy="12" r="2" fill="currentColor" />
-                        </svg>
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <circle cx="5" cy="12" r="2" />
+                            <circle cx="12" cy="12" r="2" />
+                            <circle cx="19" cy="12" r="2" />
+                          </svg>
+                        </button>
+
+                        {/* Action Menu Dropdown */}
                         {currentSong && currentSong._id === song._id && (
-                          <SongAction
-                            onClose={() => setCurrentSong(null)}
-                            song={currentSong}
-                          />
+                          <div className="absolute top-full right-0 z-10">
+                            <SongAction
+                              onClose={() => setCurrentSong(null)}
+                              song={currentSong}
+                            />
+                          </div>
                         )}
                       </div>
                     </div>

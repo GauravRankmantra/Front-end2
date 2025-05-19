@@ -28,13 +28,16 @@ import {
 } from "recharts";
 import toast from "react-hot-toast";
 import Loading from "../Loading";
+import { useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [info, setInfo] = useState(null);
+  const [weeklyStats,setWeeklyStats]=useState([]);
   const [likedSongs, setLikedSongs] = useState(null);
   const [purchasedSongs, setPurchasedSongs] = useState([]);
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -92,6 +95,33 @@ const Dashboard = () => {
     fetchSongs();
   }, []);
 
+
+    useEffect(() => {
+    const fetchWeeklyStats = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}api/v1/userDashbord/getWeeklyActivityStats`, {
+          withCredentials: true,
+        });
+
+        setWeeklyStats(res.data.data);
+       
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data?.message === "Unauthorized: You Need to Login"
+        ) {
+          setErrorMessage("You need to login for this functionality.");
+        } else {
+          console.error("Error fetching weekly Stats songs:", error);
+          toast.error("Failed to fetch Weekly stats");
+        }
+      }
+    };
+
+    fetchWeeklyStats();
+  }, []);
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -128,7 +158,7 @@ const Dashboard = () => {
             Dashboard
           </h1>
         </div>
-        <button className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-1 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+        <button onClick={()=>navigate("/top_track")} className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-1 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
           Explore More Tracks
         </button>
       </div>
@@ -248,7 +278,7 @@ const Dashboard = () => {
                   The Weekend
                 </h1>
               </div>
-              <button className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-2">
+              <button onClick={()=>navigate('/artists')} className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-2">
                 Explore More Artist
               </button>
             </div>
@@ -349,14 +379,14 @@ const Dashboard = () => {
             )}
 
             {/* Weekly Listening Activity Bar Chart */}
-            {info.activityStats && info.activityStats.length > 0 && (
+            {weeklyStats && weeklyStats.length > 0 && (
               <div className="bg-[#1b2039] rounded-xl p-6 shadow-lg">
                 <h2 className="text-lg font-semibold mb-4 text-white">
                   Weekly Activity
                 </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
-                    data={info.activityStats.map((stat) => ({
+                    data={weeklyStats.map((stat) => ({
                       name: new Date(stat.date).toLocaleDateString("en-US", {
                         weekday: "short",
                       }),

@@ -249,42 +249,42 @@ const SongActions = ({ onClose, song }) => {
     <>
       <div
         ref={dropdownRef}
-        className="absolute md:overflow-hidden overflow-scroll right-8 w-24 h-28 md:w-auto md:h-auto m-auto md:max-w-fit rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 animate-fade-in"
+        className="absolute md:overflow-hidden overflow-scroll right-8 w-max h-max  m-auto  rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 animate-fade-in"
       >
         <div className="md:py-1">
           <button
-            className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200 "
+            className="flex items-center w-full px-4 py-2 md:text-xs text-[10px] text-gray-700 hover:bg-gray-100 transition-colors duration-200 "
             onClick={() => handleAddToFav(song._id)}
           >
-            <AiOutlineHeart className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
+            <AiOutlineHeart className="md:mr-2 mr-1 w-4 h-4 text-gray-500" />
             {t("addToFav")}
           </button>
           <button
-            className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            className="flex items-center w-full px-4 py-2 md:text-xs text-[10px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleAddToQueue}
           >
-            <AiOutlinePlus className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
+            <AiOutlinePlus className="md:mr-2 mr-1  w-4 h-4 text-gray-500" />
             {t("addToQueue")}
           </button>
           <button
-            className="flex  items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            className="flex  items-center w-full px-4 py-2 md:text-xs text-[10px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleDownloadClick}
           >
-            <AiOutlineDownload className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
+            <AiOutlineDownload className="md:mr-2 mr-1  w-4 h-4 text-gray-500" />
             {t("download")}
           </button>
           <button
-            className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            className="flex items-center w-full px-4 py-2 md:text-xs text-[10px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleAddToPlaylist}
           >
-            <AiOutlineUnorderedList className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
+            <AiOutlineUnorderedList className="md:mr-2 mr-1  w-4 h-4 text-gray-500" />
             {t("addToPlaylist")}
           </button>
           <button
-            className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            className="flex items-center w-full px-4 py-2 md:text-xs text-[10px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={() => handleShare({ songId: song._id })}
           >
-            <AiOutlineShareAlt className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
+            <AiOutlineShareAlt className="md:mr-2 mr-1 w-4 h-4 text-gray-500" />
             {t("share")}
           </button>
           {isModalOpen && shareData && (

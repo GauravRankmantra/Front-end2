@@ -8,6 +8,12 @@ const apiUrl = import.meta.env.VITE_API_URL;
 import { FaChevronDown } from "react-icons/fa";
 import { CiSettings } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
+import getArtistNames from "../utils/getArtistNames";
+import { PiDownloadDuotone } from "react-icons/pi";
+import { TbCloudDownload } from "react-icons/tb";
+
+import { RiArrowDownDoubleLine } from "react-icons/ri";
+import { VscClose } from "react-icons/vsc";
 
 import "../index.css";
 import {
@@ -27,6 +33,7 @@ import play from "../assets/svg/play.svg";
 import next from "../assets/svg/next.svg";
 import prev from "../assets/svg/prev.svg";
 import pause from "../assets/svg/pause.svg";
+import useIsMobile from "../utils/useIsMobile";
 
 import { GoPlay } from "react-icons/go";
 import { IoPauseCircleOutline } from "react-icons/io5";
@@ -52,6 +59,7 @@ import {
 } from "../features/musicSlice";
 import { useNavigate } from "react-router-dom";
 import MusicSidebar from "./MusicSidebar";
+import { Download, Repeat, ShoppingCart } from "lucide-react";
 
 const formatDuration = (time) => {
   const minutes = Math.floor(time / 60);
@@ -75,8 +83,13 @@ const MusicPlayer = () => {
   const [showsetting, setShowSetting] = useState(false);
   const { t } = useTranslation();
 
+  const isMobile = useIsMobile();
+
+  const user = useSelector((state) => state.user.user);
+
   const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
   const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
+  const navigate = useNavigate();
 
   const handelQualityClick = (type) => {
     setQuality(type);
@@ -96,6 +109,75 @@ const MusicPlayer = () => {
     }
   };
 
+  const handleDownload = async () => {
+    const songId = currentSong._id;
+    let artistIds = [];
+
+    console.log("songs at bottom ", currentSong);
+    if (typeof currentSong.artist === "string") {
+      artistIds.push(currentSong.artist._id);
+    } else if (Array.isArray(currentSong.artist)) {
+      artistIds = currentSong.artist
+        .filter((artist) => artist && artist._id)
+        .map((artist) => artist._id);
+    } else {
+      console.warn(
+        "song.artist is not a string or an array:",
+        currentSong.artist
+      );
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${apiUrl}api/v1/song/isPurchased/${songId}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.isPurchased) {
+        toast.success("Download started");
+        try {
+          const response = await axios.post(
+            `${apiUrl}api/v1/userStats/addDownloadStats`,
+            { songId, artistIds }
+          );
+        } catch (error) {
+          console.log("error while update download stats", error);
+        }
+        const audioResponse = await axios.get(currentSong.audioUrls.high, {
+          responseType: "blob",
+        });
+
+        const audioBlob = audioResponse.data;
+        const downloadLink = document.createElement("a");
+        const url = window.URL.createObjectURL(audioBlob);
+        downloadLink.href = url;
+        downloadLink.download = `${currentSong.title}.mp3`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(downloadLink);
+      } else {
+        toast.error("Download not allowed. Purchase the song first.");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data?.message === "Unauthorized: You Need to Login"
+      ) {
+        toast.error("You need to login for this functionality.");
+      } else {
+        toast.error("An error occurred while checking purchase status.");
+        console.error(error);
+      }
+    }
+  };
+  const handleDownloadClick = async () => {
+    await handleDownload();
+  };
+
   const currentSong = useSelector(
     (state) => state.musicPlayer?.currentSong || null
   );
@@ -113,7 +195,8 @@ const MusicPlayer = () => {
     dispatch(setIsPlaying(true));
   };
 
-  const toggleSlider = () => {
+  const toggleSlider = (e) => {
+    e.stopPropagation();
     setShowSlider(!showSlider);
   };
 
@@ -184,15 +267,18 @@ const MusicPlayer = () => {
     setCurrentTime(newTime);
   };
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.stopPropagation();
     dispatch(playNextSong());
   };
 
-  const handlePrev = () => {
+  const handlePrev = (e) => {
+    e.stopPropagation();
     dispatch(playPrevSong());
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPause = (e) => {
+    e.stopPropagation();
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -201,11 +287,13 @@ const MusicPlayer = () => {
     dispatch(setIsPlaying(!isPlaying));
   };
 
-  const togglePlaylist = () => {
+  const togglePlaylist = (e) => {
+    e.stopPropagation();
     setIsPlaylistOpen(!isPlaylistOpen);
   };
 
   const handleVolumeChange = (e) => {
+    e.stopPropagation();
     setVolume(e.target.value);
   };
 
@@ -221,8 +309,11 @@ const MusicPlayer = () => {
 
   return (
     <div
-      className={`fixed font-josefin-r bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ${
-        isExpanded ? "h-max py-5  " : " py-0 h-20  "
+      onClick={() => {
+        if (isMobile) setIsExpanded(true);
+      }}
+      className={`fixed  font-josefin-r bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ease-in-out ${
+        isExpanded ? "h-max pb-5  " : " pb-0 h-[4.5rem]  "
       }`}
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`,
@@ -230,23 +321,97 @@ const MusicPlayer = () => {
         backgroundPosition: "center",
       }}
     >
+      <div className={`${isExpanded ? `hidden` : `hidden md:flex`} w-full `}>
+        <MusicSidebar song={currentSong} />
+      </div>
       <div
-        className={`relative  flex  h-[100%]  w-full items-center ${
+        className={`relative   flex  h-[100%]  w-full items-center ${
           isExpanded
             ? "flex-col  pl-5 pr-5 md:pr-16"
-            : "flex-row pl-0 pr-10 md:pr-16"
+            : "flex-row pl-0 pr-0 md:pr-16"
         }`}
       >
-        {!isExpanded && <MusicSidebar song={currentSong} />}
+        {/* mobile main */}
+        <div
+          className={` ${
+            isExpanded ? `hidden` : `flex md:hidden`
+          } justify-between  w-full items-center gap-1  shadow-sm hover:shadow-md transition-all duration-200`}
+        >
+          <div className="flex items-center gap-3 ">
+            <img
+              src={currentSong.coverImage}
+              alt={currentSong.title}
+              className="w-14 h-14 rounded-md object-cover"
+            />
+            <div className="flex flex-col justify-start items-start max-w-[10px]">
+              {/* Song Title */}
+              <h1
+                className="text-sm font-medium text-gray-100 truncate"
+                title={currentSong.title}
+              >
+                {currentSong.title}
+              </h1>
 
-{/* Mobile expand */}
+              {/* Artist(s) */}
+              <p
+                className="text-xs text-gray-300 truncate"
+                title={getArtistNames(currentSong.artist)}
+              >
+                {getArtistNames(currentSong.artist)}
+              </p>
+            </div>
+          </div>
+          <div className="flex mx-2 space-x-1">
+            <button
+              className="play-btn text-gray-100 p-2 "
+              onClick={handlePlayPause}
+            >
+              {isPlaying ? (
+                <img src={pause} className=" w-8 h-8"></img>
+              ) : (
+                <img src={play} className=" w-8 h-8"></img>
+              )}
+            </button>
+
+            <div className="md:hidde  flex flex-col justify-center items-center ">
+              {user?.purchasedSongs?.includes(currentSong._id) ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    handleDownloadClick();
+                  }}
+                  className=" p-1  "
+                >
+                  <TbCloudDownload className="w-7 h-7  text-cyan-500" />
+                </button>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    navigate(
+                      `/purchased?id=${encodeURIComponent(currentSong._id)}`
+                    );
+                  }}
+                  className=" p-1  "
+                >
+                  <ShoppingCart className="w-7 h-7 text-green-500" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile expand */}
         {isExpanded && (
-          <div className="border border-gray-500/30 shadow-2xl flex w-full relative flex-col justify-center  items-center space-y-4">
+          <div className=" border-gray-500/20 shadow-2xl flex w-full relative flex-col justify-center  items-center space-y-4">
             <img
               src={currentSong.coverImage}
               alt={currentSong.title}
               className="w-44 h-44 rounded-lg shadow-xl object-cover"
             />
+
             <button
               className="text-gray-100 space-x-1 bg-cyan-500 flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
               onClick={togglePlaylist}
@@ -254,10 +419,7 @@ const MusicPlayer = () => {
               <FaChevronCircleUp className="w-3 h-3" />
               <h1 className="text-xs md:text-sm">{t("queue")}</h1>
             </button>
-            <CiSettings
-              onClick={() => setShowSetting(!showsetting)}
-              className="absolute -left-6 -top-5 w-6 h-6 text-cyan-500"
-            />
+
             <div className="absolute left-0 top-10">
               {showsetting && (
                 <div className="relative w-[100%]">
@@ -274,25 +436,24 @@ const MusicPlayer = () => {
                   : currentSong.artist?.fullName || currentSong.artist}
               </p>
             </div>
+
+            <div>
+              </div>
           </div>
         )}
 
         <div
-          className={`w-full    flex items-center 
-          ${
-            isExpanded
-              ? "flex-col ml-0 justify-center "
-              : "  justify-between ml-[20%] md:ml-[10%] xl:ml-[20%] lg:ml-[15%]"
-          } 
-          md:px-8 md:py-4 rounded-lg shadow-md`}
+          className={` ${
+            isExpanded ? `flex border border-white/30 shadow-2xl rounded-xl pr-1` : `hidden md:flex`
+          } md:ml-72 flex-row justify-center items-center  w-full`}
         >
           {/* Controls (Previous, Play/Pause, Next) */}
-          <div className="flex justify-center items-center md:space-x-4">
+          <div className="flex  md:space-x-4">
             <button
-              className="prev-btn text-gray-100 p-2 "
+              className={` prev-btn text-gray-100 p-2`}
               onClick={handlePrev}
             >
-             <img src={prev} className=" w-5 h-5"></img>
+              <img src={prev} className=" w-5 h-5"></img>
             </button>
             <button
               className="play-btn text-gray-100 p-2 "
@@ -305,7 +466,7 @@ const MusicPlayer = () => {
               )}
             </button>
             <button className="next-btn text-gray-100 p-2" onClick={handleNext}>
-               <img src={next} className=" w-5 h-5"></img>
+              <img src={next} className=" w-5 h-5"></img>
             </button>
           </div>
           <audio
@@ -315,11 +476,16 @@ const MusicPlayer = () => {
           />
           {/* Progress Bar */}
           <div
-            className={` flex-grow flex items-center md:mx-4 ${
-              isExpanded ? "w-full translate-x-0" : "translate-x-4"
-            } md:translate-x-0`}
+            className={` flex-grow  w-[70%] flex items-center md:mx-4 
+
+               
+            translate-x-0`}
           >
-            <div className=" flex justify-between items-center w-full md:px-4">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+              className=" flex justify-between items-center w-full md:px-4"
+            >
               <span className="text-xs text-gray-100">
                 {formatDuration(currentTime)}
               </span>
@@ -329,6 +495,7 @@ const MusicPlayer = () => {
                 onChange={handleSeekChange}
                 onMouseUp={handleSeekMouseUp}
                 onTouchEnd={handleSeekMouseUp}
+                onPointerDown={(e) => e.stopPropagation()}
                 className="w-full h-1 bg-transparent  rounded-lg cursor-pointer"
                 style={{ accentColor: "#1ecbe1" }}
               />
@@ -341,16 +508,26 @@ const MusicPlayer = () => {
 
         <div className=" relative hidden md:w-52 md:flex items-center justify-center">
           <FaVolumeUp
-            className="text-white cursor-pointer w-5 h-5"
+            className={`${
+              isExpanded ? `hidden md:hidden` : `flex md:flex`
+            }text-white cursor-pointer w-5 h-5`}
             onClick={toggleSlider}
           />
 
-          <div className="absolute right-0 hidden md:flex">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            className={`${
+              isExpanded ? `hidden md:hidden` : `flex md:flex`
+            } absolute right-0 hidden 
+            `}
+          >
             <input
               type="range"
               min="0"
               max="100"
               value={volume}
+              onPointerDown={(e) => e.stopPropagation()}
               onChange={handleVolumeChange}
               className=" md:w-16  cursor-pointer -rotate-90 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/80 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[7px] [&::-webkit-slider-thumb]:w-[15px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500"
             />
@@ -366,7 +543,10 @@ const MusicPlayer = () => {
           <div className="relative">
             <button
               className="text-gray-100 space-x-1 border flex items-center justify-center rounded-3xl px-2  md:px-4 py-1"
-              onClick={() => setOpenQuality(!openQuality)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenQuality(!openQuality);
+              }}
             >
               <FaChevronCircleUp className="w-3 h-3" />
               <h1 className="text-xs md:text-sm">{t("quality")}</h1>{" "}
@@ -376,7 +556,8 @@ const MusicPlayer = () => {
                 <div>
                   <button
                     className="block w-full text-left px-4 py-2 text-sm text-gray-900 hover:bg-gray-400 rounded-md"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handelQualityClick("low");
                       setOpenQuality(false);
                     }}
@@ -385,7 +566,8 @@ const MusicPlayer = () => {
                   </button>
                   <button
                     className="block w-full text-left px-4 py-2 text-sm text-gray-900 hover:bg-gray-400 rounded-md"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handelQualityClick("high");
                       setOpenQuality(false);
                     }}
@@ -410,7 +592,7 @@ const MusicPlayer = () => {
 
       {/* Playlist Sidebar */}
       <div
-        className={`fixed right-0 bottom-16 bg-gray-800 p-4 text-white shadow-xl transform transition-transform duration-300 no-scrollbar ${
+        className={`fixed right-0 bottom-0 bg-gray-800 p-4 text-white shadow-xl transform transition-transform duration-300 no-scrollbar ${
           isPlaylistOpen ? "translate-x-0" : "translate-x-full"
         } w-80 h-3/4 z-50 overflow-y-auto rounded-lg`}
       >
@@ -423,17 +605,23 @@ const MusicPlayer = () => {
             Clear queue
           </button>
           <button
-            className="bg-red-500 text-white p-2 rounded-full"
-            onClick={() => setIsPlaylistOpen(false)}
+            className="bg-red-500 text-white rounded-full"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsPlaylistOpen(false);
+            }}
           >
-            X
+            <VscClose className="w-6 h-6" />
           </button>
         </div>
 
         <ul className="space-y-4 ">
           {playlist.map((song, index) => (
             <li
-              onClick={() => handelQueueSongClick(song)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handelQueueSongClick(song);
+              }}
               key={index}
               className={`flex relative  items-center hover:bg-cyan-500 justify-start gap-4 p-2 rounded-md cursor-pointer ${
                 index === currentSongIndex
@@ -462,7 +650,11 @@ const MusicPlayer = () => {
                       song.artist.map((artistObj, index) => (
                         <span
                           key={index}
-                          onClick={() => navigate(`/artist/${artistObj._id}`)} // Example click handler
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            navigate(`/artist/${artistObj._id}`);
+                          }} // Example click handler
                           className="cursor-pointer hover:underline"
                         >
                           {artistObj.fullName}
@@ -487,13 +679,42 @@ const MusicPlayer = () => {
           ))}
         </ul>
       </div>
+
+      {/* <div className="absolute space-y-2 md:hidden right-1 bottom-1/2 top-1/2 flex flex-col justify-center items-center ">
+        {user?.purchasedSongs?.includes(currentSong._id) ? (
+          <button onClick={() => handleDownloadClick()} className=" p-1  ">
+            <Download className="w-6 h-6  text-green-600" />
+          </button>
+        ) : (
+          <ShoppingCart className="w-5 h-5 text-cyan-600" />
+        )}
+      </div> */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className={`absolute  ${
-          isExpanded ? "top-5" : "bottom-0"
-        } right-1 md:hidden  text-cyan-500 rounded-full w-5 h-5 flex items-center justify-center shadow-lg`}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        className={` absolute top-1 right-2 md:hidden  text-cyan-500/80 rounded-full w-8 h-8 flex items-center justify-center shadow-lg`}
       >
-        {isExpanded ? <FaChevronDown /> : <FaChevronUp />}
+        {isExpanded ? (
+          <RiArrowDownDoubleLine className="w-8 h-8 rotate-180 animate-bounce" />
+        ) : (
+          ""
+        )}
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        className={` absolute left-2 top-1 w-8 h-8 md:hidden  text-cyan-500/80 rounded-full  flex items-center justify-center shadow-lg`}
+      >
+        {showsetting ? (
+          <CiSettings className="w-8 h-8 rotate-180 animate-bounce" />
+        ) : (
+          ""
+        )}
       </button>
     </div>
   );

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import SongCard from "../components/Song/SongCard";
-import owner from "../assets/img/frame.jpeg";
+
 import AlbumCard from "../components/Album/AlbumCard";
 import WeeklyTop15 from "../components/WeeklyTop15";
 import img728 from "../assets/img/home2bg.svg";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
-import logo from "../assets/img/logo.jpeg";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ArtistCard from "../components/ArtistCard";

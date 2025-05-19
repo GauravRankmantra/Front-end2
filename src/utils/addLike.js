@@ -14,16 +14,14 @@ const addLike = async ({ songId, albumId }) => {
       throw new Error("Either songId or albumId must be provided");
     }
 
-    const res = await axios.post(
-      `${apiUrl}api/v1/like`,
-      requestBody,
-      { withCredentials: true }
-    );
+    const res = await axios.post(`${apiUrl}api/v1/like`, requestBody, {
+      withCredentials: true,
+    });
     return res;
   } catch (error) {
-      // improved error handling
-      console.error("Error in addLike:", error);
-      throw error; // re-throw the error so the caller can handle it
+    // improved error handling
+    console.error("Error in addLike:", error);
+    throw error; // re-throw the error so the caller can handle it
   }
 };
 

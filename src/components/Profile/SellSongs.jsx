@@ -148,8 +148,6 @@ const SellSongs = () => {
     fetchGenres();
   }, []);
 
-
-
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -578,7 +576,7 @@ const SellSongs = () => {
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     required
                   >
-                    <option value="">Select Genre</option>
+                    <option value="">Select Album</option>
 
                     {albums.map((album) => (
                       <option key={album._id} value={album._id}>
@@ -830,7 +828,6 @@ const SellSongs = () => {
           Your Upload's
         </h2>
 
-     
         <div className="flex space-x-5 my-4 ">
           <button
             onClick={() => {
@@ -1032,7 +1029,7 @@ const SellSongs = () => {
           </>
         )}
       </div>
-<UserStatsCharts userId={user._id}/>
+      <UserStatsCharts userId={user._id} />
     </div>
   );
 };
