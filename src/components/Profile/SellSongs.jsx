@@ -35,6 +35,7 @@ import {
 } from "../../features/musicSlice";
 import Loading from "../Loading";
 import UserStatsCharts from "./UserStatsCharts";
+import SellerStats from "./SellerStats";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -87,24 +88,7 @@ const SellSongs = () => {
 
   const [artistSuggestions, setArtistSuggestions] = useState([]);
 
-  const dummyDownloadData = [
-    { day: "Mon", downloads: 15 },
-    { day: "Tue", downloads: 28 },
-    { day: "Wed", downloads: 12 },
-    { day: "Thu", downloads: 35 },
-    { day: "Fri", downloads: 22 },
-    { day: "Sat", downloads: 40 },
-    { day: "Sun", downloads: 18 },
-  ];
-  const dummyRevenueData = [
-    { day: "Mon", purchases: 10, revenue: 25 },
-    { day: "Tue", purchases: 18, revenue: 45 },
-    { day: "Wed", purchases: 8, revenue: 20 },
-    { day: "Thu", purchases: 25, revenue: 60 },
-    { day: "Fri", purchases: 15, revenue: 38 },
-    { day: "Sat", purchases: 30, revenue: 75 },
-    { day: "Sun", purchases: 12, revenue: 30 },
-  ];
+ 
 
   const toggleExpand = (songId) => {
     setExpandedSongId(expandedSongId === songId ? null : songId);
@@ -422,10 +406,28 @@ const SellSongs = () => {
       toast.error("Failed to delete song. Please try again.");
     }
   };
+  if (!user.stripeId) {
+    return (
+      <div className="md:px-4 px-2  py-6 rounded-md shadow-md">
+        <h1 className="text-center text-red-500 mt-5 text-xl">
+          First connect your Stripe account with ODG music
+        </h1>
+        <div className=" flex justify-center text-gray-200 mt-10 ">
+          <button
+            onClick={() => navigate("/dashboard/withdrawal")}
+            className="border p-2 border-cyan-500 rounded-lg hover:bg-cyan-500 hover:text-white"
+          >
+            Click here to connect your Strip Account
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="md:px-4 px-2  py-6 rounded-md shadow-md">
+    <div className="md:px-4 px-2 font-josefin-m py-10 rounded-md shadow-md">
       {/* Upload New Song Section */}
+
       <div className="mb-6 flex space-x-2">
         <button
           onClick={openUploadModal}
@@ -1030,6 +1032,9 @@ const SellSongs = () => {
         )}
       </div>
       <UserStatsCharts userId={user._id} />
+      <div>
+        <SellerStats sellerId={user._id} />
+      </div>
     </div>
   );
 };

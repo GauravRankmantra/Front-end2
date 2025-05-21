@@ -1,10 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTimes, FaPlay, FaHeart, FaPlus, FaMusic } from "react-icons/fa"; // Import more icons
-import formatDuration from "../utils/formatDuration.js"
+import formatDuration from "../utils/formatDuration.js";
+
 
 const LoginCard = ({ song, onClose }) => {
-  const navigate = useNavigate();
+
+  console.log("song at login card",song)
+  // const navigate = useNavigate();
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md animate-fadeIn">
@@ -53,13 +57,16 @@ const LoginCard = ({ song, onClose }) => {
               </p>
             )}
 
-             {song?.duration && (
+            {song?.duration && (
               <p className="text-gray-700 text-sm">
-                <span className="font-semibold">Duration: {formatDuration(song.duration)}</span> 
+                <span className="font-semibold">
+                  Duration: {formatDuration(song.duration)}
+                </span>
               </p>
             )}
             <p className="text-gray-600 text-xs">
-              Played <span className="font-semibold">{song?.plays || "0"}</span> Times
+              Played <span className="font-semibold">{song?.plays || "0"}</span>{" "}
+              Times
             </p>
           </div>
 
@@ -87,10 +94,10 @@ const LoginCard = ({ song, onClose }) => {
 
           {/* Login Button */}
           <button
-            onClick={() => {
-              navigate("/login");
-              onClose();
-            }}
+            // onClick={() => {
+            //   navigate("/login");
+            //   onClose();
+            // }}
             className="w-full bg-cyan-500 text-white py-3 px-6 rounded-full hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-1"
           >
             <FaPlay className="inline mr-2" /> Login to Listen Now

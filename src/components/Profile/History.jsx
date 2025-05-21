@@ -62,7 +62,7 @@ const History = () => {
           <Loading />
         </div>
       ) : (
-        <div className="md:px-4 px-2  py-6">
+        <div className="md:px-4 px-2  py-6 font-josefin-m">
           <h1 className="text-white text-2xl mb-2">Recently Played</h1>
           {topSongs && (
             <div>

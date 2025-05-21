@@ -2,8 +2,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const apiUrl = import.meta.env.VITE_API_URL;
+
 
 export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
   try {

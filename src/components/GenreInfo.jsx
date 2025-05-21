@@ -131,9 +131,9 @@ const GenreInfo = () => {
           {error && <p className="text-white">Error: {error}</p>}
 
           {!loading && !error && songs.length > 0
-            ? songs.map((song) => (
+            ? songs.map((song,index) => (
                 <div
-                  key={song._id}
+                  key={index}
                   className="relative group cursor-pointer"
                   onClick={() => handleSongClick(song)}
                 >

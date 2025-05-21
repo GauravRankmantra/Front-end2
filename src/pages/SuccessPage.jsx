@@ -3,6 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { updateUser } from "../features/userSlice";
+import toast from "react-hot-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -14,19 +15,22 @@ const SuccessPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user.user);
-  const userId = user?._id;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+
+
+  const userId = useSelector((state) => state.user.user?._id);
+
+  const sellerSharePercentage = 0.7;
 
   useEffect(() => {
     const recordSale = async () => {
-      if (!paymentInfo || !songData || !userId) return;
-
       try {
-        const songId = songData._id;
-        const sellerId = songData?.artist[0]?._id;
+        if (!paymentInfo || !songData || !userId) return;
 
+        const sellerId = songData?.artist?.[0]?._id;
         if (!sellerId) {
-          console.error("Seller ID not found.");
+          console.error("❌ Seller ID not found.");
           return;
         }
 
@@ -39,31 +43,37 @@ const SuccessPage = () => {
           payment_intent_id,
         } = paymentInfo;
 
-        const platformShare = stripe_fee; // Admin keeps the fee
+        const sellerEarning = parseFloat(
+          (total_amount * sellerSharePercentage).toFixed(2)
+        );
+        const adminEarning = parseFloat(
+          (total_amount - sellerEarning - stripe_fee).toFixed(2)
+        );
 
         const saleData = {
-          songId,
+          songId: songData._id,
           buyerId: userId,
           sellerId,
-          amountPaid: total_amount, //total amount paid by the user (actual song price)
-          platformShare,
-          sellerEarning: 0,
+          amountPaid: total_amount,
+          platformShare: stripe_fee,
+          sellerEarning,
+          adminEarning,
           currency,
           stripeId: payment_intent_id,
-          amountReceved: net_amount, //amount actual recived after strip diduction
+          amountReceved: net_amount,
           stripeChargeId: charge_id,
         };
 
-        // Post to sales API
-        const saleRes = await axios.post(`${apiUrl}api/v1/sale`, saleData, {
+        const res = await axios.post(`${apiUrl}api/v1/sale`, saleData, {
           withCredentials: true,
         });
 
-        if (saleRes.status === 201) {
-          console.log("✅ Sale recorded:", saleRes.data);
+        if (res.status === 201) {
+          toast.success("Sale recorded successfully");
         }
       } catch (err) {
         console.error("❌ Error recording sale:", err);
+        toast.error("Failed to record sale.");
       }
     };
 
@@ -72,24 +82,22 @@ const SuccessPage = () => {
 
   useEffect(() => {
     const fetchSessionData = async () => {
+      if (!sessionId) return;
+
       try {
         const { data } = await axios.get(
           `${apiUrl}api/v1/payment/stripe/session/${sessionId}`,
           { withCredentials: true }
         );
-        console.log("data from strio seccion", data);
 
         setPaymentInfo(data.paymentInfo);
 
-        // 2. Fetch song details using songId from session
-        const res = await axios.get(`${apiUrl}api/v1/song/${data.songId}`);
-        const song = res.data.data;
-        setSongData(res.data.data);
+        const songRes = await axios.get(`${apiUrl}api/v1/song/${data.songId}`);
+        const song = songRes.data.data;
+        setSongData(song);
 
         const songId = song._id;
-        const price = song.price;
 
-        // 3. Extract artistIds
         let artistIds = [];
         if (Array.isArray(song.artist)) {
           artistIds = song.artist.map((a) => a._id);
@@ -97,27 +105,30 @@ const SuccessPage = () => {
           artistIds = [song.artist._id];
         }
 
-        // 4. Update purchase stats
+        // Stats: Purchase
         try {
           await axios.post(`${apiUrl}api/v1/userStats/addPurchaseStats`, {
             songId,
             artistIds,
           });
         } catch (err) {
-          console.error("Error adding purchase stats", err);
+          console.error("❌ Error adding purchase stats:", err);
         }
 
-        // 5. Update revenue stats
+        // Stats: Revenue
         try {
+          const earning = parseFloat(
+            (data.paymentInfo.total_amount * sellerSharePercentage).toFixed(2)
+          );
           await axios.post(`${apiUrl}api/v1/userStats/addRevenueStats`, {
-            price,
+            price: earning,
             artistIds,
           });
         } catch (err) {
-          console.error("Error adding revenue stats", err);
+          console.error("❌ Error adding revenue stats:", err);
         }
 
-        // 6. Add purchased song to user profile
+        // Add to user's purchased songs
         try {
           const purchaseRes = await axios.post(
             `${apiUrl}api/v1/user/addPurchaseSong`,
@@ -126,23 +137,38 @@ const SuccessPage = () => {
           );
 
           if (purchaseRes.status === 200) {
-            // Navigate after a short delay
             dispatch(updateUser({ purchasedSongs: [songId] }));
-            setTimeout(() => navigate("/downloads"), 200);
-            console.log("added to purchased song list");
+            toast.success("Song added to your purchases");
+            // setTimeout(() => navigate("/downloads"), 500);
           }
         } catch (err) {
-          console.error("Error saving purchased song", err);
+          console.error("❌ Error saving purchased song:", err);
+          toast.error("Failed to add song to your purchases");
         }
       } catch (err) {
-        console.error("Error processing payment session:", err);
+        console.error("❌ Error processing session:", err);
+        toast.error("Invalid session or payment failed");
       }
     };
 
-    if (sessionId) {
-      fetchSessionData();
-    }
+    fetchSessionData();
   }, [sessionId, navigate]);
+
+
+    if (!isAuthenticated)
+    return (
+      <div className="flex justify-center items-center flex-col gap-5">
+        <h1 className="mt-16 text-red-500 text-center">
+          UnAuthorize Access, Login to access this page{" "}
+        </h1>
+        <button
+          onClick={() => navigate("/login")}
+          className="bg-cyan-500 p-2 rounded-lg text-white "
+        >
+          Login
+        </button>
+      </div>
+    );
 
   return (
     <div className="p-8 m-10">
@@ -152,11 +178,11 @@ const SuccessPage = () => {
 
       {songData ? (
         <div className="mt-4 text-white">
-          <p>Song ID: {songData.songId}</p>
+          <p>Song ID: {songData._id}</p>
           <p>Album: {songData?.album?.title || "N/A"}</p>
         </div>
       ) : (
-        <p className="text-white">Loading payment info...</p>
+        <p className="text-white animate-pulse">Loading payment info...</p>
       )}
     </div>
   );

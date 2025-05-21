@@ -83,9 +83,9 @@ const ArtistCard = ({ heading, link }) => {
           {error && <p className="text-white">Error: {error}</p>}
 
           {!loading && !error && artists.length > 0
-            ? artists.map((artist) => (
+            ? artists.map((artist,index) => (
                 <div
-                  key={artist._id}
+                  key={index}
                   className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[180px] group cursor-pointer"
                   onClick={() => handleartistClick(artist)}
                 >

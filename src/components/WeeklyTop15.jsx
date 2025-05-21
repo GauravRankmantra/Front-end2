@@ -5,11 +5,12 @@ import {
   addSongToQueueWithAuth,
   addSongToHistory,
 } from "../features/musicSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import formatDuration from "../utils/formatDuration";
 import WeekShimmer from "./WeekShimmer";
-import { setShowLoginPopup } from "../features/uiSlice";
+import { setShowLoginPopup, setloginPopupSong } from "../features/uiSlice";
 import LoginCard from "./LoginCard";
 import SongAction from "./Song/SongActions";
 
@@ -20,11 +21,7 @@ const WeeklyTop15 = ({ link, heading }) => {
   const [error, setError] = useState(null);
   const [currentSong, setCurrentSong] = useState(null); // Track the currently playing song
   const dispatch = useDispatch();
-  const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
-
-  const [loginPopupSong, setLoginPopupSong] = useState(null);
-
-  const closeLoginPopup = () => dispatch(setShowLoginPopup(false));
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,9 +50,12 @@ const WeeklyTop15 = ({ link, heading }) => {
 
     dispatch(addSongToQueueWithAuth(song));
     dispatch(addSongToHistory(song));
-    setLoginPopupSong(song);
 
     dispatch(setIsPlaying(true));
+    if (!isAuthenticated) {
+      dispatch(setloginPopupSong(song));
+      dispatch(setShowLoginPopup(true));
+    }
   };
   const handleMenuToggle = (song) => {
     if (currentSong && currentSong._id === song._id) {
@@ -67,9 +67,6 @@ const WeeklyTop15 = ({ link, heading }) => {
 
   return (
     <>
-      {showLoginPopup && loginPopupSong && (
-        <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />
-      )}
       <div className="bg-gray-900 text-gray-300 mx-2 sm:px-10 lg:px-10 ">
         <div className="container mx-auto">
           {/* Heading Section */}

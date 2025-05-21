@@ -14,7 +14,7 @@ import { AiFillPlayCircle } from "react-icons/ai";
 import axios from "axios";
 import SongShimmer from "../Shimmer/SongShimmer"; // Import the SongShimmer component
 const apiUrl = import.meta.env.VITE_API_URL;
-import { setShowLoginPopup } from "../../features/uiSlice";
+import { setShowLoginPopup, setloginPopupSong } from "../../features/uiSlice";
 import LoginCard from "../LoginCard";
 import { useTranslation } from "react-i18next";
 
@@ -29,12 +29,7 @@ const Recently = ({ heading, link, showGrid }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
-  const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  const [loginPopupSong, setLoginPopupSong] = useState(null);
-
-  const closeLoginPopup = () => dispatch(setShowLoginPopup(false));
+const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -82,8 +77,12 @@ const Recently = ({ heading, link, showGrid }) => {
   const handleSongClick = (song) => {
     dispatch(addSongToHistory(song));
     dispatch(addSongToQueueWithAuth(song));
-    setLoginPopupSong(song);
+
     dispatch(setIsPlaying(true));
+    if (!isAuthenticated) {
+      dispatch(setloginPopupSong(song));
+      dispatch(setShowLoginPopup(true));
+    }
   };
 
   const handleMenuToggle = (song) => {
@@ -100,9 +99,6 @@ const Recently = ({ heading, link, showGrid }) => {
 
   return (
     <>
-      {showLoginPopup && loginPopupSong && (
-        <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />
-      )}
       <div className="relative mx-2  sm:mx-10 lg:mx-10">
         <div className="w-full mb-6 flex justify-between items-center">
           <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">

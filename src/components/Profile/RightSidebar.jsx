@@ -59,16 +59,7 @@ const RightSidebar = () => {
       icon: <FaUser />,
       onClick: () => console.log("Sponsor clicked"),
     },
-    {
-      text: "Morning prayer",
-      icon: <FaCloudSun />,
-      onClick: () => console.log("Morning prayer clicked"),
-    },
-    {
-      text: "Sleep prayer",
-      icon: <FaCloudMoon />,
-      onClick: () => console.log("Sleep prayer clicked"),
-    },
+
   ];
 
   const fetchWebUpdates = useCallback(async () => {
@@ -99,9 +90,11 @@ const RightSidebar = () => {
   }, [fetchWebUpdates]);
 
   return (
-    <div className=" mt-2 bg-[#141834] text-white z-10 shadow-lg py-4 px-2 space-y-6 overflow-y-auto">
+
+    
+    <div className=" h-screen flex flex-col mt-2 bg-[#141834] font-josefin-m text-white z-10 shadow-lg py-4 px-2 space-y-6 overflow-y-auto">
       {/* Website Updates Section */}
-      <div className="mb-4 h-64 overflow-scroll no-scrollbar ">
+      <div className="mb-4 h-[80%] overflow-scroll no-scrollbar ">
         <h2 className="font-semibold text-lg mb-2 underline text-cyan-500">
           Website Updates
         </h2>

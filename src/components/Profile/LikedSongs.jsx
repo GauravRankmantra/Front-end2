@@ -62,14 +62,14 @@ const LikedSongs = () => {
   return (
     <>
       {topSongs.length === 0 ? (
-        <div className="bg-gray-800 md:px-4 px-2  py-6 rounded-md shadow-md text-gray-100 flex flex-col items-center justify-center">
+        <div className="bg-gray-800 md:px-4 px-2 font-josefin-m  py-6 rounded-md shadow-md text-gray-100 flex flex-col items-center justify-center">
           <FaMusic className="text-5xl mb-4 text-gray-400" />
           <p className="text-center text-lg">
             You haven't Liked any songs yet.
           </p>
         </div>
       ) : (
-        <div className="md:px-4 px-2  py-6">
+        <div className="md:px-4 px-2  py-6 font-josefin-m">
           <h1 className="text-white text-2xl mb-2">Liked Songs</h1>
           {topSongs && (
             <div>

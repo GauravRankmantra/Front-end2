@@ -88,29 +88,22 @@ const LeftSidebar = () => {
   return (
     <>
       {/* Hamburger Button - Mobile */}
-      <button
+      {/* <button
         className="fixed top-20 right-2 z-50 text-white text-2xl md:hidden"
         onClick={toggleSidebar}
       >
         {isOpen ? <FaTimes /> : <CgOptions />}
-      </button>
+      </button> */}
 
       {/* Sidebar */}
-      <div
-        className={`fixed top-0 bottom-0 mt-20 overflow-scroll no-scrollbar w-64 bg-[#141834] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out
-    ${
-      isOpen
-        ? "translate-x-0 md:translate-x-0"
-        : " -translate-x-full md:translate-x-0"
-    }
-    md:block
-  `}
-      >
+      {/* <div
+        className={`fixed top-0 bottom-0 mt-20 overflow-scroll no-scrollbar bg-[#141834] text-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out md:block  `}
+      > */}
         {/* Profile Info */}
         <div className="flex flex-col items-center p-6 border-b border-gray-700">
-          {user.coverImage ? (
+          {user?.coverImage ? (
             <img
-              src={user.coverImage}
+              src={user?.coverImage}
               className="rounded-full object-cover w-20 h-20"
             ></img>
           ) : (
@@ -118,7 +111,7 @@ const LeftSidebar = () => {
           )}
 
           <h2 className="mt-3 font-semibold text-lg text-white">
-            {user.fullName}
+            {user?.fullName}
           </h2>
           {/* <p className="text-sm text-gray-400">User</p>{" "} */}
           {/* Added user role/type */}
@@ -148,7 +141,7 @@ const LeftSidebar = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="p-4 space-y-4">
+        <nav className="p-4 space-y-4 pb-28">
           {menuItems.map((item) => (
             <Link
               key={item.path}
@@ -166,7 +159,7 @@ const LeftSidebar = () => {
             </Link>
           ))}
         </nav>
-      </div>
+      {/* </div> */}
     </>
   );
 };

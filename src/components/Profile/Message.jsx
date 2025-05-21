@@ -444,9 +444,9 @@ const Message = () => {
       </div>
 
       {loading ? (
-        <p className="text-gray-400">
+        <div className="text-gray-400">
           <Loading />
-        </p>
+        </div>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : tickets.length === 0 ? (

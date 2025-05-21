@@ -51,121 +51,123 @@ import HistoryDash from "./components/Profile/History";
 import SellSongs from "./components/Profile/SellSongs";
 import SellSongLanding from "./components/SellSongLanding";
 import Withdrawal from "./components/Profile/Withdrawal";
-
-
-
+import LoginCard from "./components/LoginCard";
+import {setShowLoginPopup} from "./features/uiSlice"
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
+  const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
+  const loginPopupSong = useSelector((state) => state.ui.loginPopupSong);
 
   console.log("user from app", user);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
-      
   }, []);
+
+
+    const closeLoginPopup = () => {
+      dispatch(setShowLoginPopup(false));
+    };
 
   return (
     <>
-
-
-
-  
-    <Router>
-      {user && <ActivityTracker userId={user._id} />}
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          {/* <Route
+      <Router>
+        {user && <ActivityTracker userId={user._id} />}
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            {/* <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/login" />}
           /> */}
 
-          <Route path="/Oauth" element={<OAuthRedirectHandler />} />
-          <Route path="/albums" element={<Album />} />
-          <Route path="/song/:id" element={<SongInfo />} />
-          <Route path="/album/:id" element={<AlbumInfo />} />
-          <Route path="/playlist/:id" element={<PlaylistInfo />} />
-          <Route path="/artists" element={<Artist />} />
-          <Route path="/artist/:id" element={<ArtistInfo />} />
-          <Route path="/genres" element={<Genre />} />
-          <Route path="/genre/:name" element={<GenreInfo />} />
-          <Route path="/top_track" element={<TopTrack />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/purchased-tracks" element={<PurchasedTracks />} />
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy-policy" element={<Privicy />} />
-          <Route path="/sell-songs" element={<SellSongLanding />} />
-          <Route path="purchased" element={<Purchase />} />
-          <Route path="/terms-and-conditions" element={<Terms />} />
+            <Route path="/Oauth" element={<OAuthRedirectHandler />} />
+            <Route path="/albums" element={<Album />} />
+            <Route path="/song/:id" element={<SongInfo />} />
+            <Route path="/album/:id" element={<AlbumInfo />} />
+            <Route path="/playlist/:id" element={<PlaylistInfo />} />
+            <Route path="/artists" element={<Artist />} />
+            <Route path="/artist/:id" element={<ArtistInfo />} />
+            <Route path="/genres" element={<Genre />} />
+            <Route path="/genre/:name" element={<GenreInfo />} />
+            <Route path="/top_track" element={<TopTrack />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/purchased-tracks" element={<PurchasedTracks />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<Privicy />} />
+            <Route path="/sell-songs" element={<SellSongLanding />} />
+            <Route path="purchased" element={<Purchase />} />
+            <Route path="/terms-and-conditions" element={<Terms />} />
 
-          <Route path="/favourites" element={<Favourites />} />
-          <Route path="/create-playlist" element={<CreatePlaylist />} />
-          <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
-          <Route path="/downloads" element={<Download />} />
-          <Route path="/search" element={<SearchResults />} />
-        </Route>
-        <Route element={<LayoutProfile />}>
-          <Route
-            path="/dashboard"
-            element={user ? <Dashboard /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/profile"
-            element={user ? <Profile /> : <Navigate to="/login" />}
-          />
-          
-                    
-          <Route
-            path="/dashboard/withdrawal"
-            element={user ? <Withdrawal /> : <Navigate to="/login" />}
-          />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/create-playlist" element={<CreatePlaylist />} />
+            <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
+            <Route path="/downloads" element={<Download />} />
+            <Route path="/search" element={<SearchResults />} />
+          </Route>
+          <Route element={<LayoutProfile />}>
+            <Route
+              path="/dashboard"
+              element={user ? <Dashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/profile"
+              element={user ? <Profile /> : <Navigate to="/login" />}
+            />
 
-          <Route
-            path="/dashboard/purchased-songs"
-            element={user ? <PurchasedSongs /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/messages"
-            element={user ? <Message /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/event"
-            element={user ? <Event /> : <Navigate to="/login" />}
-          />
+            <Route
+              path="/dashboard/withdrawal"
+              element={user ? <Withdrawal /> : <Navigate to="/login" />}
+            />
 
-          <Route
-            path="/dashboard/sell-song"
-            element={user ? <SellSongs /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/live"
-            element={user ? <Live /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/offer"
-            element={user ? <Offers /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/history"
-            element={user ? <HistoryDash /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/liked"
-            element={user ? <LikedSongs /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/dashboard/download"
-            element={user ? <DownloadDash /> : <Navigate to="/login" />}
-          />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/forget_pass" element={<ForgetPass />} />
-      </Routes>
-    </Router>
-      </>
+            <Route
+              path="/dashboard/purchased-songs"
+              element={user ? <PurchasedSongs /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/messages"
+              element={user ? <Message /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/event"
+              element={user ? <Event /> : <Navigate to="/login" />}
+            />
+
+            <Route
+              path="/dashboard/sell-song"
+              element={user ? <SellSongs /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/live"
+              element={user ? <Live /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/offer"
+              element={user ? <Offers /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/history"
+              element={user ? <HistoryDash /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/liked"
+              element={user ? <LikedSongs /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard/download"
+              element={user ? <DownloadDash /> : <Navigate to="/login" />}
+            />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/forget_pass" element={<ForgetPass />} />
+        </Routes>
+      </Router>
+
+      {showLoginPopup && loginPopupSong && <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />}
+    </>
   );
 };
 

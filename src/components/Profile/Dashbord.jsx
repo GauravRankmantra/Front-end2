@@ -278,7 +278,7 @@ const Dashboard = () => {
                   The Weekend
                 </h1>
               </div>
-              <button onClick={()=>navigate('/artists')} className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-2">
+              <button onClick={()=>navigate('/artists')} className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-1 px-2 font-josefin-m">
                 Explore More Artist
               </button>
             </div>

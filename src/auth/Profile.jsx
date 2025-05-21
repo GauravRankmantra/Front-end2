@@ -232,7 +232,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className="bg-[#14182A] min-h-screen">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
             <div className="flex items-center space-x-3">

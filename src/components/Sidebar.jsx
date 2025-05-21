@@ -76,7 +76,7 @@ const Sidebar = () => {
   return (
     <div
       ref={sidebarRef}
-      className={` fixed top-5 bottom-0 z-50 bg-[#1b2039] ${
+      className={` fixed top-5 bottom-0 font-josefin-m z-50 bg-[#1b2039] ${
         openMenu ? "w-[200px]" : "w-[80px]"
       } transition-all duration-300 shadow-lg hidden lg:block`}
     >

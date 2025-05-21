@@ -12,13 +12,14 @@ import axios from "axios";
 import ArtistCard from "../components/ArtistCard";
 import { useTranslation } from "react-i18next";
 
-
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Home = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+
   const { t } = useTranslation();
   const fetchData = async () => {
     try {
@@ -40,6 +41,17 @@ const Home = () => {
       setData(null);
     }
   };
+  useEffect(() => {
+    const fetchVideUrl = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}api/v1/AdminVideo`);
+        setVideoUrl(res.data.url);
+      } catch (error) {
+        console.log("error while fetching video url ", error);
+      }
+    };
+    fetchVideUrl();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -84,13 +96,13 @@ const Home = () => {
                     onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
-                   {t("listenNow")}
+                    {t("listenNow")}
                   </button>
                   <button
                     onClick={() => navigate("/albums")}
                     className="ms_btn bg-[#3bc8e7] text-white py-2 px-6 rounded-lg font-semibold text-center w-full sm:w-auto"
                   >
-                    {t('exploreNow')}
+                    {t("exploreNow")}
                   </button>
                 </div>
               </div>
@@ -140,10 +152,10 @@ const Home = () => {
         <TopGenres />
       </div>
       <div className="flex w-full flex-col items-center justify-center mt-10">
-      <video  src="https://res.cloudinary.com/dp2u6qwph/video/upload/v1746793469/ksw0jtrqqjraveexh4lg.mp4"  autoPlay loop muted width="100%">
-        Your browser does not support the video tag.
-      </video>
-    </div>
+        <video src={videoUrl} autoPlay loop muted width="100%">
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </>
   );
 };

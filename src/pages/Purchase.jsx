@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
-import formatDuration from "../utils/formatDuration";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { loadStripe } from "@stripe/stripe-js";
 
 import {
-  addSongToQueue,
   setIsPlaying,
   addSongToHistory,
   addSongToQueueWithAuth,
@@ -19,6 +17,10 @@ const Purchase = () => {
   const [songInfo, setSongInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.user.user);
+
   const id = search.get("id");
   const dispatch = useDispatch();
 
@@ -67,7 +69,60 @@ const Purchase = () => {
 
   const handleBuyNow = async () => {
     const stripe = await loadStripe(
-      "pk_test_51RBVXW071DpBkmZmltHiGE9eJOGrGPhJuYmnnH0LvJnTcvRKSpYM6lfh3nFiLNq86VNYhGAllYGHdofP91Nea6ni00RAZf2Tov"
+      "pk_test_51RQRPEDACnPx6ZPLxkSewcdorCIx0neqNYHNOBK22HTcszeUUib8akvYuuFcxwOElgv6nqgzZ5yEPdNMcLaK0Bpp00sR8gtZ8I"
+    );
+
+    if (!stripe) {
+      console.error("Stripe failed to load");
+      return;
+    }
+    // https://dashboard.stripe.com/test/connect/onboarding
+    try {
+      const response = await axios.post(
+        `${apiUrl}api/v1/payment/create-checkout-session`,
+        {
+          products: [
+            {
+              _id: songInfo._id,
+              title: songInfo.title,
+              price: songInfo.price,
+              coverImage: songInfo.coverImage || "https://link-to-image.com",
+              artist: {
+                stripeId: songInfo?.artist[0]?.stripeId,
+              },
+              album: {
+                title: songInfo?.album?.title || "Unknown",
+              },
+            },
+          ],
+        }
+      );
+
+      const session = response.data;
+
+      if (!session?.id) {
+        console.error("No session ID returned from backend", session);
+        return;
+      }
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        console.error("Stripe redirect error:", result.error.message);
+      }
+    } catch (error) {
+      console.error(
+        "Payment Error:",
+        error?.response?.data?.error || error.message
+      );
+    }
+  };
+
+  const handleBuyNow2 = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51RQRPEDACnPx6ZPLxkSewcdorCIx0neqNYHNOBK22HTcszeUUib8akvYuuFcxwOElgv6nqgzZ5yEPdNMcLaK0Bpp00sR8gtZ8I"
     );
 
     if (!stripe) {
@@ -77,7 +132,7 @@ const Purchase = () => {
 
     try {
       const response = await fetch(
-        `${apiUrl}api/v1/payment/create-checkout-session`,
+        `${apiUrl}api/v1/payment/create-checkout-session-admin`,
         {
           method: "POST",
           headers: {
@@ -107,6 +162,30 @@ const Purchase = () => {
     }
   };
 
+  const handelBuy = () => {
+    if (songInfo?.artist[0]?.admin) {
+      handleBuyNow2();
+      console.log("handleBuy now admin called");
+    } else {
+      handleBuyNow();
+      console.log("handleBuy now artist called");
+    }
+  };
+
+  if (!isAuthenticated)
+    return (
+      <div className="max-w-5xl mx-auto mt-24 p-6 bg-white shadow-lg rounded-2xl flex flex-col  gap-6 transition-all duration-300">
+        <h1 className="mt-16 text-black text-2xl text-center">
+          Login To Buy This song{" "}
+        </h1>
+        <button
+          onClick={() => navigate("/login")}
+          className="bg-cyan-500 p-2 rounded-lg text-white "
+        >
+          Login
+        </button>
+      </div>
+    );
   if (loading) {
     return <div>Loading song information...</div>;
   }
@@ -118,6 +197,13 @@ const Purchase = () => {
   if (!songInfo) {
     return <div>No song information found.</div>;
   }
+  // if (user?.purchasedSongs?.includes(songInfo._id)) {
+  //   return (
+  //     <div>
+  //       <h1>Song already purchased by you</h1>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="max-w-5xl mx-auto mt-24 p-6 bg-white shadow-lg rounded-2xl flex flex-col md:flex-row gap-6 transition-all duration-300">
@@ -182,12 +268,28 @@ const Purchase = () => {
           )}
         </div>
 
-        <button
-          onClick={handleBuyNow}
-          className="mt-6 bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-xl text-lg transition-all"
-        >
-          Buy Now
-        </button>
+        {user?.purchasedSongs?.includes(songInfo._id) ? (
+          <div className="text-red-500">
+            Song Alredy Exist in your purchase list !
+          </div>
+        ) : (
+          <div className="w-full">
+            {songInfo?.artist[0]?.paypalId ||
+            songInfo?.artist[0]?.stripeId ||
+            songInfo?.artist[0]?.admin ? (
+              <button
+                onClick={handelBuy}
+                className="mt-6 w-full bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-xl text-lg transition-all"
+              >
+                Buy Now
+              </button>
+            ) : (
+              <h1>
+                Try again after some time , (artist not added payment info)
+              </h1>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

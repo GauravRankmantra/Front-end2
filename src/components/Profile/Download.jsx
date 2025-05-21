@@ -160,7 +160,7 @@ const Download = () => {
   }, [apiUrl, toast]);
 
   return (
-    <div className="md:px-4 px-2  py-6">
+    <div className="md:px-4 px-2  py-6 font-josefin-m">
       <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <FaMusic />

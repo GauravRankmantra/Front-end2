@@ -82,9 +82,9 @@ const SearchResults = () => {
       {results?.artists?.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-cyan-500">Artists</h2>
-          {results.artists.map((artist) => (
+          {results.artists.map((artist,index) => (
             <div
-              key={artist._id}
+              key={index}
               className="flex items-center bg-gray-800 p-4 rounded-lg mb-4 cursor-pointer"
               onClick={() => navigate(`/artist/${artist._id}`)}
             >
@@ -106,8 +106,8 @@ const SearchResults = () => {
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4 text-cyan-500">Albums</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {results.albums.map((album) => (
-              <div key={album._id} className="bg-gray-800 p-4 rounded-lg cursor-pointer"  onClick={() => navigate(`/album/${album._id}`)}>
+            {results.albums.map((album,index) => (
+              <div key={index} className="bg-gray-800 p-4 rounded-lg cursor-pointer"  onClick={() => navigate(`/album/${album._id}`)}>
                 <img
                   src={album.coverImage || "default-album.jpg"}
                   alt={album.title}
@@ -123,11 +123,12 @@ const SearchResults = () => {
 
       {results?.songs?.length > 0 && (
         <div>
+       
           <h2 className="text-xl font-bold mb-4 text-cyan-500">Songs</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-14">
             {results.songs.map((song,index) => (
               <div
-                key={song._id}
+                key={index}
              
                 className="flex relative group items-center justify-between py-4 px-2 md:px-4  transition-colors duration-300 "
                  
