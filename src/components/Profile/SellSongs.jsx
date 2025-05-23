@@ -36,6 +36,7 @@ import {
 import Loading from "../Loading";
 import UserStatsCharts from "./UserStatsCharts";
 import SellerStats from "./SellerStats";
+import { updateUser } from "../../features/userSlice";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -67,6 +68,8 @@ const SellSongs = () => {
   const [isAlbumUploadModalOpen, setIsAlbumUploadModalOpen] = useState(false);
   const [expandedSongId, setExpandedSongId] = useState(null);
 
+  const [animate, setAnimate] = useState(false);
+
   const [songSelected, setSongSelected] = useState(true);
   const [albumSelected, setAlbumSelected] = useState(false);
   const [selectedArtists, setSelectedArtists] = useState([
@@ -87,8 +90,6 @@ const SellSongs = () => {
   });
 
   const [artistSuggestions, setArtistSuggestions] = useState([]);
-
- 
 
   const toggleExpand = (songId) => {
     setExpandedSongId(expandedSongId === songId ? null : songId);
@@ -406,6 +407,30 @@ const SellSongs = () => {
       toast.error("Failed to delete song. Please try again.");
     }
   };
+
+  const addForVarification = async () => {
+    try {
+      setAnimate(true);
+      const res = await axios.patch(
+        `${apiUrl}api/v1/user/addVerifyReq`,
+        {},
+        { withCredentials: true }
+      );
+      if (!res) {
+        setAnimate(false);
+      } else {
+        toast.success("Request submitted successfully");
+        dispatch(updateUser({ verificationState: "pending" }));
+        setTimeout(() => {
+          setAnimate(false);
+        }, 200);
+      }
+    } catch (error) {
+      toast.error(error);
+      console.log(error);
+    }
+  };
+
   if (!user.stripeId) {
     return (
       <div className="md:px-4 px-2  py-6 rounded-md shadow-md">
@@ -420,6 +445,58 @@ const SellSongs = () => {
             Click here to connect your Strip Account
           </button>
         </div>
+      </div>
+    );
+  }
+
+  if (!user.isVerified) {
+    return (
+      <div className="md:px-4 flex justify-center items-center flex-col gap-6 px-2 font-josefin-m py-10 rounded-md shadow-md">
+        {user.verificationState == "pending" ? (
+          <div className="flex flex-col justify-center items-center  space-y-3">
+            <h1 className="text-orange-400 border border-orange-50/20 p-2 rounded-md font-josefin-sb ">
+              Pending
+            </h1>
+            <h2 className="text-gray-300">
+              Your profile is currently under review. We'll notify you soon
+              about your eligibility to sell songs on ODG Music.
+            </h2>
+          </div>
+        ) : (
+          <div>
+            {user.verificationState == "no" ? (
+              <>
+                {animate ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-cyan-500 mx-auto mt-2"></div>
+                ) : (
+                  <div className="flex flex-col space-y-6 justify-center items-center">
+                    <h1 className="text-xl text-red-500">
+                      Currently You are not Authorized by our team !{" "}
+                    </h1>
+                    <h2 className="text-lg text-gray-200">
+                      You can send request for varification{" "}
+                    </h2>
+                    <button
+                      onClick={addForVarification}
+                      className="text-cyan-500 border py-1 px-2 border-gray-700 hover:bg-cyan-500 hover:text-white rounded-lg"
+                    >
+                      Click here to Verify
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div>
+                <h1 className="text-xl text-red-500">
+                  Your request for varification is denied by our team ,
+                </h1>
+                <h1 className="text-xl text-gray-300">
+                  you can connect with us via our email for further insturuction
+                </h1>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   }

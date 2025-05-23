@@ -6,11 +6,14 @@ import WeeklyTop15 from "../components/WeeklyTop15";
 import img728 from "../assets/img/home2bg.svg";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
+import { FaEye } from "react-icons/fa";
+import VideoModal from "../components/VideoModal";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ArtistCard from "../components/ArtistCard";
 import { useTranslation } from "react-i18next";
+import VideoGallery from "../components/VideoGallery";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -18,9 +21,36 @@ const Home = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videos, setVideos] = useState(null);
 
   const { t } = useTranslation();
+
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [hoveredVideoId, setHoveredVideoId] = useState(null);
+
+  const incrementView = async (id) => {
+    try {
+      await axios.post(`${apiUrl}api/v1/AdminVideo/${id}/views`);
+    } catch (err) {
+      console.error("Failed to increment views:", err);
+    }
+  };
+
+  const handleVideoClick = (video) => {
+    incrementView(video._id);
+    setSelectedVideo(video);
+  };
+
+  const formatViews = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M";
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num;
+  };
+
   const fetchData = async () => {
     try {
       const res = await axios.get(`${apiUrl}api/v1/home/heroSection`);
@@ -44,8 +74,21 @@ const Home = () => {
   useEffect(() => {
     const fetchVideUrl = async () => {
       try {
-        const res = await axios.get(`${apiUrl}api/v1/AdminVideo`);
-        setVideoUrl(res.data.url);
+        const { data } = await axios.get(
+          `${apiUrl}api/v1/AdminVideo`
+        ); // Fetch all videos
+        if (Array.isArray(data)) {
+          setVideos(data);
+        } else if (data && typeof data === "object") {
+          // If it's a single video object (from old API), wrap it in an array
+          setVideos([data]);
+          console.warn(
+            "API returned a single video object where an array was expected. Wrapping in array."
+          );
+        } else {
+          // If data is null, undefined, or empty, set to empty array
+          setVideos([]);
+        }
       } catch (error) {
         console.log("error while fetching video url ", error);
       }
@@ -151,10 +194,16 @@ const Home = () => {
       <div className="my-10">
         <TopGenres />
       </div>
-      <div className="flex w-full flex-col items-center justify-center mt-10">
-        <video src={videoUrl} autoPlay loop muted width="100%">
-          Your browser does not support the video tag.
-        </video>
+      <div className="container mx-auto px-4">
+
+
+        <VideoGallery videos={videos} />
+
+        {/* Video Modal */}
+        <VideoModal
+          video={selectedVideo}
+          onClose={() => setSelectedVideo(null)}
+        />
       </div>
     </>
   );

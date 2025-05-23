@@ -5,23 +5,42 @@ import {
   addSongToQueueWithAuth,
   addSongToHistory,
 } from "../features/musicSlice";
+import { PiShoppingCartSimpleFill } from "react-icons/pi";
+import { MdOutlinePriceCheck } from "react-icons/md";
 
+import defaultImage from "../assets/img/defaultImage.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillPlayCircle } from "react-icons/ai";
-import formatDuration from "../utils/formatDuration";
+
 import WeekShimmer from "./WeekShimmer";
 import { setShowLoginPopup, setloginPopupSong } from "../features/uiSlice";
 import LoginCard from "./LoginCard";
 import SongAction from "./Song/SongActions";
+import { FaShopify } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const WeeklyTop15 = ({ link, heading }) => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const [error, setError] = useState(null);
   const [currentSong, setCurrentSong] = useState(null); // Track the currently playing song
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.user.user);
+
+  const handelBuyNowClick = (song) => {
+    if (isAuthenticated) {
+      navigate(`/purchased?id=${encodeURIComponent(song._id)}`);
+    } else {
+      toast.loading("Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+        toast.dismiss();
+      }, 700);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,9 +128,9 @@ const WeeklyTop15 = ({ link, heading }) => {
                       {/* Song Cover + Info */}
                       <div className="flex items-center gap-4 flex-grow min-w-0">
                         {/* Cover Image */}
-                        <div className="relative w-14 h-14 shrink-0 rounded-lg overflow-hidden">
+                        <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden">
                           <img
-                            src={song.coverImage}
+                            src={song.coverImage || defaultImage}
                             alt={song.title}
                             className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-70"
                           />
@@ -134,26 +153,30 @@ const WeeklyTop15 = ({ link, heading }) => {
                             title={
                               Array.isArray(song.artist)
                                 ? song.artist.map((a) => a.fullName).join(", ")
-                                : song?.artist?.fullName || song?.artist
+                                : song?.artist?.fullName ||
+                                  song?.artist ||
+                                  "Unknown Artist"
                             }
                           >
                             {Array.isArray(song.artist)
                               ? song.artist.map((a) => a.fullName).join(", ")
-                              : song?.artist?.fullName || song?.artist}
+                              : song?.artist?.fullName ||
+                                song?.artist ||
+                                "Unknown Artist"}
                           </p>
                         </div>
                       </div>
 
                       {/* Duration */}
                       <div className="text-xs text-gray-400 hidden sm:block">
-                        {formatDuration(song.duration)}
+                        {song.duration}
                       </div>
 
                       {/* Action Menu */}
-                      <div className="relative shrink-0">
+                      <div className="relative justify-center items-center space-y-2 flex  flex-col  shrink-0">
                         <button
                           onClick={() => handleMenuToggle(song)}
-                          className="text-gray-400 hover:text-white transition"
+                          className="text-gray-400  hover:text-white transition"
                         >
                           <svg
                             width="20"
@@ -174,6 +197,23 @@ const WeeklyTop15 = ({ link, heading }) => {
                               onClose={() => setCurrentSong(null)}
                               song={currentSong}
                             />
+                          </div>
+                        )}
+
+                        {song.price > 0 && (
+                          <div>
+                            {user?.purchasedSongs?.includes(song._id) ? (
+                              <button className="text-xs flex items-center  rounded-lg  text-green-600 p-[0.4rem]">
+                                <MdOutlinePriceCheck className="w-6 h-6"/>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={()=>handelBuyNowClick(song)}
+                                className="text-xs flex items-center  rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white p-[0.4rem]"
+                              >
+                                <span>Buy Now</span>
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>

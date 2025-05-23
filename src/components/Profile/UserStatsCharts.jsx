@@ -12,7 +12,12 @@ import {
   Line,
   Legend, // Import Legend for better chart understanding
 } from "recharts";
-import { FaChartBar, FaChartLine, FaSpinner, FaExclamationTriangle } from "react-icons/fa"; // Using react-icons for better visuals
+import {
+  FaChartBar,
+  FaChartLine,
+  FaSpinner,
+  FaExclamationTriangle,
+} from "react-icons/fa"; // Using react-icons for better visuals
 
 const filters = ["weekly", "monthly", "all"];
 
@@ -23,9 +28,18 @@ const CustomTooltip = ({ active, payload, label, unit = "" }) => {
       <div className="bg-gray-800 text-white p-3 rounded-lg shadow-xl border border-gray-700 text-sm">
         <p className="font-bold mb-1">{label}</p>
         {payload.map((entry, index) => (
-          <p key={`item-${index}`} className="flex justify-between items-center text-sm">
-            <span style={{ color: entry.color }} className="me-2">•</span>
-            {entry.name}: <span className="font-semibold">{entry.value}{unit}</span>
+          <p
+            key={`item-${index}`}
+            className="flex justify-between items-center text-sm"
+          >
+            <span style={{ color: entry.color }} className="me-2">
+              •
+            </span>
+            {entry.name}:{" "}
+            <span className="font-semibold">
+              {entry.value}
+              {unit}
+            </span>
           </p>
         ))}
       </div>
@@ -38,7 +52,9 @@ const NoDataOverlay = ({ message }) => (
   <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-800 bg-opacity-70 rounded-xl z-10 text-center p-4">
     <FaExclamationTriangle className="text-yellow-400 text-5xl mb-4 animate-bounce" />
     <p className="text-white text-lg font-semibold">{message}</p>
-    <p className="text-gray-300 text-sm mt-2">Try adjusting the filter or check back later.</p>
+    <p className="text-gray-300 text-sm mt-2">
+      Try adjusting the filter or check back later.
+    </p>
   </div>
 );
 
@@ -48,7 +64,7 @@ const UserStatsCharts = ({ userId }) => {
   const [revenueData, setRevenueData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const apiUrl = import.meta.env.VITE_API_URL 
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchStats = async (selectedFilter) => {
     setLoading(true);
@@ -61,17 +77,30 @@ const UserStatsCharts = ({ userId }) => {
 
       if (!data.length) {
         setError("No data available for this period.");
-        setDownloadData([]); 
-        setRevenueData([]); 
-        return; 
+        setDownloadData([]);
+        setRevenueData([]);
+        return;
       }
 
-      const formatDay = (id) => {
-        if (!id || !id.year || !id.month || !id.day) return "N/A";
-        return `${id.year}-${String(id.month).padStart(2, "0")}-${String(
-          id.day
-        ).padStart(2, "0")}`;
-      };
+const formatDay = (id) => {
+  if (typeof id === "object" && id.year && id.month && id.day) {
+    return new Date(id.year, id.month - 1, id.day).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }
+  const date = new Date(id);
+  return isNaN(date)
+    ? "Invalid Date"
+    : date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+};
+
+
+
+
 
       const downloads = data.map((item) => ({
         day: formatDay(item._id),
@@ -149,7 +178,10 @@ const UserStatsCharts = ({ userId }) => {
               <NoDataOverlay message="No download data available for this period." />
             )}
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={downloadData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={downloadData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#444" />
                 <XAxis
                   dataKey="day"
@@ -166,7 +198,10 @@ const UserStatsCharts = ({ userId }) => {
                   axisLine={false}
                   domain={[0, (dataMax) => Math.max(dataMax, 10) + 10]} // Dynamic domain with buffer
                 />
-                <Tooltip cursor={{ fill: 'rgba(255,255,255,0.1)' }} content={<CustomTooltip unit=" downloads" />} />
+                <Tooltip
+                  cursor={{ fill: "rgba(255,255,255,0.1)" }}
+                  content={<CustomTooltip unit=" downloads" />}
+                />
                 <Legend wrapperStyle={{ color: "#fff", paddingTop: "10px" }} />
                 <Bar
                   dataKey="downloads"
@@ -199,7 +234,10 @@ const UserStatsCharts = ({ userId }) => {
               <NoDataOverlay message="No revenue data available for this period." />
             )}
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <LineChart
+                data={revenueData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#444" />
                 <XAxis
                   dataKey="day"
@@ -216,7 +254,13 @@ const UserStatsCharts = ({ userId }) => {
                   tick={{ fill: "#fff", fontSize: 12 }}
                   axisLine={false}
                   domain={[0, (dataMax) => Math.max(dataMax, 5) + 5]}
-                  label={{ value: 'Purchases', angle: -90, position: 'insideLeft', fill: '#a8dadc', style: { textAnchor: 'middle' } }}
+                  label={{
+                    value: "Purchases",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#a8dadc",
+                    style: { textAnchor: "middle" },
+                  }}
                 />
                 <YAxis
                   yAxisId="right"
@@ -226,9 +270,18 @@ const UserStatsCharts = ({ userId }) => {
                   tick={{ fill: "#fff", fontSize: 12 }}
                   axisLine={false}
                   domain={[0, (dataMax) => Math.max(dataMax, 10) + 10]}
-                  label={{ value: 'Revenue ($)', angle: 90, position: 'insideRight', fill: '#ffc658', style: { textAnchor: 'middle' } }}
+                  label={{
+                    value: "Revenue ($)",
+                    angle: 90,
+                    position: "insideRight",
+                    fill: "#ffc658",
+                    style: { textAnchor: "middle" },
+                  }}
                 />
-                <Tooltip cursor={{ fill: 'rgba(255,255,255,0.1)' }} content={<CustomTooltip unit="" />} />
+                <Tooltip
+                  cursor={{ fill: "rgba(255,255,255,0.1)" }}
+                  content={<CustomTooltip unit="" />}
+                />
                 <Legend wrapperStyle={{ color: "#fff", paddingTop: "10px" }} />
                 <Line
                   yAxisId="left"
@@ -236,8 +289,18 @@ const UserStatsCharts = ({ userId }) => {
                   dataKey="purchases"
                   stroke="#a8dadc"
                   strokeWidth={3}
-                  dot={{ r: 5, fill: "#a8dadc", stroke: "#a8dadc", strokeWidth: 2 }}
-                  activeDot={{ r: 8, fill: "#a8dadc", stroke: "#a8dadc", strokeWidth: 2 }}
+                  dot={{
+                    r: 5,
+                    fill: "#a8dadc",
+                    stroke: "#a8dadc",
+                    strokeWidth: 2,
+                  }}
+                  activeDot={{
+                    r: 8,
+                    fill: "#a8dadc",
+                    stroke: "#a8dadc",
+                    strokeWidth: 2,
+                  }}
                   name="Purchases"
                 />
                 <Line
@@ -246,8 +309,18 @@ const UserStatsCharts = ({ userId }) => {
                   dataKey="revenue"
                   stroke="#ffc658"
                   strokeWidth={3}
-                  dot={{ r: 5, fill: "#ffc658", stroke: "#ffc658", strokeWidth: 2 }}
-                  activeDot={{ r: 8, fill: "#ffc658", stroke: "#ffc658", strokeWidth: 2 }}
+                  dot={{
+                    r: 5,
+                    fill: "#ffc658",
+                    stroke: "#ffc658",
+                    strokeWidth: 2,
+                  }}
+                  activeDot={{
+                    r: 8,
+                    fill: "#ffc658",
+                    stroke: "#ffc658",
+                    strokeWidth: 2,
+                  }}
                   name="Revenue"
                 />
               </LineChart>

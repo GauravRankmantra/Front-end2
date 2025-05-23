@@ -23,6 +23,7 @@ const Recently = ({ heading, link, type }) => {
         const data = await response.json();
         if (data && data.data) {
           setalbums(data.data);
+          console.log(data.data);
         } else {
           setError("No albums available");
         }
@@ -145,11 +146,19 @@ const Recently = ({ heading, link, type }) => {
                     </div>
 
                     <div className="text-left mt-4">
-                      <h1 className="text-[14px] mb-[5px]">
-                        <a href="#" className="text-white hover:text-[#3bc8e7]">
+                      <div className="text-[14px] border border-gray-800 p-1 rounded-lg flex justify-between  mb-[5px]">
+                        <button
+                          onClick={() => handelClick(album)}
+                          className="text-white w-5/12 text-start overflow-hidden truncate hover:text-[#3bc8e7]"
+                        >
                           {album.title}
-                        </a>
-                      </h1>
+                        </button>
+                        <h2 className="text-gray-300 space-x-2">
+                          <span>total songs : </span>
+                          {album?.totalSongs}
+                        </h2>
+                      </div>
+                     
                       <p className="text-[#dedede] text-[12px]">
                         {album?.artist?.fullName}
                       </p>
