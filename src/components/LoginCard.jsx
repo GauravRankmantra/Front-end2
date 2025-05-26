@@ -60,7 +60,7 @@ const LoginCard = ({ song, onClose }) => {
             {song?.duration && (
               <p className="text-gray-700 text-sm">
                 <span className="font-semibold">
-                  Duration: {formatDuration(song.duration)}
+                  Duration: {song.duration}
                 </span>
               </p>
             )}

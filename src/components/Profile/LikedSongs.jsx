@@ -6,6 +6,13 @@ import { FaMusic, FaPlay, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
 import Loading from "../Loading";
+import { useDispatch } from "react-redux";
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToHistory,
+  addSongToQueueWithAuth,
+} from "../../features/musicSlice";
 
 const formatDate = (dateString) => {
   try {
@@ -58,6 +65,14 @@ const LikedSongs = () => {
       </div>
     );
   }
+    const dispatch = useDispatch();
+
+  const handleSongClick = (song) => {
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueueWithAuth(song));
+
+    dispatch(setIsPlaying(true));
+  };
 
   return (
     <>

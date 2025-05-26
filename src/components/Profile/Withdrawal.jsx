@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { IoShieldCheckmark } from "react-icons/io5"; // For the success icon
+
 import { FaStripe, FaPaypal, FaPen, FaSave, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -7,7 +9,6 @@ import { updateUser } from "../../features/userSlice";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 import StripeOnboardButton from "../StripeOnboardButton";
-import { IoShieldCheckmark } from "react-icons/io5";
 
 const Withdrawal = () => {
   const user = useSelector((state) => state.user.user);
@@ -78,23 +79,84 @@ const Withdrawal = () => {
   };
 
   return (
-    <div className="max-w-2xl md:mx-auto mx-3 mt-10 p-6 bg-slate-800 text-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6">Withdrawal Method</h2>
-
-      <p className="text-gray-300 mb-4">
-        Connect to Yout Stripe Account to start earning.
-      </p>
-      {user.stripeId ? (
-        <div className="flex  gap-2">
-          <IoShieldCheckmark className="text-green-500 w-6 h-6" />
-
-          <p className="text-green-500">
-            Your Stripe Account Connected Successfully
-          </p>
+    <>
+      <div className="max-w-2xl font-josefin-r md:mx-auto mx-2 mt-10 p-8 bg-gray-800 text-white shadow-xl rounded-xl border border-gray-700">
+        <div className="flex items-center mb-6">
+          <h2 className="text-3xl font-bold text-white flex-grow">
+            <span className="mr-3">💰</span> Withdrawal Method
+          </h2>
+          {user.stripeId && (
+            <div className="flex items-center text-green-400">
+              <IoShieldCheckmark className="w-7 h-7 mr-2" />
+              <span className="text-lg font-semibold">Connected</span>
+            </div>
+          )}
         </div>
-      ) : (
-        <StripeOnboardButton user={user} />
-      )}
+
+        <p className="text-gray-300 mb-6 border-b border-gray-700 pb-6">
+          Securely manage your earnings by connecting a trusted payout method.
+          Stripe ensures reliable and timely transfers of your revenue.
+        </p>
+
+        {user.stripeId ? (
+          <div className="bg-green-700 bg-opacity-30 border border-green-600 p-4 rounded-lg flex items-center justify-between animate-fade-in">
+            <div className="flex items-center">
+              <IoShieldCheckmark className="text-green-400 w-8 h-8 mr-4 flex-shrink-0" />
+              <div>
+                <p className="text-green-300 text-lg font-semibold">
+                  Your Stripe Account is Connected!
+                </p>
+                <p className="text-green-200 text-sm mt-1">
+                  You're all set to receive payouts. Funds will be transferred
+                  to your connected bank account according to your Stripe
+                  settings.
+                </p>
+              </div>
+            </div>
+            {/* Optionally add a button to manage Stripe account here */}
+            {/* <button className="ml-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded-md text-sm font-medium">
+            Manage Stripe
+          </button> */}
+          </div>
+        ) : (
+          <div className="bg-red-700 bg-opacity-30 border border-red-600 p-4 rounded-lg animate-fade-in">
+            <p className="text-red-300 text-lg font-semibold mb-3">
+              Connect Your Stripe Account to Start Earning!
+            </p>
+            <p className="text-red-200 text-sm mb-5">
+              A Stripe account is essential for processing your sales and
+              facilitating secure withdrawals. This step is required before you
+              can receive any payouts.
+            </p>
+            <StripeOnboardButton user={user} />
+            <p className="text-gray-400 text-xs mt-4">
+              Don't worry, the connection process is quick and secure, handled
+              directly by Stripe.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-8 text-gray-400 text-sm border-t border-gray-700 pt-6">
+          <h3 className="font-semibold text-lg mb-2 text-white">
+            Payout Information:
+          </h3>
+          <ul className="list-disc list-inside space-y-2">
+            <li>Payouts are processed via Stripe, a secure payment gateway.</li>
+            <li>
+              Funds will be transferred to the bank account linked with your
+              Stripe account.
+            </li>
+            <li>
+              Standard payout schedules (e.g., daily, weekly, monthly) are
+              managed within your Stripe dashboard.
+            </li>
+            <li>
+              Ensure your Stripe account details are up-to-date to avoid delays
+              in receiving funds.
+            </li>
+          </ul>
+        </div>
+      </div>
 
       {/* {success && (
         <div className="bg-green-100 text-green-800 p-3 rounded mb-4">
@@ -194,7 +256,7 @@ const Withdrawal = () => {
           )}
         </div>
       </div> */}
-    </div>
+    </>
   );
 };
 

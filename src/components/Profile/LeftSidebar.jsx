@@ -43,8 +43,8 @@ const menuItems = [
     icon: <FaMusic />,
   },
   { name: "Messages", path: "/dashboard/messages", icon: <FaEnvelope /> },
-  { name: "Event", path: "/dashboard/event", icon: <MdEvent /> },
-  { name: "Live", path: "/dashboard/live", icon: <MdLiveTv /> },
+  // { name: "Event", path: "/dashboard/event", icon: <MdEvent /> },
+  // { name: "Live", path: "/dashboard/live", icon: <MdLiveTv /> },
   { name: "Offers", path: "/dashboard/offer", icon: <MdOutlineLocalOffer /> },
   { name: "History", path: "/dashboard/history", icon: <FaHistory /> },
 

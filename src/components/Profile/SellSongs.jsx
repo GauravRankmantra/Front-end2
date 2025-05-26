@@ -5,6 +5,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { format, parseISO } from "date-fns";
 import {
+  FaCreditCard,
+  FaLink,
+  FaInfoCircle,
+  FaHourglassHalf,
+  FaPaperPlane,
+  FaTimesCircle,
+  FaEnvelope,
+  FaExclamationTriangle,
+} from "react-icons/fa";
+import {
   FaBible,
   FaCloudUploadAlt,
   FaImage,
@@ -433,17 +443,39 @@ const SellSongs = () => {
 
   if (!user.stripeId) {
     return (
-      <div className="md:px-4 px-2  py-6 rounded-md shadow-md">
-        <h1 className="text-center text-red-500 mt-5 text-xl">
-          First connect your Stripe account with ODG music
-        </h1>
-        <div className=" flex justify-center text-gray-200 mt-10 ">
+      <div className="flex justify-center font-josefin-r items-center py-10 min-h-screen ">
+        <div className=" p-8 md:p-10 rounded-lg shadow-xl max-w-xl w-full text-center border border-red-200">
+          {/* Icon for visual emphasis */}
+          <div className="text-red-500 text-5xl mb-6">
+            <FaCreditCard className="mx-auto" /> {/* React Icon */}
+          </div>
+
+          <h2 className="text-3xl font-extrabold text-red-600 mb-4">
+            Action Required: Connect Your Stripe Account
+          </h2>
+
+          <p className="text-gray-300 leading-relaxed mb-6">
+            To unlock your earnings and manage payouts seamlessly, you need to
+            connect your Stripe account with ODG Music. This is a one-time setup
+            process to ensure secure transactions and timely withdrawals.
+          </p>
+
           <button
             onClick={() => navigate("/dashboard/withdrawal")}
-            className="border p-2 border-cyan-500 rounded-lg hover:bg-cyan-500 hover:text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg transition duration-300 ease-in-out flex items-center justify-center w-full focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-75"
           >
-            Click here to connect your Strip Account
+            <FaLink className="text-2xl mr-3" /> {/* React Icon */}
+            Connect Your Stripe Account Now
           </button>
+
+          <div className="bg-blue-50 border border-blue-200 text-blue-800 text-sm p-4 rounded-md mt-6 flex items-start">
+            <FaInfoCircle className="text-blue-600 text-xl mr-3 mt-1" />{" "}
+            {/* React Icon */}
+            <p className="text-left flex-grow">
+              Don't have a Stripe account? You can easily create one during the
+              connection process.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -451,16 +483,19 @@ const SellSongs = () => {
 
   if (!user.isVerified) {
     return (
-      <div className="md:px-4 flex justify-center items-center flex-col gap-6 px-2 font-josefin-m py-10 rounded-md shadow-md">
+      <div className="max-w-2xl mx-auto mt-10 p-8 text-white shadow-xl rounded-xl transition-colors duration-300 flex flex-col justify-center items-center text-center">
         {user.verificationState == "pending" ? (
-          <div className="flex flex-col justify-center items-center  space-y-3">
-            <h1 className="text-orange-400 border border-orange-50/20 p-2 rounded-md font-josefin-sb ">
-              Pending
-            </h1>
-            <h2 className="text-gray-300">
-              Your profile is currently under review. We'll notify you soon
-              about your eligibility to sell songs on ODG Music.
+          <div className="flex flex-col justify-center items-center space-y-4">
+            <FaHourglassHalf className="text-orange-400 text-5xl mb-2 animate-pulse" />
+            <h2 className="text-3xl font-bold text-orange-300">
+              Verification Pending
             </h2>
+            <p className="text-gray-300 text-center max-w-md">
+              Your profile is currently under review by our team. We're
+              carefully assessing your eligibility to sell music on ODG Music.
+              Please be patient; we'll notify you via email as soon as a
+              decision has been made.
+            </p>
           </div>
         ) : (
           <div>
@@ -470,29 +505,55 @@ const SellSongs = () => {
                   <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-cyan-500 mx-auto mt-2"></div>
                 ) : (
                   <div className="flex flex-col space-y-6 justify-center items-center">
-                    <h1 className="text-xl text-red-500">
-                      Currently You are not Authorized by our team !{" "}
-                    </h1>
+                    <FaExclamationTriangle className="text-yellow-400 text-5xl mb-2" />
+                    <h2 className="text-3xl font-bold text-yellow-300 text-center">
+                      Become a Verified Seller
+                    </h2>
+                    <p className="text-xl text-gray-400">
+                      You're not yet authorized to sell songs on ODG Music. To
+                      gain access to our vibrant marketplace and share your
+                      creations, please submit a verification request. Our team
+                      will review your profile.
+                    </p>
                     <h2 className="text-lg text-gray-200">
                       You can send request for varification{" "}
                     </h2>
                     <button
                       onClick={addForVarification}
-                      className="text-cyan-500 border py-1 px-2 border-gray-700 hover:bg-cyan-500 hover:text-white rounded-lg"
+                      className="text-cyan-500 flex items-center border py-1 px-2 border-gray-700 hover:bg-cyan-500 hover:text-white rounded-lg"
                     >
-                      Click here to Verify
+                      <FaPaperPlane className="mr-3 text-xl" />
+                      <span>Request Verification</span>
                     </button>
+                    <p className="text-gray-400 text-xs mt-2 text-center">
+                      This is a one-time process to ensure the quality and
+                      authenticity of our sellers.
+                    </p>
                   </div>
                 )}
               </>
             ) : (
-              <div>
-                <h1 className="text-xl text-red-500">
-                  Your request for varification is denied by our team ,
-                </h1>
-                <h1 className="text-xl text-gray-300">
-                  you can connect with us via our email for further insturuction
-                </h1>
+              <div className="flex flex-col font-josefin-r justify-center items-center space-y-4">
+                <FaTimesCircle className="text-red-500 text-5xl mb-2" />
+                <h2 className="text-3xl font-bold text-red-400">
+                  Verification Denied
+                </h2>
+                <p className="text-gray-300 text-center max-w-md">
+                  Unfortunately, your previous verification request was denied
+                  by our team. We understand this can be disappointing.
+                </p>
+                <p className="text-gray-300 text-center max-w-md">
+                  For further instructions or to understand the reasons for
+                  denial, please reach out to us directly via email. We're here
+                  to help!
+                </p>
+                <a
+                  href="mailto:support@odgmusic.com" // Replace with your actual support email
+                  className="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg text-lg transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-gray-600 focus:ring-opacity-75"
+                >
+                  <FaEnvelope className="mr-3 text-2xl" />
+                  Contact Support
+                </a>
               </div>
             )}
           </div>
@@ -512,12 +573,12 @@ const SellSongs = () => {
         >
           <FaCloudUploadAlt className="inline-block mr-2" /> Upload New Song
         </button>
-        <button
+        {/* <button
           onClick={() => setIsAlbumUploadModalOpen(true)}
           className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
         >
           <FaCloudUploadAlt className="inline-block mr-2" /> Add New Album
-        </button>
+        </button> */}
       </div>
 
       {/* Song Upload Modal */}
@@ -921,7 +982,7 @@ const SellSongs = () => {
           >
             Songs
           </button>
-          <button
+          {/* <button
             onClick={() => {
               setSongSelected(false);
               setAlbumSelected(true);
@@ -933,7 +994,7 @@ const SellSongs = () => {
             } px-2 py-1  border-cyan-500`}
           >
             Albums
-          </button>
+          </button> */}
         </div>
 
         {loadingFetch ? (

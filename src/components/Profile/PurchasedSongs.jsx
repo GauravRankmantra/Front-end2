@@ -112,8 +112,8 @@ const PurchasedSongs = () => {
 
         let purchasedSongsData = [];
 
-        setSongs(purchasedResponse.data.purchasedSongs);
-        purchasedSongsData = purchasedResponse.data.purchasedSongs;
+        setSongs(purchasedResponse.data.songs);
+        purchasedSongsData = purchasedResponse.data.songs;
 
         // Fetch top songs
         const topSongsResponse = await axios.get(`${apiUrl}api/v1/song/top15`);
@@ -156,6 +156,8 @@ const PurchasedSongs = () => {
 
     fetchData();
   }, [apiUrl, toast]);
+
+
 
   return (
     <div className="md:px-4 px-2  py-6 font-josefin-m">

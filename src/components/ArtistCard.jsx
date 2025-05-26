@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { AiFillPlayCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
 const ArtistCard = ({ heading, link }) => {
@@ -83,33 +84,23 @@ const ArtistCard = ({ heading, link }) => {
           {error && <p className="text-white">Error: {error}</p>}
 
           {!loading && !error && artists.length > 0
-            ? artists.map((artist,index) => (
+            ? artists.map((artist, index) => (
                 <div
                   key={index}
                   className="relative flex-shrink-0 w-[120px] sm:w-[150px] md:w-[180px] group cursor-pointer"
                   onClick={() => handleartistClick(artist)}
                 >
                   <div className="relative overflow-hidden rounded-[10px] aspect-square">
+                    <div className="absolute inset-0 translate-y-36 group-hover:translate-y-0 z-40 bg-gradient-to-t from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
                     <img
                       className="w-full h-full object-cover rounded-[10px] group-hover:opacity-50"
-                      src={artist.coverImage || "https://dummyimage.com/150x150"}
+                      src={
+                        artist.coverImage || "https://dummyimage.com/150x150"
+                      }
                       alt={artist.fullName}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-12 h-12 text-white"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M14.752 11.168l-5.804-3.37A1 1 0 008 8.617v6.766a1 1 0 001.532.848l5.804-3.37a1 1 0 000-1.696z"
-                        />
-                      </svg>
+                    <div className="absolute z-50 inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-1000">
+                      <AiFillPlayCircle   className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"/>
                     </div>
                   </div>
 
@@ -120,7 +111,7 @@ const ArtistCard = ({ heading, link }) => {
                       </a>
                     </h1>
                     <p className="text-[#dedede] text-[12px]">
-                      {artist.bio||"No bio providede by the artist "}
+                      {artist.bio || "No bio providede by the artist "}
                     </p>
                   </div>
                 </div>

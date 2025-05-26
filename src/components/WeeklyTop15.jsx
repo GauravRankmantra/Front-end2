@@ -116,7 +116,7 @@ const WeeklyTop15 = ({ link, heading }) => {
                     >
                       {/* Index Number */}
                       <div
-                        className={`text-4xl font-semibold w-8 text-right ${
+                        className={`text-4xl group-hover:text-cyan-500 font-semibold w-8 text-right ${
                           currentSong === song._id
                             ? "text-cyan-500"
                             : "text-gray-300"
@@ -128,7 +128,8 @@ const WeeklyTop15 = ({ link, heading }) => {
                       {/* Song Cover + Info */}
                       <div className="flex items-center gap-4 flex-grow min-w-0">
                         {/* Cover Image */}
-                        <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden">
+                        <div className="relative  w-16 h-16 shrink-0 rounded-lg overflow-hidden">
+                          <div className="absolute inset-0 translate-y-36 group-hover:translate-y-0 z-40 bg-gradient-to-t from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
                           <img
                             src={song.coverImage || defaultImage}
                             alt={song.title}
@@ -136,20 +137,24 @@ const WeeklyTop15 = ({ link, heading }) => {
                           />
                           <AiFillPlayCircle
                             onClick={() => handleSongClick(song)}
-                            className="absolute inset-0 w-full h-full text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            className="absolute inset-0 w-full z-50 h-full p-4 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-1000"
                           />
                         </div>
 
                         {/* Song Title & Artist */}
                         <div className="flex flex-col justify-center min-w-0">
                           <p
-                            className="text-sm font-semibold text-white truncate"
+                            className={`text-sm group-hover:text-cyan-600 font-semibold truncate ${
+                              currentSong === song._id
+                                ? "text-cyan-500"
+                                : "text-white "
+                            }`}
                             title={song.title}
                           >
                             {song.title}
                           </p>
                           <p
-                            className="text-xs text-gray-400 truncate"
+                            className="text-xs  text-gray-400 truncate"
                             title={
                               Array.isArray(song.artist)
                                 ? song.artist.map((a) => a.fullName).join(", ")
@@ -158,11 +163,48 @@ const WeeklyTop15 = ({ link, heading }) => {
                                   "Unknown Artist"
                             }
                           >
-                            {Array.isArray(song.artist)
-                              ? song.artist.map((a) => a.fullName).join(", ")
-                              : song?.artist?.fullName ||
-                                song?.artist ||
-                                "Unknown Artist"}
+                            {Array.isArray(song.artist) ? (
+                              song.artist.map((artistObj, index) => (
+                                <span
+                                  key={artistObj._id || `artist-${index}`} // Use _id for unique key
+                                  onClick={() =>
+                                    navigate(
+                                      `/artist/${
+                                        artistObj._id
+                                      }?name=${encodeURIComponent(
+                                        artistObj.fullName
+                                      )}`
+                                    )
+                                  } // Redirect to artist page
+                                  className="cursor-pointer hover:underline text-gray-400" // Added styling for clickable link
+                                >
+                                  {artistObj.fullName}
+                                  {index !== song.artist.length - 1 && ", "}
+                                </span>
+                              ))
+                            ) : (
+                              <span
+                                onClick={() =>
+                                  song?.artist?._id &&
+                                  navigate(
+                                    `/artist/${
+                                      song.artist._id
+                                    }?name=${encodeURIComponent(
+                                      song.artist.fullName || song.artist
+                                    )}`
+                                  )
+                                }
+                                className={`text-blue-400 ${
+                                  song.artist?._id
+                                    ? "cursor-pointer hover:underline"
+                                    : ""
+                                }`}
+                              >
+                                {song?.artist?.fullName ||
+                                  song?.artist ||
+                                  "Unknown Artist"}
+                              </span>
+                            )}
                           </p>
                         </div>
                       </div>
@@ -204,11 +246,11 @@ const WeeklyTop15 = ({ link, heading }) => {
                           <div>
                             {user?.purchasedSongs?.includes(song._id) ? (
                               <button className="text-xs flex items-center  rounded-lg  text-green-600 p-[0.4rem]">
-                                <MdOutlinePriceCheck className="w-6 h-6"/>
+                                <MdOutlinePriceCheck className="w-6 h-6" />
                               </button>
                             ) : (
                               <button
-                                onClick={()=>handelBuyNowClick(song)}
+                                onClick={() => handelBuyNowClick(song)}
                                 className="text-xs flex items-center  rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white p-[0.4rem]"
                               >
                                 <span>Buy Now</span>

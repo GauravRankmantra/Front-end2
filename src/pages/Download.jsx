@@ -103,7 +103,7 @@ const DownloadPage = () => {
             "You don't have any purchased songs to download. Please purchase a song first."
           );
         } else {
-          setSongs(res.data.purchasedSongs);
+          setSongs(res.data.songs);
         }
       } catch (error) {
         if (
@@ -144,7 +144,7 @@ const DownloadPage = () => {
               </tr>
             </thead>
             <tbody>
-              {songs.map((song, index) => (
+              {songs?.map((song, index) => (
                 <tr
                   key={index}
                   className={`border-b border-gray-700 hover:bg-gray-800 transition-colors duration-300 ${
@@ -170,7 +170,7 @@ const DownloadPage = () => {
                   </td>
                   <td className="p-4">{song.title}</td>
                   <td className="p-4">{song.artist.fullName}</td>
-                  <td className="p-4">{formatDuration(song.duration)}</td>
+                  <td className="p-4">{song.duration}</td>
                   <td className="p-4">
                     <Download
                       onClick={() => handleDownload(song)}

@@ -15,7 +15,6 @@ import { TbMusicDollar } from "react-icons/tb";
 import axios from "axios";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 
-
 import logo from "../assets/img/logo.jpeg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,7 +35,7 @@ import album from "../assets/svg/album.svg";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { IoDiamondOutline } from "react-icons/io5";
+import { IoDiamondOutline, IoLanguageOutline } from "react-icons/io5";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Navbar = () => {
@@ -185,9 +184,9 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed font-josefin-sb bg-[#1b2039] py-5 px-8 right-0 left-0 top-0 z-[999]">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-12 w-full lg:w-auto">
+      <div className="fixed font-josefin-sb   bg-[#1b2039] py-5 px-8 right-0 lg:left-14 top-0 z-50">
+        <div className="flex justify-between   items-center">
+          <div className="flex   items-center space-x-12 w-full lg:w-auto">
             {/* Search Box */}
             <div className=" flex justify-start items-center w-full max-w-full sm:max-w-[300px]">
               <input
@@ -202,7 +201,7 @@ const Navbar = () => {
               </span>
             </div>
 
-            <div className="hidden overflow-hidden lg:flex justify-between items-center text-white text-md">
+            {/* <div className="hidden overflow-hidden lg:flex justify-between items-center text-white text-md">
               <span className="text-[#3bc8e7]">{t("trendingSongs")}</span>
               <span className="ml-4 font-josefin-sb">
                 {songs
@@ -211,37 +210,62 @@ const Navbar = () => {
                   .join(", ")}
                 {songs?.length > 5 && "..."}
               </span>
-            </div>
+            </div> */}
           </div>
-
+          <ul className="hidden w-5/12  flex-shrink  lg:flex items-center font-josefin-b justify-center text-white  ">
+            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
+              {" "}
+              <NavLink to="/" activeClassName="active">
+                Home
+              </NavLink>
+            </li>
+            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
+              <NavLink to="/top_track" activeClassName="active">
+                Music Store
+              </NavLink>
+            </li>
+            <li className="hover:bg-cyan-500 rounded py-0 p-1  w-full text-center">
+              <NavLink to="/video-store" activeClassName="active">
+                Video Store
+              </NavLink>
+            </li>
+            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
+              <NavLink to="/odg-radio" activeClassName="active">
+                ODG Radio
+              </NavLink>
+            </li>
+          </ul>
 
           {/* Profile or Register/Login */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden  lg:flex  items-center space-x-8">
             <div className="flex space-x-2 text-left">
               <button
                 onClick={handleSellMusicClick}
-                className={`flex items-center gap-2 border border-cyan-500 bg-transparent text-cyan-500 p-2 rounded-md shadow-sm transition duration-200 ease-in-out hover:bg-cyan-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 
+                className={`flex flex-col xl:flex-row items-center gap-2 xl:border border-cyan-500/30 bg-transparent text-cyan-500 p-2 rounded-md shadow-sm transition duration-200 ease-in-out hover:bg-cyan-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 
                  
                 `}
               >
-                <TbMusicDollar className="text-xl" />
-                <div className="flex flex-col items-center">
-                  <span className="text-sm font-semibold">
+                <TbMusicDollar className="w-6 h-6" />
+                <div className="flex flex-col items-start">
+                  <span className="text-sm hidden xl:flex text-start font-semibold">
                     Sell Your Music{" "}
                   </span>
-                  <span className="text-sm font-semibold">With us</span>
+                  <span className="text-sm hidden xl:flex font-semibold">
+                    With us
+                  </span>
                 </div>
               </button>
               <button
                 onClick={() => setLanOpen(!lanOpen)}
-                className="border border-gray-700 p-2 text-white rounded shadow"
+                className="xl:border flex items-center justify-center gap-1 border-gray-700 xl:p-2 text-white rounded shadow"
               >
-                🌐 {t("language")}
+                <IoLanguageOutline className="w-6 h-6" />
+                <span className="hidden xl:flex">{t("language")}</span>
               </button>
 
               {/* <LanguageSelector /> */}
               {lanOpen && (
-                <div className="absolute w-max mt-2 bg-white border rounded shadow z-10">
+                <div className="absolute w-max mt-2 bg-white  rounded shadow z-10">
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
@@ -340,7 +364,7 @@ const Navbar = () => {
       {openMenu && (
         <div
           ref={sidebarRef}
-          className={`fixed top-10 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
+          className={`fixed top-0 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
             openMenu ? "translate-x-0" : "-translate-x-full"
           } lg:hidden`}
         >
@@ -353,7 +377,7 @@ const Navbar = () => {
           </div>
 
           {/* Sidebar Content */}
-          <div className="w-full px-4 h-full bg-[#1b2039] flex font-josefin-sb flex-col items-start pt-10">
+          <div className="w-full  px-4 h-full bg-[#1b2039] flex font-josefin-sb flex-col items-start pt-10">
             {/* Logo */}
             <div className="flex justify-center items-center w-full">
               <Link
@@ -377,10 +401,10 @@ const Navbar = () => {
                 {navItems.map((item, index) => (
                   <li key={index}>
                     <NavLink
-                    onClick={closeSidebar}
+                      onClick={closeSidebar}
                       to={item.to}
                       className={({ isActive }) =>
-                        `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
+                        `flex  items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
                           isActive ? "bg-[#2cc8e5] text-white" : ""
                         }`
                       }

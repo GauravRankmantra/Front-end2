@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom"; 
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa";
 import artist from "../assets/svg/artist.svg";
 import createPlaylist from "../assets/svg/createPlaylist.svg";
@@ -19,13 +19,13 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   const [openMenu, setOpenMenu] = useState(false);
   const sidebarRef = useRef(null);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const location = useLocation();
 
-  const isProfileRoute = location.pathname === "/profile"; 
+  const isProfileRoute = location.pathname === "/profile";
 
   const toggleSidebar = useCallback(() => {
     setOpenMenu((prevOpenMenu) => !prevOpenMenu);
@@ -76,14 +76,15 @@ const Sidebar = () => {
   return (
     <div
       ref={sidebarRef}
-      className={` fixed top-5 bottom-0 font-josefin-m z-50 bg-[#1b2039] ${
+      className={` fixed pt-5  font-josefin-m z-50 bg-[#1e233f] ${
         openMenu ? "w-[200px]" : "w-[80px]"
       } transition-all duration-300 shadow-lg hidden lg:block`}
     >
       <div
-
         onClick={toggleSidebar}
-        className={`${isProfileRoute&&'hidden'} absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center`}
+        className={`${
+          isProfileRoute && "hidden"
+        } absolute right-[-24px] top-1/2 transform -translate-y-1/2 cursor-pointer w-[55px] h-[55px] bg-[#1b2039] rounded-full flex items-center justify-center`}
       >
         <FaAngleRight className="text-[#cdcdcd] text-[20px] ml-6 transition-transform duration-500 hover:rotate-180" />
       </div>
@@ -91,16 +92,22 @@ const Sidebar = () => {
       <div
         className={`${
           openMenu ? "w-[200px]" : "w-[80px]"
-        } h-full bg-[#1b2039] flex flex-col items-center pt-10 transition-all duration-300`}
+        } h-screen  bg-[#1b2039]  flex flex-col object-cover items-center transition-all duration-300`}
       >
-        <div className="flex justify-center items-center min-h-[164px]">
-          <NavLink to="/" className="w-full text-center">
-            <img src={logo} alt="logo" className="img-fluid" />
-          </NavLink>
+        <div className="flex  justify-center  items-center ">
+          <Link to="/" className="w-full text-center">
+            <img
+              src={logo}
+              alt="logo"
+              className="p-4 w-20 h-20 object-cover rounded-full"
+            />
+          </Link>
         </div>
 
-        <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
-          <ul className={`${isAuthenticated?'space-y-3' :'space-y-10'} `}>
+        <div
+          className={`mt-5 w-full     mb-[10px] overflow-y-auto max-h-screen no-scrollbar`}
+        >
+          <ul className={`${isAuthenticated ? "space-y-3" : "space-y-14 mt-10"} `}>
             {navItems.map((item, index) => (
               <li key={index}>
                 <NavLink
@@ -111,11 +118,19 @@ const Sidebar = () => {
                     }`
                   }
                 >
-                  <img
-                    src={item.icon}
-                    alt={item.text}
-                    className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                  />
+                  <div className="flex flex-col group h-[25px] overflow-hidden items-center  justify-center">
+                    <img
+                      src={item.icon}
+                      alt={item.text}
+                      className="w-[25px] translate-y-3 group-hover:-translate-y-11  h-[25px]  mr-2 transition-all duration-300"
+                    />
+                    <img
+                      src={item.icon}
+                      alt={item.text}
+                      className="w-[25px] translate-y-3 group-hover:-translate-y-3  h-[25px]  mr-2 transition-all duration-300"
+                    />
+                  </div>
+
                   <span
                     className={`${openMenu ? "block" : "hidden"} flex-grow`}
                   >
@@ -139,11 +154,18 @@ const Sidebar = () => {
                       }`
                     }
                   >
-                    <img
-                      src={item.icon}
-                      alt={item.text}
-                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                    />
+                    <div className="flex flex-col group h-[25px] overflow-hidden items-center  justify-center">
+                      <img
+                        src={item.icon}
+                        alt={item.text}
+                        className="w-[25px] translate-y-3 group-hover:-translate-y-11  h-[25px]  mr-2 transition-all duration-300"
+                      />
+                      <img
+                        src={item.icon}
+                        alt={item.text}
+                        className="w-[25px] translate-y-3 group-hover:-translate-y-3  h-[25px]  mr-2 transition-all duration-300"
+                      />
+                    </div>
                     <span
                       className={`${openMenu ? "block" : "hidden"} flex-grow`}
                     >
@@ -168,11 +190,18 @@ const Sidebar = () => {
                       }`
                     }
                   >
-                    <img
-                      src={item.icon}
-                      alt={item.text}
-                      className="w-[25px] h-[25px] inline-block mr-2 group-hover:scale-110 transition-transform"
-                    />
+                    <div className="flex flex-col group h-[25px] overflow-hidden items-center  justify-center">
+                      <img
+                        src={item.icon}
+                        alt={item.text}
+                        className="w-[25px] translate-y-3 group-hover:-translate-y-11  h-[25px]  mr-2 transition-all duration-300"
+                      />
+                      <img
+                        src={item.icon}
+                        alt={item.text}
+                        className="w-[25px] translate-y-3 group-hover:-translate-y-3  h-[25px]  mr-2 transition-all duration-300"
+                      />
+                    </div>
                     <span
                       className={`${openMenu ? "block" : "hidden"} flex-grow`}
                     >

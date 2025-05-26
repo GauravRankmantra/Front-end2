@@ -264,13 +264,13 @@ const AlbumActions = ({ onClose, album }) => {
             <AiOutlinePlus className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
             {t("addToQueue")}
           </button>
-          <button
+          {/* <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleDownloadClick}
           >
             <AiOutlineDownload className="md:mr-2 mr-1 md:h-4 md:w-4 w-2 h-2 text-gray-500" />
             {t("download")}
-          </button>
+          </button> */}
           <button
             className="flex items-center w-full px-4 py-2 md:text-xs text-[8px] text-gray-700 hover:bg-gray-100 transition-colors duration-200"
             onClick={handleAddToPlaylist}

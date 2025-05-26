@@ -29,7 +29,7 @@ const Recently = ({ heading, link, showGrid }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
-const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -140,6 +140,7 @@ const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
                         className="relative  overflow-hidden rounded-[10px] aspect-square group"
                         onMouseLeave={() => setCurrentSong(null)} // Hide menu on mouse leave
                       >
+                        <div className="absolute inset-0 translate-y-36 group-hover:translate-y-0 z-40 bg-gradient-to-t from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
                         <img
                           className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
                           src={
@@ -147,9 +148,9 @@ const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
                           }
                           alt={song.title}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-1000 z-50">
                           <AiFillPlayCircle
-                            className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
+                            className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-500 hover:scale-110"
                             onClick={() => handleSongClick(song)}
                           />
 
@@ -175,7 +176,7 @@ const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
                           )}
                         </div>
                         {song.price > 0 && (
-                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full  px-4 py-1 rounded-full flex items-center justify-center gap-2 text-white text-sm font-medium shadow-lg transition-all">
+                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full  px-4 py-1 rounded-full flex items-center justify-center gap-2 text-white text-sm font-medium shadow-lg transition-all z-40">
                             {user?.purchasedSongs?.includes(song._id) ? (
                               <div className="bg-green-600 px-3 py-1 rounded-full flex items-center gap-2">
                                 <svg
@@ -197,7 +198,7 @@ const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
                             ) : (
                               <button
                                 onClick={() => handelBuyNowClick(song)}
-                                className="bg-cyan-500 hover:bg-cyan-600 px-3 py-1 rounded-full flex items-center gap-2 transition-colors"
+                                className="bg-cyan-500 shadow-lg hover:bg-cyan-600 px-3 py-1 rounded-full flex items-center gap-2 transition-colors"
                               >
                                 <img
                                   src={cart}
@@ -216,12 +217,12 @@ const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated)
 
                       <div className="text-left mt-4">
                         <h1 className="text-[14px] mb-[5px]">
-                          <a
-                            href="#"
+                          <button
+                            onClick={() => navigate(`/song/${song._id}`)}
                             className="text-white hover:text-[#3bc8e7]"
                           >
                             {song.title}
-                          </a>
+                          </button>
                         </h1>
                         <p className="text-[#dedede] text-[12px]">
                           {Array.isArray(song?.artist)

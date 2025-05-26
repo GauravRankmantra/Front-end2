@@ -16,11 +16,7 @@ const SuccessPage = () => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-
-
   const userId = useSelector((state) => state.user.user?._id);
-
   const sellerSharePercentage = 0.7;
 
   useEffect(() => {
@@ -33,6 +29,7 @@ const SuccessPage = () => {
           console.error("❌ Seller ID not found.");
           return;
         }
+        const admin = songData?.artist[0]?.admin;
 
         const {
           total_amount,
@@ -43,12 +40,20 @@ const SuccessPage = () => {
           payment_intent_id,
         } = paymentInfo;
 
-        const sellerEarning = parseFloat(
-          (total_amount * sellerSharePercentage).toFixed(2)
-        );
-        const adminEarning = parseFloat(
-          (total_amount - sellerEarning - stripe_fee).toFixed(2)
-        );
+        let sellerEarning = 0;
+        let adminEarning = 0;
+
+        if (!admin) {
+          sellerEarning = parseFloat(
+            (total_amount * sellerSharePercentage).toFixed(2)
+          );
+          adminEarning = parseFloat(
+            (total_amount - sellerEarning - stripe_fee).toFixed(2)
+          );
+        } else {
+          sellerEarning = 0;
+          adminEarning = parseFloat((total_amount - stripe_fee).toFixed(2));
+        }
 
         const saleData = {
           songId: songData._id,
@@ -139,7 +144,7 @@ const SuccessPage = () => {
           if (purchaseRes.status === 200) {
             dispatch(updateUser({ purchasedSongs: [songId] }));
             toast.success("Song added to your purchases");
-            // setTimeout(() => navigate("/downloads"), 500);
+            setTimeout(() => navigate("/downloads"), 100);
           }
         } catch (err) {
           console.error("❌ Error saving purchased song:", err);
@@ -154,8 +159,7 @@ const SuccessPage = () => {
     fetchSessionData();
   }, [sessionId, navigate]);
 
-
-    if (!isAuthenticated)
+  if (!isAuthenticated)
     return (
       <div className="flex justify-center items-center flex-col gap-5">
         <h1 className="mt-16 text-red-500 text-center">

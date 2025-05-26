@@ -4,12 +4,12 @@ const PlaylistSelectionModal = ({ playlists, onSelect, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-4 rounded shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">Select Playlist</h2>
+        <h2 className="text-lg font-semibold mb-4 text-cyan-600">Select Playlist</h2>
         <ul className="space-y-2 max-h-80 overflow-y-auto">
           {playlists.map((playlist) => (
             <li
               key={playlist._id}
-              className="cursor-pointer p-2 hover:bg-gray-200 rounded flex items-center"
+              className="cursor-pointer border rounded-lg p-2 hover:bg-gray-200 shadow-sm flex items-center"
               onClick={() => onSelect(playlist)}
             >
               <img
@@ -28,7 +28,7 @@ const PlaylistSelectionModal = ({ playlists, onSelect, onClose }) => {
         </ul>
         <button
           onClick={onClose}
-          className="mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors"
+          className="mt-4 px-4 text-cyan-500 py-2 bg-gray-50 border border-gray-300 shadow-xl rounded hover:bg-gray-500 hover:text-white transition-colors"
         >
           Cancel
         </button>

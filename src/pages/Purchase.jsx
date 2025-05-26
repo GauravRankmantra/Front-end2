@@ -11,6 +11,7 @@ import {
   addSongToHistory,
   addSongToQueueWithAuth,
 } from "../features/musicSlice";
+import Loading from "../components/Loading";
 
 const Purchase = () => {
   const [search] = useSearchParams();
@@ -187,7 +188,7 @@ const Purchase = () => {
       </div>
     );
   if (loading) {
-    return <div>Loading song information...</div>;
+    return <div><Loading/></div>;
   }
 
   if (error) {

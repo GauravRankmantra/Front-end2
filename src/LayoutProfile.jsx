@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CookieConsent from "./components/CookieConsent";
 import RightSidebar from "./components/Profile/RightSidebar";
 import LeftSidebar from "./components/Profile/LeftSidebar";
+import MusicPlayer from "./components/MusicPlayer";
 
 const LayoutProfile = () => {
   const [showLeftSidebar, setShowLeftSidebar] = useState(false); // mobile toggle
@@ -111,6 +112,7 @@ const LayoutProfile = () => {
       >
         {!collapseRightSidebar && <RightSidebar />}
       </div>
+          <MusicPlayer />
     </div>
   );
 };

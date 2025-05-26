@@ -110,6 +110,7 @@ const Recently = ({ heading, link, type }) => {
                       className="relative overflow-hidden rounded-[10px] aspect-square group"
                       onMouseLeave={() => setCurrentAlbum(null)}
                     >
+                       <div className="absolute inset-0 translate-y-36 group-hover:translate-y-0 z-40 bg-gradient-to-t from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
                       <img
                         className="w-full h-full object-cover rounded-[10px] transition-opacity duration-300 group-hover:opacity-60"
                         src={
@@ -117,7 +118,7 @@ const Recently = ({ heading, link, type }) => {
                         }
                         alt={album.title}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 z-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-1000">
                         <AiFillPlayCircle
                           className="w-12 h-12 text-white cursor-pointer transform transition-transform duration-300 hover:scale-110"
                           onClick={() => handelClick(album)}

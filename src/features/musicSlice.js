@@ -41,6 +41,8 @@ const getInitialMusicState = () => {
       isPlaying: false,
       currentSongIndex: 0,
       recentlyPlayed: [],
+      isRepeating: false,
+      currentQuality: "low",
     };
   } catch (error) {
     console.error(
@@ -246,18 +248,32 @@ const musicSlice = createSlice({
     },
 
     playNextSong: (state) => {
-      if (state.currentSongIndex < state.playlist.length - 1) {
+      if (!state.playlist || state.playlist.length === 0) return;
+
+      if (
+        !state.isRepeating &&
+        state.currentSongIndex < state.playlist.length - 1
+      ) {
         state.currentSongIndex += 1;
-        state.currentSong = state.playlist[state.currentSongIndex];
+        console.log("current index+1");
       }
+
+      console.log("befor e");
+      state.currentSong = state.playlist[state.currentSongIndex];
+
+      console.log("after e");
+
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
 
     playPrevSong: (state) => {
-      if (state.currentSongIndex > 0) {
+      if (!state.playlist || state.playlist.length === 0) return;
+
+      if (!state.isRepeating && state.currentSongIndex > 0) {
         state.currentSongIndex -= 1;
-        state.currentSong = state.playlist[state.currentSongIndex];
       }
+
+      state.currentSong = state.playlist[state.currentSongIndex];
       localStorage.setItem("musicPlayerData", JSON.stringify(state));
     },
 

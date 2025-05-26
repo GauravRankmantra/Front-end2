@@ -133,7 +133,7 @@ const PlaylistInfo = () => {
   }
 
   return (
-    <div className="shadow-2xl overflow-hidden rounded-lg">
+    <div className="shadow-2xl overflow-hidden font-josefin-r rounded-lg">
       <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
@@ -149,7 +149,7 @@ const PlaylistInfo = () => {
               By - {album?.owner?.fullName}
             </p>
             <p className="text-gray-400">
-              {album.totalSongs} songs || {formatDuration(album.totalDuration)}
+              {album.totalSongs} songs || {album.totalDuration}
             </p>
             <p className="text-gray-400">
               Released {formatDate(album.releaseDate)} | {album.company}

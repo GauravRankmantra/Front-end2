@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { addSongToQueue, setIsPlaying ,addSongToQueueWithAuth} from "../features/musicSlice";
 import axios from "axios";
-import formatDuration from "../utils/formatDuration";
+
 import { AiFillPlayCircle } from "react-icons/ai";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -157,7 +157,7 @@ const SearchResults = () => {
                     </div>
                   </div>
                   <div className="mr-2">
-                    <p className="md:text-xs text-[10px]">{formatDuration(song.duration)}</p>
+                    <p className="md:text-xs text-[10px]">{song.duration}</p>
                   </div>
                   <div className="text-right">
                     <button className="text-xl text-white">...</button>

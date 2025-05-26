@@ -66,7 +66,7 @@ const PlaylistSidebar = ({isPlaylistOpen}) => {
             </div>
 
             <div className="absolute right-1">
-              <p className="text-sm">{formateDuration(song.duration)}</p>
+              <p className="text-sm">{song.duration}</p>
             </div>
           </li>
         ))}

@@ -52,7 +52,9 @@ import SellSongs from "./components/Profile/SellSongs";
 import SellSongLanding from "./components/SellSongLanding";
 import Withdrawal from "./components/Profile/Withdrawal";
 import LoginCard from "./components/LoginCard";
-import {setShowLoginPopup} from "./features/uiSlice"
+import { setShowLoginPopup } from "./features/uiSlice";
+import VideoStore from "./components/VideoStore";
+import OdgRadio from "./components/OdgRadio";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -65,10 +67,9 @@ const App = () => {
     dispatch(checkAuth());
   }, []);
 
-
-    const closeLoginPopup = () => {
-      dispatch(setShowLoginPopup(false));
-    };
+  const closeLoginPopup = () => {
+    dispatch(setShowLoginPopup(false));
+  };
 
   return (
     <>
@@ -100,6 +101,10 @@ const App = () => {
             <Route path="/sell-songs" element={<SellSongLanding />} />
             <Route path="purchased" element={<Purchase />} />
             <Route path="/terms-and-conditions" element={<Terms />} />
+
+            <Route path="/video-store" element={<VideoStore />} />
+
+            <Route path="/odg-radio" element={<OdgRadio />} />
 
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/create-playlist" element={<CreatePlaylist />} />
@@ -166,7 +171,9 @@ const App = () => {
         </Routes>
       </Router>
 
-      {showLoginPopup && loginPopupSong && <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />}
+      {showLoginPopup && loginPopupSong && (
+        <LoginCard song={loginPopupSong} onClose={closeLoginPopup} />
+      )}
     </>
   );
 };

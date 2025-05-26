@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Check if there's a user saved in localStorage
 
-
-
 const savedUser = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
@@ -23,31 +21,42 @@ const userSlice = createSlice({
       localStorage.removeItem("user");
       localStorage.removeItem("musicPlayerData");
     },
-updateUser: (state, action) => {
-  if (!state.user) return;
+    updateUser: (state, action) => {
+      if (!state.user) return;
 
-  const updates = action.payload;
-console.log("updates",updates)
-  // ✅ Merge song IDs intelligently
-  if (updates.purchasedSongs) {
-    const existing = state.user.purchasedSongs || [];
-    const newSongs = Array.isArray(updates.purchasedSongs)
-      ? updates.purchasedSongs
-      : [updates.purchasedSongs];
+      const updates = action.payload;
+      console.log("updates", updates);
+      // ✅ Merge song IDs intelligently
+      if (updates.purchasedSongs) {
+        const existing = state.user.purchasedSongs || [];
+        const newSongs = Array.isArray(updates.purchasedSongs)
+          ? updates.purchasedSongs
+          : [updates.purchasedSongs];
 
-    state.user.purchasedSongs = Array.from(new Set([...existing, ...newSongs]));
-    delete updates.purchasedSongs;
-  }
+        state.user.purchasedSongs = Array.from(
+          new Set([...existing, ...newSongs])
+        );
+        delete updates.purchasedSongs;
+      }
 
-  // ✅ Merge other updates
-  state.user = {
-    ...state.user,
-    ...updates,
-  };
+      if (updates.likedSongs) {
+        const existing = state.user.likedSongs || [];
+        const newSongs = Array.isArray(updates.likedSongs)
+          ? updates.likedSongs
+          : [updates.likedSongs];
 
-  localStorage.setItem("user", JSON.stringify(state.user));
-}
+        state.user.likedSongs = Array.from(new Set([...existing, ...newSongs]));
+        delete updates.likedSongs;
+      }
 
+      // ✅ Merge other updates
+      state.user = {
+        ...state.user,
+        ...updates,
+      };
+
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
   },
 });
 

@@ -18,11 +18,17 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contact, setContact] = useState(null);
-   const { t } = useTranslation();
+  const [footerIn, setFooter] = useState(null);
+  const { t } = useTranslation();
   useEffect(() => {
     axios.get(`${apiUrl}api/v1/contact/contact-info`).then((res) => {
       setContact(res.data);
+    });
+  }, []);
 
+  useEffect(() => {
+    axios.get(`${apiUrl}api/v1/footer`).then((res) => {
+      setFooter(res.data.data);
     });
   }, []);
 
@@ -58,90 +64,45 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-b font-josefin-r from-gray-900 mt-20 to-gray-400 text-gray-400 py-12 lg:px-36 px-6 z-40">
+    <footer className="bg-gradient-to-b font-josefin-r from-gray-900 mt-20 via-gray-800 to-gray-600 text-gray-400 py-12 lg:px-36 px-6 z-40">
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {/* Logo & Description */}
         <div>
-          <img src={logo} className="w-28 h-24 shadow-2xl mb-1" alt="Logo" />
+          <img src={logo} className="w-28 rounded-xl h-24 shadow-2xl mb-1" alt="Logo" />
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
             Odg Music
           </h3>
-          <p className="text-white leading-6">
-          {t("footerP")}
-          </p>
+          <p className="text-white leading-6">{footerIn?.mainHeading}</p>
         </div>
 
         {/* Useful Links */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-          {t("usefulLinks")}
+            {t("usefulLinks")}
           </h3>
-          <ul className="text-gray-100 space-y-4">
-            <li>
-              <Link
-                to="/albums"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Albums
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/artists"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Artists
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/albums"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Top Albums
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/privacy-policy"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/terms-and-conditions"
-                onClick={scrollToTop}
-                className="hover:text-gray-300"
-              >
-                Terms & Conditions
-              </Link>
-            </li>
+          <ul className="text-gray-100  space-y-4">
+            {footerIn?.links?.map((link, index) => {
+              return (
+                <li key={link._id}>
+                  <Link
+                    to={link?.link}
+                    onClick={scrollToTop}
+                    className="hover:text-gray-300"
+                  >
+                    {link?.heading}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
         {/* Subscribe */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-          {t("footerSubscribeH")}
+            {t("footerSubscribeH")}
           </h3>
-          <p className="text-gray-300 mb-4">
-          {t("footerSubscribeP")}
-          </p>
+          <p className="text-gray-300 mb-4">  {footerIn?.subscribe}</p>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -172,7 +133,7 @@ const Footer = () => {
         {/* Contact & Social */}
         <div>
           <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
-          {t("contactUs")}
+            {t("contactUs")}
           </h3>
           <p className="text-gray-300">
             <strong>Call Us:</strong> {contact?.phone}

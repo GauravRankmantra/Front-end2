@@ -5,7 +5,15 @@ import axios from "axios";
 import { FaMusic, FaPlay, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
-import Loading from "../Loading"
+import Loading from "../Loading";
+
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToHistory,
+  addSongToQueueWithAuth,
+} from "../../features/musicSlice";
+import { useDispatch } from "react-redux";
 
 const formatDate = (dateString) => {
   try {
@@ -54,6 +62,15 @@ const History = () => {
 
     fetchData();
   }, [apiUrl, toast]);
+
+  const dispatch = useDispatch();
+
+  const handleSongClick = (song) => {
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueueWithAuth(song));
+
+    dispatch(setIsPlaying(true));
+  };
 
   return (
     <>
@@ -113,7 +130,7 @@ const History = () => {
                         </button>
                       ) : null}
                     </div>
-                    {!song?.price||song.price === 0 ? (
+                    {!song?.price || song.price === 0 ? (
                       <button
                         className="p-2  hidden md:flex text-xs md:text-sm border border-green-600 text-green-500 hover:border-0 hover:bg-green-500 hover:text-white rounded-lg   focus:outline-none focus:ring-2 focus:ring-green-500"
                         title="Purchase Song"

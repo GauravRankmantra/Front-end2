@@ -16,18 +16,7 @@ import { RiArrowDownDoubleLine } from "react-icons/ri";
 import { VscClose } from "react-icons/vsc";
 
 import "../index.css";
-import {
-  FaPlay,
-  FaPause,
-  FaStepForward,
-  FaStepBackward,
-  FaList,
-  FaVolumeUp,
-} from "react-icons/fa"; // Import icons
-import { IoCloudDownloadOutline } from "react-icons/io5";
-import { MdOutlineExpandCircleDown } from "react-icons/md";
-import { CiHeart } from "react-icons/ci";
-import { MdOutlinePlaylistAdd } from "react-icons/md";
+import { FaVolumeUp } from "react-icons/fa"; // Import icons
 
 import play from "../assets/svg/play.svg";
 import next from "../assets/svg/next.svg";
@@ -35,15 +24,9 @@ import prev from "../assets/svg/prev.svg";
 import pause from "../assets/svg/pause.svg";
 import useIsMobile from "../utils/useIsMobile";
 
-import { GoPlay } from "react-icons/go";
-import { IoPauseCircleOutline } from "react-icons/io5";
-import { FaChevronUp } from "react-icons/fa6";
-import PlaylistSelectionModal from "../modals/PlaylistSelectionModal";
 import { FaChevronCircleUp } from "react-icons/fa";
 import { IoShuffleOutline } from "react-icons/io5";
 import { IoIosRepeat } from "react-icons/io";
-import formateDuration from "../utils/formatDuration";
-import addLike from "../utils/addLike";
 
 import {
   playNextSong,
@@ -81,6 +64,7 @@ const MusicPlayer = () => {
   const [quality, setQuality] = useState("high");
   const [isExpanded, setIsExpanded] = useState(false);
   const [showsetting, setShowSetting] = useState(false);
+  const [animate, setAnimate] = useState(false);
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
@@ -88,7 +72,7 @@ const MusicPlayer = () => {
   const user = useSelector((state) => state.user.user);
 
   const isShuffle = useSelector((state) => state.musicPlayer.isShuffle);
-  const isRepeat = useSelector((state) => state.musicPlayer.isRepeat);
+  const isRepeating = useSelector((state) => state.musicPlayer.isRepeating);
   const navigate = useNavigate();
 
   const handelQualityClick = (type) => {
@@ -268,8 +252,17 @@ const MusicPlayer = () => {
   };
 
   const handleNext = (e) => {
-    e.stopPropagation();
-    dispatch(playNextSong());
+    e?.stopPropagation?.();
+
+    if (isRepeating) {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch((err) => console.error("Repeat error:", err));
+      }
+    } else {
+      dispatch(playNextSong());
+    }
   };
 
   const handlePrev = (e) => {
@@ -437,14 +430,15 @@ const MusicPlayer = () => {
               </p>
             </div>
 
-            <div>
-              </div>
+            <div></div>
           </div>
         )}
 
         <div
           className={` ${
-            isExpanded ? `flex border border-white/30 shadow-2xl rounded-xl pr-1` : `hidden md:flex`
+            isExpanded
+              ? `flex border border-white/30 shadow-2xl rounded-xl pr-1`
+              : `hidden md:flex`
           } md:ml-72 flex-row justify-center items-center  w-full`}
         >
           {/* Controls (Previous, Play/Pause, Next) */}
@@ -534,10 +528,24 @@ const MusicPlayer = () => {
           </div>
         </div>
         <div className="lg:flex  space-x-3 hidden ">
-          <div className="rounded-full p-1 border ">
+          <div
+            onClick={() => {
+              dispatch(shufflePlaylist(playlist));
+              setAnimate(true);
+              setTimeout(() => {
+                setAnimate(false);
+              }, 800);
+            }}
+            className={`${animate && `animate-spin duration-700 repeat-1`} cursor-pointer rounded-full p-1 border `}
+          >
             <IoShuffleOutline className="w-5 h-5" />
           </div>
-          <div className="rounded-full p-1 border">
+          <div
+            onClick={() => dispatch(toggleRepeat())}
+            className={`${
+              isRepeating ? `bg-cyan-500` : `bg-transparent`
+            } rounded-full p-1 border cursor-pointer`}
+          >
             <IoIosRepeat className="w-5 h-5" />
           </div>
           <div className="relative">
@@ -654,7 +662,7 @@ const MusicPlayer = () => {
                             e.stopPropagation();
 
                             navigate(`/artist/${artistObj._id}`);
-                          }} // Example click handler
+                          }}
                           className="cursor-pointer hover:underline"
                         >
                           {artistObj.fullName}
@@ -673,7 +681,7 @@ const MusicPlayer = () => {
               </div>
 
               <div className="absolute right-1">
-                <p className="text-sm">{formateDuration(song.duration)}</p>
+                <p className="text-sm">{song.duration}</p>
               </div>
             </li>
           ))}

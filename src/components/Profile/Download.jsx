@@ -126,7 +126,7 @@ const Download = () => {
           console.log("filter", filteredTopSongs);
 
           // Filter out purchased songs from top songs
-          if (purchasedSongsData.length > 0) {
+          if (purchasedSongsData?.length > 0) {
             filteredTopSongs = allTopSongs.filter(
               (topSong) =>
                 !purchasedSongsData.some(

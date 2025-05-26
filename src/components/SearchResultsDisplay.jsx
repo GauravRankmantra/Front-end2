@@ -307,7 +307,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
                           {song.title}
                         </h3>
                         <h3 className="text-gray-400">
-                          Duration: {formatDuration(song?.duration)}
+                          Duration: {song?.duration}
                         </h3>
                         <h3 className="text-gray-400">
                           By{" "}

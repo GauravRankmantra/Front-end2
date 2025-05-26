@@ -19,13 +19,16 @@ import {
 } from "../../features/musicSlice";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "../Loading";
+import { Loader } from "lucide-react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const SongActions = ({ onClose, song }) => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   const dropdownRef = useRef(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [shareData, setShareData] = useState(null);
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [pModelOpen, setPModelOpen] = useState(false);
@@ -49,6 +52,7 @@ const SongActions = ({ onClose, song }) => {
   }, [onClose]);
 
   const onPlaylistSelected = async (selectedPlaylistObj) => {
+    setLoading(true);
     setSelectedPlaylist(selectedPlaylistObj._id);
     setPModelOpen(false);
 
@@ -66,6 +70,7 @@ const SongActions = ({ onClose, song }) => {
           autoClose: 3000,
         });
       }
+      setLoading(false);
     } catch (addSongError) {
       console.error("Error adding song", addSongError);
 
@@ -99,7 +104,7 @@ const SongActions = ({ onClose, song }) => {
   };
 
   const handleDownload = async () => {
-
+    setLoading(true);
     const songId = song._id;
     let artistIds = [];
 
@@ -111,6 +116,7 @@ const SongActions = ({ onClose, song }) => {
         .map((artist) => artist._id);
     } else {
       console.warn("song.artist is not a string or an array:", song.artist);
+      setLoading(false);
       return;
     }
 
@@ -145,10 +151,13 @@ const SongActions = ({ onClose, song }) => {
         downloadLink.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(downloadLink);
+        setLoading(false);
       } else {
-        toast.error("Download not allowed. Purchase the song first.");
+        setLoading(false);
+        toast.error("Click on download to purchase this song ");
       }
     } catch (error) {
+      setLoading(false);
       if (
         error.response &&
         error.response.data?.message === "Unauthorized: You Need to Login"
@@ -167,28 +176,35 @@ const SongActions = ({ onClose, song }) => {
   };
 
   const handleAddToFav = (songId) => {
+    setLoading(true);
     addLike({ songId })
       .then((response) => {
         toast.success("Added to favorites!");
         onClose();
+        setLoading(false);
       })
       .catch((error) => {
         // Handle errors
+        setLoading(false);
 
         toast.error(error.response.data.message);
       });
   };
 
   const handleAddToQueue = () => {
+    setLoading(true);
     try {
       if (!isAuthenticated) {
         toast.error("You Need To Login ");
+        setLoading(false);
         return;
       }
       dispatch(addSongToQueueWithAuth(song));
       dispatch(setIsPlaying(false));
       toast.success("Added to queue!");
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       toast.error(error?.response?.data?.message);
     }
 
@@ -196,6 +212,7 @@ const SongActions = ({ onClose, song }) => {
   };
 
   const handleAddToPlaylist = async () => {
+    setLoading(true);
     try {
       // 1. Fetch user's playlists
       const playlistsRes = await axios.get(
@@ -210,6 +227,7 @@ const SongActions = ({ onClose, song }) => {
       }
       setUserPlaylists(playlists);
       setPModelOpen(true); // Open the playlist selection modal
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching playlists:", error);
       toast.error(error.response.data.message);
@@ -295,12 +313,21 @@ const SongActions = ({ onClose, song }) => {
             />
           )}
         </div>
-        {pModelOpen && (
-          <PlaylistSelectionModal
-            playlists={userPlaylists}
-            onSelect={onPlaylistSelected}
-            onClose={() => setPModelOpen(false)}
-          />
+
+        {loading ? (
+          <div className=" flex justify-center items-center">
+            <Loader className="animate-spin text-cyan-600" />
+          </div>
+        ) : (
+          <div>
+            {pModelOpen && (
+              <PlaylistSelectionModal
+                playlists={userPlaylists}
+                onSelect={onPlaylistSelected}
+                onClose={() => setPModelOpen(false)}
+              />
+            )}
+          </div>
         )}
       </div>
     </>

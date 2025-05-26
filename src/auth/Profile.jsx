@@ -559,7 +559,7 @@ const Profile = () => {
             </h1>
           </div>
           {/* Static Information Sections */}
-          <div className="grid grid-cols-1 gap-8">
+          {/* <div className="grid grid-cols-1 gap-8">
             <div className="bg-[#1c223b] space-y-2 p-6 rounded-lg shadow-lg">
               <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
                 {t("Membership And Billing")}
@@ -594,7 +594,7 @@ const Profile = () => {
                 </ul>
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

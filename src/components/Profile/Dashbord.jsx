@@ -34,10 +34,10 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [info, setInfo] = useState(null);
-  const [weeklyStats,setWeeklyStats]=useState([]);
+  const [weeklyStats, setWeeklyStats] = useState([]);
   const [likedSongs, setLikedSongs] = useState(null);
   const [purchasedSongs, setPurchasedSongs] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -77,7 +77,7 @@ const Dashboard = () => {
           withCredentials: true,
         });
 
-        setPurchasedSongs(res.data.purchasedSongs);
+        setPurchasedSongs(res.data.songs);
         console.log(purchasedSongs);
       } catch (error) {
         if (
@@ -95,16 +95,17 @@ const Dashboard = () => {
     fetchSongs();
   }, []);
 
-
-    useEffect(() => {
+  useEffect(() => {
     const fetchWeeklyStats = async () => {
       try {
-        const res = await axios.get(`${apiUrl}api/v1/userDashbord/getWeeklyActivityStats`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${apiUrl}api/v1/userDashbord/getWeeklyActivityStats`,
+          {
+            withCredentials: true,
+          }
+        );
 
         setWeeklyStats(res.data.data);
-       
       } catch (error) {
         if (
           error.response &&
@@ -120,7 +121,6 @@ const Dashboard = () => {
 
     fetchWeeklyStats();
   }, []);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,7 +158,10 @@ const Dashboard = () => {
             Dashboard
           </h1>
         </div>
-        <button onClick={()=>navigate("/top_track")} className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-1 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+        <button
+          onClick={() => navigate("/top_track")}
+          className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-1 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+        >
           Explore More Tracks
         </button>
       </div>
@@ -205,16 +208,30 @@ const Dashboard = () => {
                           <h1 className="font-josefin-m text-sm sm:text-base">
                             {data.title}
                           </h1>
-                          <h1 className="font-josefin-m text-[0.50rem] text-gray-600 cursor-pointer hover:underline sm:text-base">
-                            {Array.isArray(data?.artist)
-                              ? data.artist.map((artist, index) => (
-                                  <React.Fragment key={artist._id}>
-                                    {artist.fullName}
-                                    {index < data.artist.length - 1 && ", "}
-                                  </React.Fragment>
-                                ))
-                              : data?.artist?.fullName}
-                          </h1>
+                          <p className="text-sm font-josefin-r whitespace-nowrap">
+                            {Array.isArray(data.artist) ? (
+                              data.artist.map((artistObj, index) => (
+                                <span
+                                  key={index}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    navigate(`/artist/${artistObj._id}`);
+                                  }} // Example click handler
+                                  className="cursor-pointer text-gray-400 hover:underline"
+                                >
+                                  {artistObj.fullName}
+                                  {index !== data.artist.length - 1 && ", "}
+                                </span>
+                              ))
+                            ) : (
+                              <span>
+                                {data.artist?.fullName ||
+                                  data.artist ||
+                                  "Unaknown Artist"}
+                              </span>
+                            )}
+                          </p>
                         </div>
                       </div>
                       <p className="font-josefin-m text-sm">{data.duration}</p>
@@ -278,7 +295,10 @@ const Dashboard = () => {
                   The Weekend
                 </h1>
               </div>
-              <button onClick={()=>navigate('/artists')} className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-1 px-2 font-josefin-m">
+              <button
+                onClick={() => navigate("/artists")}
+                className="absolute bottom-4 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 rounded-2xl p-1 px-2 font-josefin-m"
+              >
                 Explore More Artist
               </button>
             </div>
@@ -319,7 +339,7 @@ const Dashboard = () => {
                         </h1>
                       </div>
                       <p className="font-josefin-m text-sm">
-                        {data.durationFormatted}
+                        {data.duration}
                       </p>
                     </li>
                   ))}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { useTranslation } from "react-i18next";
+import { AiFillPayCircle, AiFillPlayCircle } from "react-icons/ai";
 
 const TopGenres = () => {
   const [genres, setGenres] = useState([]);
@@ -29,9 +30,6 @@ const TopGenres = () => {
           {t("topGenres")}
           <div className="w-[120px] h-[2px] bg-gradient-to-r from-[#3bc8e7] to-transparent mt-2 rounded-xl"></div>
         </h2>
-        {/* <a href="#" className="text-blue-400 hover:underline text-sm">
-          View All
-        </a> */}
       </div>
 
       {/* Bento Grid */}
@@ -48,9 +46,9 @@ const TopGenres = () => {
                 })
               }
               className={`
-    relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer transition-all duration-300 
-    ${index % 5 === 0 ? "lg:col-span-2 lg:row-span-2" : "h-60"}
-  `}
+                relative rounded-2xl group overflow-hidden shadow-lg cursor-pointer transition-all duration-300
+                ${index % 5 === 0 ? "lg:col-span-2 lg:row-span-2 " : "h-60"}
+              `}
             >
               <img
                 src={genre.image || "/default-genre.jpg"}
@@ -59,9 +57,20 @@ const TopGenres = () => {
                 className="w-full h-full object-cover transform group-hover:scale-105 transition duration-500"
               />
 
-              {/* Genre Name with Background */}
-              <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-md">
-                <h3 className="text-xl font-bold text-white">{genre.name}</h3>
+              {/* Hover Effect Div */}
+              <div
+                className="p-4 relative 
+                           bg-gradient-to-t from-cyan-500 via-cyan-500/70 to-transparent 
+                           translate-y-full group-hover:-translate-y-full 
+                           transition-transform duration-500 ease-in-out
+                           flex items-end h-full" // Added flex and items-end for better text positioning
+              >
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {genre.name}
+                </h3>
+                <h3 className="absolute top-1/2 translate-x-1/2 translate-y-1/2 right-1/2 text-2xl font-bold text-white mb-2">
+                  <AiFillPlayCircle className="w-10 h-10" />
+                </h3>
               </div>
             </div>
           ))

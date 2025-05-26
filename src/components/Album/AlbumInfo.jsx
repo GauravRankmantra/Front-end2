@@ -8,7 +8,12 @@ import CommentSlider from "../CommentSlider";
 import AlbumCard from "./AlbumCard";
 import NewReleases from "../NewReleases";
 import { useDispatch } from "react-redux";
-import { addPlaylistToQueue, clearQueue ,setIsPlaying,addPlaylistToQueueWithAuth } from "../../features/musicSlice";
+import {
+  addPlaylistToQueue,
+  clearQueue,
+  setIsPlaying,
+  addPlaylistToQueueWithAuth,
+} from "../../features/musicSlice";
 import Loading from "../Loading";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -24,11 +29,17 @@ const AlbumInfo = () => {
   const [disableBtn, setDisableBtn] = useState(false);
   const [artist, setArtist] = useState("");
   const [activePopup, setActivePopup] = useState(null);
-  const [commentsData,setCommentsData]=useState([])
+  const [commentsData, setCommentsData] = useState([]);
   const dispatch = useDispatch();
 
   const handelMenu = () => {
     setMenu(!menu);
+  };
+
+  const toMMSS = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   useEffect(() => {
@@ -37,12 +48,10 @@ const AlbumInfo = () => {
       setError(null);
 
       try {
-        const res = await axios.get(
-          `${apiUrl}api/v1/albums/${id}`
-        );
+        const res = await axios.get(`${apiUrl}api/v1/albums/${id}`);
         setAlbum(res?.data?.data);
-        setCommentsData(res?.data?.data?.comments)
-      
+        setCommentsData(res?.data?.data?.comments);
+
         setSongs(res?.data?.data?.songs);
 
         setArtist(res?.data?.data?.artistDetails?.fullName);
@@ -58,10 +67,10 @@ const AlbumInfo = () => {
 
   const handelPlayAll = () => {
     dispatch(clearQueue());
-   
+
     dispatch(addPlaylistToQueueWithAuth(songs));
-    dispatch(setIsPlaying(true))
-    
+    dispatch(setIsPlaying(true));
+
     setDisableBtn(!disableBtn);
   };
 
@@ -72,7 +81,6 @@ const AlbumInfo = () => {
     const month = date.toLocaleString("default", { month: "long" });
     return `${month} ${year}`;
   };
-
 
   const formatDuration = (durationInMinutes) => {
     if (typeof durationInMinutes !== "number") {
@@ -90,14 +98,11 @@ const AlbumInfo = () => {
 
   const handleAddToFavourites = async (songId) => {
     try {
-      await axios.post(
-        `${apiUrl}api/v1/favourites`,
-        {
-          userId: currentUserId,
-          albumId: id,
-          songId,
-        }
-      );
+      await axios.post(`${apiUrl}api/v1/favourites`, {
+        userId: currentUserId,
+        albumId: id,
+        songId,
+      });
       alert("Song added to favourites!");
     } catch (error) {
       console.error("Error adding song to favourites", error);
@@ -112,7 +117,7 @@ const AlbumInfo = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-    <Loading/>
+        <Loading />
       </div>
     );
   }
@@ -136,7 +141,7 @@ const AlbumInfo = () => {
   }
 
   return (
-    <div className="shadow-2xl overflow-hidden rounded-lg">
+    <div className="shadow-2xl overflow-hidden font-josefin-r rounded-lg">
       <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
@@ -146,13 +151,16 @@ const AlbumInfo = () => {
             />
           </div>
 
-          <div className="ml-0 md:ml-8 w-full md:w-auto">
-            <h2 className="text-3xl md:text-4xl font-bold">{album.title}</h2>
+          <div className="ml-0 md:ml-8 font-josefin-r w-full md:w-auto">
+            <h2 className="text-3xl md:text-4xl font-josefin-b">
+              {album.title}
+            </h2>
             <p className="text-gray-400">
-              By - {album?.artistDetails?.fullName}
+              <strong>By - </strong>
+              {album?.artistDetails?.fullName}
             </p>
             <p className="text-gray-400">
-              {album.totalSongs} songs || {formatDuration(album.totalDuration)}
+              {album.totalSongs} songs || {toMMSS(album.totalDuration)}
             </p>
             <p className="text-gray-400">
               Released {formatDate(album.releaseDate)} | {album.company}
@@ -160,34 +168,33 @@ const AlbumInfo = () => {
 
             <div className="mt-4 flex justify-center  items-center  flex-row gap-4">
               <div className="flex space-x-2">
-                
-              <button
-                disabled={disableBtn}
-                onClick={handelPlayAll}
-                className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center"
-              >
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
+                <button
+                  disabled={disableBtn}
+                  onClick={handelPlayAll}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center"
                 >
-                  <path d="M5 3v18l15-9L5 3z" />
-                </svg>
-                Play All
-              </button>
-              <button className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center">
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M4 3h14v2H4V3zm0 7h10v2H4v-2zm0 7h14v2H4v-2z" />
-                </svg>
-                Add To Queue
-              </button>
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M5 3v18l15-9L5 3z" />
+                  </svg>
+                  Play All
+                </button>
+                <button className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center">
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M4 3h14v2H4V3zm0 7h10v2H4v-2zm0 7h14v2H4v-2z" />
+                  </svg>
+                  Add To Queue
+                </button>
               </div>
               <div className="ml-0 md:ml-auto relative mt-4 md:mt-0">
-            <button
+                {/* <button
               onClick={handelMenu}
               className="text-gray-400 hover:text-gray-200"
             >
@@ -196,47 +203,45 @@ const AlbumInfo = () => {
                 <circle cx="12" cy="5" r="2" />
                 <circle cx="12" cy="19" r="2" />
               </svg>
-            </button>
+            </button> */}
 
-            {menu && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg py-2">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                >
-                  Add To Favourites
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                >
-                  Add To Queue
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                >
-                  Download Now
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                >
-                  Add To Playlist
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                >
-                  Share
-                </a>
+                {menu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg py-2">
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    >
+                      Add To Favourites
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    >
+                      Add To Queue
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    >
+                      Download Now
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    >
+                      Add To Playlist
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    >
+                      Share
+                    </a>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
             </div>
           </div>
-
-
         </div>
 
         <div className="mt-20">
@@ -254,9 +259,7 @@ const AlbumInfo = () => {
       <div className="mt-10">
         <AlbumCard
           heading={"You May Also Like"}
-          link={
-            `${apiUrl}api/v1/albums/featureAlbums`
-          }
+          link={`${apiUrl}api/v1/albums/featureAlbums`}
         />
       </div>
       <div className="mt-5">
