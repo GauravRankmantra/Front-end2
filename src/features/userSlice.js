@@ -2,9 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Check if there's a user saved in localStorage
 
-const savedUser = localStorage.getItem("user")
-  ? JSON.parse(localStorage.getItem("user"))
-  : null;
+let savedUser = null;
+try {
+  const raw = localStorage.getItem("user");
+  savedUser = raw ? JSON.parse(raw) : null;
+} catch (e) {
+  localStorage.removeItem("user"); // Clean corrupted entry
+  savedUser = null;
+}
 
 const userSlice = createSlice({
   name: "user",

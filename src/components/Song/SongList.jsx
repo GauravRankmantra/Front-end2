@@ -150,7 +150,7 @@ const SongList = ({ songs, artist }) => {
               <td className="p-4">{artist}</td>
               <td className="p-4">{song.duration}</td>
               <td className="p-4 cursor-pointer">
-                {user.likedSongs.includes(song._id) ? (
+                {user?.likedSongs?.includes(song._id) ? (
                   <FaHeart className="w-5 h-5 hover:text-gray-500 text-red-500 transition-colors duration-300" />
                 ) : (
                   <div>

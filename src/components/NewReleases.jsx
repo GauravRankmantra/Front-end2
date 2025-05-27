@@ -71,10 +71,10 @@ const NewReleases = () => {
             <div
               key={index}
               onClick={() => handleSongClick(track)}
-              className="group min-w-[300px]  z-50 flex items-center space-x-4 relative px-5 py-3 bg-gray-800 rounded-lg hover:cursor-pointer transition duration-300 ease-in-out"
+              className="group min-w-[300px]  z-30 flex items-center space-x-4 relative px-5 py-3 bg-gray-800 rounded-lg hover:cursor-pointer transition duration-300 ease-in-out"
             >
               {/* Cover Image */}
-              <div className="w-20 h-14 z-40 flex-shrink-0 rounded bg-gray-900 overflow-hidden">
+              <div className="w-20 h-14 z-20 flex-shrink-0 rounded bg-gray-900 overflow-hidden">
                 <img
                   src={track.coverImage}
                   alt={track.title}
@@ -83,7 +83,7 @@ const NewReleases = () => {
               </div>
 
               {/* Song Info */}
-              <div className="flex flex-col z-40 justify-center">
+              <div className="flex flex-col z-20 justify-center">
                 <h3 className="text-sm font-semibold text-white hover:text-cyan-500 truncate">
                   {track.title}
                 </h3>

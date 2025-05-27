@@ -14,6 +14,12 @@ import {
 } from "react-icons/fa";
 import { FaCircleCheck, FaUser } from "react-icons/fa6";
 import { TbFaceIdError } from "react-icons/tb";
+import {
+  addSongToQueue,
+  setIsPlaying,
+  addSongToHistory,
+  addSongToQueueWithAuth,
+} from "../../features/musicSlice";
 
 import {
   PieChart,
@@ -29,6 +35,7 @@ import {
 import toast from "react-hot-toast";
 import Loading from "../Loading";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -38,9 +45,22 @@ const Dashboard = () => {
   const [likedSongs, setLikedSongs] = useState(null);
   const [purchasedSongs, setPurchasedSongs] = useState([]);
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleSongClick = (song) => {
+    dispatch(addSongToHistory(song));
+    dispatch(addSongToQueueWithAuth(song));
+
+    dispatch(setIsPlaying(true));
+    if (!isAuthenticated) {
+      dispatch(setloginPopupSong(song));
+      dispatch(setShowLoginPopup(true));
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -196,7 +216,8 @@ const Dashboard = () => {
                   {info.allTimeSong?.map((data, index) => (
                     <li
                       key={index}
-                      className="flex justify-between border-b border-gray-700 items-center"
+                      className="flex cursor-pointer justify-between border-b border-gray-700 items-center"
+                      onClick={() => handleSongClick(data)}
                     >
                       <div className="flex items-center justify-start space-x-2">
                         <img
@@ -259,7 +280,8 @@ const Dashboard = () => {
                   {likedSongs?.map((data, index) => (
                     <li
                       key={index}
-                      className="flex justify-between border-b border-gray-700 items-center"
+                      onClick={() => handleSongClick(data)}
+                      className="flex cursor-pointer justify-between border-b border-gray-700 items-center"
                     >
                       <div className="flex items-center justify-start space-x-2">
                         <img
@@ -267,9 +289,42 @@ const Dashboard = () => {
                           src={data.coverImage}
                           alt={data.title}
                         />
-                        <h1 className="font-josefin-m text-sm sm:text-base">
-                          {data.title}
-                        </h1>
+                        <div>
+                          <h1 className="font-josefin-m text-sm sm:text-base">
+                            {data.title}
+                          </h1>
+                          <p className="text-sm font-josefin-r whitespace-nowrap">
+                            {Array.isArray(data.artist) ? (
+                              data.artist.map((artistObj, index) => (
+                                <span
+                                  key={index}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    navigate(`/artist/${artistObj._id}`);
+                                  }} // Example click handler
+                                  className="cursor-pointer text-gray-400 hover:underline"
+                                >
+                                  {artistObj.fullName}
+                                  {index !== data.artist.length - 1 && ", "}
+                                </span>
+                              ))
+                            ) : (
+                              <span
+                                className="cursor-pointer text-gray-400 hover:underline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+
+                                  navigate(`/artist/${data.artist._id}`);
+                                }}
+                              >
+                                {data.artist?.fullName ||
+                                  data.artist ||
+                                  "Unaknown Artist"}
+                              </span>
+                            )}
+                          </p>
+                        </div>
                       </div>
                       <p className="font-josefin-m text-sm">{data.duration}</p>
                     </li>
@@ -325,8 +380,9 @@ const Dashboard = () => {
                 <ul className=" space-y-4 ">
                   {purchasedSongs?.map((data, index) => (
                     <li
+                      onClick={() => handleSongClick(data)}
                       key={index}
-                      className="flex justify-between border-b border-gray-700 items-center"
+                      className="flex cursor-pointer justify-between border-b border-gray-700 items-center"
                     >
                       <div className="flex items-center justify-start space-x-2">
                         <img
@@ -334,19 +390,50 @@ const Dashboard = () => {
                           src={data.coverImage}
                           alt={data.title}
                         />
-                        <h1 className="font-josefin-m text-sm sm:text-base">
-                          {data.title}
-                        </h1>
+                        <div>
+                          <h1 className="font-josefin-m text-sm sm:text-base">
+                            {data.title}
+                          </h1>
+                          <p className="text-sm font-josefin-r whitespace-nowrap">
+                            {Array.isArray(data.artist) ? (
+                              data.artist.map((artistObj, index) => (
+                                <span
+                                  key={index}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    navigate(`/artist/${artistObj._id}`);
+                                  }} // Example click handler
+                                  className="cursor-pointer text-gray-400 hover:underline"
+                                >
+                                  {artistObj.fullName}
+                                  {index !== data.artist.length - 1 && ", "}
+                                </span>
+                              ))
+                            ) : (
+                              <span
+                                className="cursor-pointer text-gray-400 hover:underline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+
+                                  navigate(`/artist/${data.artist._id}`);
+                                }}
+                              >
+                                {data.artist?.fullName ||
+                                  data.artist ||
+                                  "Unaknown Artist"}
+                              </span>
+                            )}
+                          </p>
+                        </div>
                       </div>
-                      <p className="font-josefin-m text-sm">
-                        {data.duration}
-                      </p>
+                      <p className="font-josefin-m text-sm">{data.duration}</p>
                     </li>
                   ))}
                 </ul>
               )}
 
-              <button className="my-5 border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 p-2 rounded-2xl">
+              <button className="my-5 font-josefin-m border border-cyan-700 text-cyan-500 hover:bg-cyan-500 hover:text-white hover:border-cyan-500 p-2 rounded-2xl">
                 <span>Explore & Purchase Songs</span>
               </button>
             </div>

@@ -11,7 +11,7 @@ const LoginCard = ({ song, onClose }) => {
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 font-josefin-r z-50 flex items-center justify-center bg-black/30 backdrop-blur-md animate-fadeIn">
       <div className="bg-gradient-to-br from-gray-100 to-white rounded-xl shadow-xl max-w-md w-full mx-4 overflow-hidden animate-slideInUp">
         {/* Header */}
         <div className="flex justify-between items-center bg-gray-50 py-3 px-4 border-b border-gray-200">
@@ -93,15 +93,16 @@ const LoginCard = ({ song, onClose }) => {
           </div>
 
           {/* Login Button */}
-          <button
+          <a
             // onClick={() => {
             //   navigate("/login");
             //   onClose();
             // }}
+            href="/login"
             className="w-full bg-cyan-500 text-white py-3 px-6 rounded-full hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-1"
           >
             <FaPlay className="inline mr-2" /> Login to Listen Now
-          </button>
+          </a>
         </div>
       </div>
     </div>
