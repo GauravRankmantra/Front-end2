@@ -55,6 +55,7 @@ import LoginCard from "./components/LoginCard";
 import { setShowLoginPopup } from "./features/uiSlice";
 import VideoStore from "./components/VideoStore";
 import OdgRadio from "./components/OdgRadio";
+import Playlist from "./components/Profile/Playlist";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -116,6 +117,10 @@ const App = () => {
             <Route
               path="/dashboard"
               element={user ? <Dashboard /> : <Navigate to="/login" />}
+            />
+                        <Route
+              path="/dashboard/playlist"
+              element={user ? <Playlist /> : <Navigate to="/login" />}
             />
             <Route
               path="/profile"

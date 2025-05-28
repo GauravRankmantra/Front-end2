@@ -71,7 +71,7 @@ const NewReleases = () => {
             <div
               key={index}
               onClick={() => handleSongClick(track)}
-              className="group min-w-[300px]  z-30 flex items-center space-x-4 relative px-5 py-3 bg-gray-800 rounded-lg hover:cursor-pointer transition duration-300 ease-in-out"
+              className="group min-w-[300px] overflow-hidden  z-30 flex items-center space-x-4 relative px-5 py-3 bg-gray-800 rounded-lg hover:cursor-pointer transition duration-300 ease-in-out"
             >
               {/* Cover Image */}
               <div className="w-20 h-14 z-20 flex-shrink-0 rounded bg-gray-900 overflow-hidden">
@@ -101,7 +101,7 @@ const NewReleases = () => {
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <PlayIcon className="w-12 h-12 text-white" />
               </div>
-               <div className="absolute rounded-lg inset-0 translate-x-[300px] lg:group-hover:translate-x-[5.7rem] z-0 bg-gradient-to-l from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
+               <div className="absolute rounded-lg inset-0 translate-x-[300px] lg:group-hover:translate-x-[5.9rem] z-0 bg-gradient-to-l from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
             </div>
           ))}
         </div>

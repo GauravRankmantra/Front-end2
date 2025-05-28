@@ -8,7 +8,7 @@ const Albums = () => {
    const { t } = useTranslation();
   return (
     <div className="bg-[#14182A]">
-      <div className="mt-14">
+      <div className="mt-14 space-y-10">
         <AlbumCard
           heading={t("featuredAlbum")}
           link={
@@ -23,6 +23,13 @@ const Albums = () => {
           type={"album"}
         />
         {/* Top 15 Albums */}
+                <AlbumCard
+          heading={'Top 15'}
+          link={
+            `${apiUrl}api/v1/albums/top15`
+          }
+          type={"album"}
+        />
       </div>
     </div>
   );

@@ -1,11 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import SongList from "./Song/SongList";
 import NewReleases from "./NewReleases";
 import AlbumCard from "./Album/AlbumCard";
 const apiUrl = import.meta.env.VITE_API_URL;
+import {
+  addPlaylistToQueue,
+  clearQueue,
+  setIsPlaying,
+  addPlaylistToQueueWithAuth,
+} from "../features/musicSlice";
+import Loading from "./Loading";
 
 const ArtistInfo = () => {
   const { id } = useParams();
@@ -17,15 +24,20 @@ const ArtistInfo = () => {
   const [error, setError] = useState(null);
   const [songs, setSongs] = useState([]);
   const [activePopup, setActivePopup] = useState(null);
+  const [disableBtn, setDisableBtn] = useState(false);
 
-  function formatDuration(seconds) {
-    const totalSeconds = Math.floor(seconds);
-    const minutes = Math.floor(totalSeconds / 60);
-    const remainingSeconds = totalSeconds % 60;
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
-    return `${formattedMinutes}:${formattedSeconds}`;
-  }
+  const dispatch = useDispatch();
+
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return date.toLocaleDateString(undefined, options);
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
+    }
+  };
 
   const handleMenuToggle = () => {
     setMenu(!menu);
@@ -52,16 +64,22 @@ const ArtistInfo = () => {
     fetchArtist();
   }, [id]);
 
+  const handelPlayAll = () => {
+    dispatch(clearQueue());
+
+    dispatch(addPlaylistToQueueWithAuth(songs));
+    dispatch(setIsPlaying(true));
+
+    setDisableBtn(!disableBtn);
+  };
+
   const handleAddToFavourites = async (songId) => {
     try {
-      await axios.post(
-        `${apiUrl}api/v1/favourites`,
-        {
-          userId: currentUserId,
-          artistId: id,
-          songId,
-        }
-      );
+      await axios.post(`${apiUrl}api/v1/favourites`, {
+        userId: currentUserId,
+        artistId: id,
+        songId,
+      });
       alert("Song added to favourites!");
     } catch (error) {
       console.error("Error adding song to favourites", error);
@@ -76,7 +94,7 @@ const ArtistInfo = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <h1 className="text-2xl font-bold">Loading.... </h1>
+        <Loading />
       </div>
     );
   }
@@ -102,7 +120,7 @@ const ArtistInfo = () => {
   return (
     <div className="shadow-2xl rounded-lg">
       <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
-        <div className="flex flex-col md:flex-row items-center">
+        <div className="flex   flex-col   rounded-md py-2 shadow-2xl md:flex-row items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
             <img
               src={
@@ -113,16 +131,36 @@ const ArtistInfo = () => {
             />
           </div>
 
-          <div className="ml-0 md:ml-8 w-full md:w-auto">
+          <div className="ml-0 md:ml-8 w-full space-y-2 font-josefin-r md:w-auto">
             <h2 className="text-3xl md:text-4xl font-bold">
               {artist.fullName}
             </h2>
             <p className="text-gray-400">
               {artist.bio ? artist.bio : "No biography available."}
             </p>
+            <p className="text-gray-400">Total Songs : {songs.length}</p>
+            <p className="text-gray-400">
+              Join On : {formatDate(artist.createdAt)}
+            </p>
+            <div className="flex mt-5">
+              <button
+                disabled={disableBtn}
+                onClick={handelPlayAll}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-full flex items-center"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 3v18l15-9L5 3z" />
+                </svg>
+                Play All
+              </button>
+            </div>
           </div>
 
-          <div className="ml-0 md:ml-auto relative mt-4 md:mt-0">
+          {/* <div className="ml-0 md:ml-auto relative mt-4 md:mt-0">
             <button
               onClick={handleMenuToggle}
               className="text-gray-400 hover:text-gray-200"
@@ -168,7 +206,7 @@ const ArtistInfo = () => {
                 </a>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-20">
@@ -182,9 +220,7 @@ const ArtistInfo = () => {
       <div className="mt-10">
         <AlbumCard
           heading={"You May Also Like"}
-          link={
-            `${apiUrl}api/v1/albums/featureAlbums`
-          }
+          link={`${apiUrl}api/v1/albums/featureAlbums`}
         />
       </div>
 

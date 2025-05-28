@@ -63,7 +63,7 @@ const PlayListContainer = ({ playlist: initialPlaylist }) => {
   };
 
   return (
-    <div className="relative mx-2 sm:mx-10 lg:mx-10">
+    <div className="relative font-josefin-r mx-2 sm:mx-10 lg:mx-10">
       <div className="w-full mb-6 flex justify-between items-center">
         <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
         {t("yourPlaylist")}

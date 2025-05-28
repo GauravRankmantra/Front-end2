@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import addLike from "../../utils/addLike";
 
-const SongList = ({ songs, artist }) => {
+const SongList = ({ songs, artist, type }) => {
   const [hoveredSongIndex, setHoveredSongIndex] = useState(null);
   const [playing, setPlayingSong] = useState(null);
   const [playlistLoading, setPlaylistLoading] = useState(false);
@@ -102,7 +102,8 @@ const SongList = ({ songs, artist }) => {
             <th className="p-4">Artist</th>
             <th className="p-4">Duration</th>
             <th className="p-4">Add To Fav.</th>
-            <th className="p-4">Buy</th>
+            {type != "download" && <th className="p-4">Buy</th>}
+
             <th className="p-4">More</th>
           </tr>
         </thead>
@@ -147,7 +148,33 @@ const SongList = ({ songs, artist }) => {
                 </div>
               </td>
               <td className="p-4">{song.title}</td>
-              <td className="p-4">{artist}</td>
+              {type == "download" ? (
+                <td className="whitespace-nowrap">
+                  {Array.isArray(song.artist) ? (
+                    song.artist.map((artistObj, index) => (
+                      <span
+                        key={index}
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          navigate(`/artist/${artistObj._id}`);
+                        }}
+                        className="cursor-pointer hover:underline"
+                      >
+                        {artistObj.fullName}
+                        {index !== song.artist.length - 1 && ", "}
+                      </span>
+                    ))
+                  ) : (
+                    <span>
+                      {song.artist?.fullName || song.artist || "Unknown Artist"}
+                    </span>
+                  )}
+                </td>
+              ) : (
+                <td className="p-4">{artist}</td>
+              )}
+
               <td className="p-4">{song.duration}</td>
               <td className="p-4 cursor-pointer">
                 {user?.likedSongs?.includes(song._id) ? (
@@ -161,14 +188,17 @@ const SongList = ({ songs, artist }) => {
                   </div>
                 )}
               </td>
-              <td>
-                <button
-                  onClick={() => handelBuyNowClick(song)}
-                  className="px-2 py-1 rounded-lg bg-cyan-500 text-white "
-                >
-                  Buy Now
-                </button>
-              </td>
+              {type != "download" && (
+                <td>
+                  <button
+                    onClick={() => handelBuyNowClick(song)}
+                    className="px-2 py-1 rounded-lg bg-cyan-500 text-white "
+                  >
+                    Buy Now
+                  </button>
+                </td>
+              )}
+
               <td className="p-4">
                 <div className="ml-4 flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
                   {playing && playing._id === song._id && (

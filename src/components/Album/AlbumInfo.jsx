@@ -162,9 +162,11 @@ const AlbumInfo = () => {
             <p className="text-gray-400">
               {album.totalSongs} songs || {toMMSS(album.totalDuration)}
             </p>
+
             <p className="text-gray-400">
               Released {formatDate(album.releaseDate)} | {album.company}
             </p>
+            
 
             <div className="mt-4 flex justify-center  items-center  flex-row gap-4">
               <div className="flex space-x-2">

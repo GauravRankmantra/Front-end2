@@ -43,6 +43,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import MusicSidebar from "./MusicSidebar";
 import { Download, Repeat, ShoppingCart } from "lucide-react";
+import { MdKeyboardDoubleArrowDown } from "react-icons/md";
 
 const formatDuration = (time) => {
   const minutes = Math.floor(time / 60);
@@ -65,6 +66,7 @@ const MusicPlayer = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showsetting, setShowSetting] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [collaps, setCollaps] = useState(false);
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
@@ -305,8 +307,8 @@ const MusicPlayer = () => {
       onClick={() => {
         if (isMobile) setIsExpanded(true);
       }}
-      className={`fixed  font-josefin-r bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ease-in-out ${
-        isExpanded ? "h-max pb-5  " : " pb-0 h-[4.5rem]  "
+      className={`fixed  font-josefin-r  bottom-0 left-0 w-full z-50 text-white text-center transition-all duration-300 ease-in-out ${
+        isExpanded ? `h-max pb-5  ` : ` pb-0 ${collaps ? `h-0` : `h-[4.5rem]`}`
       }`}
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${currentSong.coverImage})`,
@@ -314,16 +316,25 @@ const MusicPlayer = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className={`${isExpanded ? `hidden` : `hidden md:flex`} w-full `}>
+      <div
+        className={`${isExpanded ? `hidden` : `hidden md:flex`} w-full ${
+          collaps && `md:hidden`
+        }  `}
+      >
         <MusicSidebar song={currentSong} />
       </div>
       <div
-        className={`relative   flex  h-[100%]  w-full items-center ${
+        className={`relative   flex ${
+          collaps ? `` : `h-[100%]`
+        }   w-full items-center ${
           isExpanded
             ? "flex-col  pl-5 pr-5 md:pr-16"
             : "flex-row pl-0 pr-0 md:pr-16"
         }`}
       >
+        <div className={` hidden lg:flex absolute ${collaps?`-top-8`:`-top-4`}  right-2`}>
+          <MdKeyboardDoubleArrowDown  className={`w-8 cursor-pointer h-8 text-cyan-500 ${collaps?`rotate-180`:`rotate-0`} transition-all duration-500 ease-in-out`} onClick={() => setCollaps(!collaps)} />
+        </div>
         {/* mobile main */}
         <div
           className={` ${
@@ -536,7 +547,9 @@ const MusicPlayer = () => {
                 setAnimate(false);
               }, 800);
             }}
-            className={`${animate && `animate-spin duration-700 repeat-1`} cursor-pointer rounded-full p-1 border `}
+            className={`${
+              animate && `animate-spin duration-700 repeat-1`
+            } cursor-pointer rounded-full p-1 border `}
           >
             <IoShuffleOutline className="w-5 h-5" />
           </div>
@@ -619,7 +632,7 @@ const MusicPlayer = () => {
               setIsPlaylistOpen(false);
             }}
           >
-            <VscClose className="w-6 h-6" />
+            <MdKeyboardDoubleArrowDown className="w-6 h-6 -rotate-90" />
           </button>
         </div>
 
