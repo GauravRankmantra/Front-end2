@@ -86,7 +86,7 @@ const WeeklyTop15 = ({ link, heading }) => {
 
   return (
     <>
-      <div className="bg-gray-900 text-gray-300 mx-2 sm:px-10 lg:px-10 ">
+      <div className="bg-gray-900 text-gray-300 sm:px-10 lg:px-10 ">
         <div className="container mx-auto">
           {/* Heading Section */}
           <div className="w-full mb-6">

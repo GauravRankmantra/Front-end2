@@ -6,16 +6,18 @@ import { addSongToQueue, setIsPlaying } from "../features/musicSlice";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const PurchasedTracks = () => {
-     const { t } = useTranslation();
+  const { t } = useTranslation();
   const user = useSelector((state) => state.user.user);
   const [songs, setSongs] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [hoveredSongIndex, setHoveredSongIndex] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleMouseEnter = (index) => setHoveredSongIndex(index);
   const handleMouseLeave = () => setHoveredSongIndex(null);
@@ -29,7 +31,6 @@ const PurchasedTracks = () => {
   };
 
   const handleDownload = async (song) => {
-
     const songId = song._id;
     let artistIds = [];
 
@@ -103,7 +104,7 @@ const PurchasedTracks = () => {
             "You don't have any purchased songs to download. Please purchase a song first."
           );
         } else {
-          setSongs(res.data.purchasedSongs);
+          setSongs(res.data.songs);
         }
       } catch (error) {
         if (
@@ -140,11 +141,11 @@ const PurchasedTracks = () => {
                 <th className="p-4">{t("artist")}</th>
                 <th className="p-4">{t("duration")}</th>
                 <th className="p-4">{t("downloads")}</th>
-                <th className="p-4">{t("more")}</th>
+                {/* <th className="p-4">{t("more")}</th> */}
               </tr>
             </thead>
             <tbody>
-              {songs.map((song, index) => (
+              {songs?.map((song, index) => (
                 <tr
                   key={index}
                   className={`border-b border-gray-700 hover:bg-gray-800 transition-colors duration-300 ${
@@ -169,17 +170,50 @@ const PurchasedTracks = () => {
                     </div>
                   </td>
                   <td className="p-4">{song.title}</td>
-                  <td className="p-4">{song.artist.fullName}</td>
-                  <td className="p-4">{formatDuration(song.duration)}</td>
+                  <td className="p-4">
+                    {" "}
+                    <p className="text-sm font-josefin-r whitespace-nowrap">
+                      {Array.isArray(song.artist) ? (
+                        song.artist.map((artistObj, index) => (
+                          <span
+                            key={index}
+                            onClick={(e) => {
+                              e.stopPropagation();
+
+                              navigate(`/artist/${artistObj._id}`);
+                            }} // Example click handler
+                            className="cursor-pointer text-gray-400 hover:underline"
+                          >
+                            {artistObj.fullName}
+                            {index !== song.artist?.length - 1 && ", "}
+                          </span>
+                        ))
+                      ) : (
+                        <span
+                          className="cursor-pointer text-gray-400 hover:underline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            navigate(`/artist/${song.artist?._id}`);
+                          }}
+                        >
+                          {song.artist?.fullName ||
+                            song.artist ||
+                            "Unaknown Artist"}
+                        </span>
+                      )}
+                    </p>
+                  </td>
+                  <td className="p-4">{song.duration}</td>
                   <td className="p-4">
                     <Download
                       onClick={() => handleDownload(song)}
                       className="w-5 h-5 hover:text-cyan-500 cursor-pointer transition-colors duration-300"
                     />
                   </td>
-                  <td className="p-4">
+                  {/* <td className="p-4">
                     <MoreHorizontal className="w-5 h-5 hover:text-cyan-500 cursor-pointer transition-colors duration-300" />
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
