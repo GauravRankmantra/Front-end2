@@ -49,7 +49,7 @@ const MusicSidebar =React.memo( ({ song, show }) => {
     // Open the Share Modal
     openShareModal({ shareUrl, socialMediaLinks });
   };
-  console.log("song info at music sidebar ", song);
+
   const openShareModal = ({ shareUrl, socialMediaLinks }) => {
     setShareData({ shareUrl, socialMediaLinks });
     setModalOpen(true);
@@ -163,7 +163,7 @@ const MusicSidebar =React.memo( ({ song, show }) => {
     const songId = song._id;
     let artistIds = [];
 
-    console.log("songs at bottom ",song)
+
     if (typeof song.artist === "string") {
       artistIds.push(song.artist._id);
     } else if (Array.isArray(song.artist)) {
@@ -258,7 +258,7 @@ const MusicSidebar =React.memo( ({ song, show }) => {
                     onClick={() => {
                       if (artistObj.fullName !== "Unknown Artist") {
                         navigate(`/artist/${artistObj._id}`);
-                        console.log(artistObj.fullName, " ", artistObj._id);
+                 
                       }
                     }}
                     className="cursor-pointer hover:underline"

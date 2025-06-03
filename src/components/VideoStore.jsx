@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import VideoGallery from "./VideoGallery";
-import VideoModal from "./VideoModal";
+
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -23,13 +23,13 @@ const VideoStore = () => {
         if (Array.isArray(data)) {
           setVideos(data);
         } else if (data && typeof data === "object") {
-          // If it's a single video object (from old API), wrap it in an array
+        
           setVideos([data]);
           console.warn(
             "API returned a single video object where an array was expected. Wrapping in array."
           );
         } else {
-          // If data is null, undefined, or empty, set to empty array
+        
           setVideos([]);
         }
       } catch (error) {
@@ -42,11 +42,7 @@ const VideoStore = () => {
     <div className="mt-10">
       <VideoGallery videos={videos} />
 
-      {/* Video Modal */}
-      <VideoModal
-        video={selectedVideo}
-        onClose={() => setSelectedVideo(null)}
-      />
+
     </div>
   );
 };

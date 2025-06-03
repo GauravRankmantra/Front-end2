@@ -98,7 +98,7 @@ const Dashboard = () => {
         });
 
         setPurchasedSongs(res.data.songs);
-        console.log(purchasedSongs);
+      
       } catch (error) {
         if (
           error.response &&

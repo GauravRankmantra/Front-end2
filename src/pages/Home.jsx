@@ -6,8 +6,7 @@ import WeeklyTop15 from "../components/WeeklyTop15";
 import img728 from "../assets/img/home2bg.svg";
 import NewReleases from "../components/NewReleases";
 import TopGenres from "../components/TopGenres";
-import { FaEye } from "react-icons/fa";
-import VideoModal from "../components/VideoModal";
+
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -200,10 +199,10 @@ const Home = () => {
         <VideoGallery videos={videos} />
 
         {/* Video Modal */}
-        <VideoModal
+        {/* <VideoModal
           video={selectedVideo}
           onClose={() => setSelectedVideo(null)}
-        />
+        /> */}
       </div>
     </>
   );

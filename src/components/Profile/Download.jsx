@@ -123,7 +123,7 @@ const Download = () => {
           const allTopSongs = topSongsResponse.data.data;
           let filteredTopSongs = allTopSongs;
 
-          console.log("filter", filteredTopSongs);
+   
 
           // Filter out purchased songs from top songs
           if (purchasedSongsData?.length > 0) {

@@ -166,10 +166,10 @@ const Purchase = () => {
   const handelBuy = () => {
     if (songInfo?.artist[0]?.admin) {
       handleBuyNow2();
-      console.log("handleBuy now admin called");
+   
     } else {
       handleBuyNow();
-      console.log("handleBuy now artist called");
+   
     }
   };
 

@@ -99,7 +99,6 @@ const MusicPlayer = () => {
     const songId = currentSong._id;
     let artistIds = [];
 
-    console.log("songs at bottom ", currentSong);
     if (typeof currentSong.artist === "string") {
       artistIds.push(currentSong.artist._id);
     } else if (Array.isArray(currentSong.artist)) {
@@ -332,8 +331,18 @@ const MusicPlayer = () => {
             : "flex-row pl-0 pr-0 md:pr-16"
         }`}
       >
-        <div className={` hidden lg:flex absolute ${collaps?`-top-8`:`-top-4`}  right-2`}>
-          <MdKeyboardDoubleArrowDown  className={`w-8 cursor-pointer h-8 text-cyan-500 ${collaps?`rotate-180`:`rotate-0`} transition-all duration-500 ease-in-out`} onClick={() => setCollaps(!collaps)} />
+        <div
+          className={` flex absolute ${collaps ? `-top-8` : `-top-4`}  right-2`}
+        >
+          <MdKeyboardDoubleArrowDown
+            className={`w-8 ${isExpanded ?`hidden`:`flex`} cursor-pointer h-8 text-cyan-500 ${
+              collaps ? `rotate-180` : `rotate-0`
+            } transition-all duration-500 ease-in-out`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCollaps(!collaps);
+            }}
+          />
         </div>
         {/* mobile main */}
         <div
@@ -387,7 +396,7 @@ const MusicPlayer = () => {
                   }}
                   className=" p-1  "
                 >
-                  <TbCloudDownload className="w-7 h-7  text-cyan-500" />
+                  <TbCloudDownload className="w-7 h-7  text-cyan-600" />
                 </button>
               ) : (
                 <button

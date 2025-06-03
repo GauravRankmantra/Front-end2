@@ -6,7 +6,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 // addLike now accepts dispatch as an argument
 const addLike = async ({ songId, albumId, dispatch }) => {
-  console.log("songid at handel add to fav ", songId);
+
 
   try {
     const requestBody = {};
@@ -18,7 +18,7 @@ const addLike = async ({ songId, albumId, dispatch }) => {
       throw new Error("Either songId or albumId must be provided");
     }
 
-    console.log("requestBody", requestBody);
+
 
     const res = await axios.post(`${apiUrl}api/v1/like`, requestBody, {
       withCredentials: true,

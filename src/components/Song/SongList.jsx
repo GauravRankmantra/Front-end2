@@ -37,7 +37,7 @@ const SongList = ({ songs, artist, type }) => {
   };
 
   const handleAddToFav = ({ songId }) => {
-    console.log("songid at handel add to fav ", songId);
+ 
     addLike({ songId, dispatch })
       .then((response) => {
         // Handle the successful response

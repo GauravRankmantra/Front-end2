@@ -23,7 +23,7 @@ const Recently = ({ heading, link, type }) => {
         const data = await response.json();
         if (data && data.data) {
           setalbums(data.data);
-          console.log(data.data);
+      
         } else {
           setError("No albums available");
         }

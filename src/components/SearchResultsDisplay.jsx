@@ -19,7 +19,7 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
   const dispatch = useDispatch(); // Corrected: Call useDispatch as a function
   const user = useSelector((state) => state.user.user);
   const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
-  console.log("initial login pop ", showLoginPopup);
+
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const closeLoginPopup = () => {
@@ -54,9 +54,6 @@ const SearchResultsDisplay = ({ results, setInputValue }) => {
     navigate(`/purchased?id=${encodeURIComponent(song._id)}`);
   };
 
-  useEffect(() => {
-    console.log("showLoginPopup:", showLoginPopup);
-  }, [showLoginPopup]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

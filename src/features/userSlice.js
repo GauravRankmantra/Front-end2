@@ -30,8 +30,7 @@ const userSlice = createSlice({
       if (!state.user) return;
 
       const updates = action.payload;
-      console.log("updates", updates);
-      // ✅ Merge song IDs intelligently
+
       if (updates.purchasedSongs) {
         const existing = state.user.purchasedSongs || [];
         const newSongs = Array.isArray(updates.purchasedSongs)

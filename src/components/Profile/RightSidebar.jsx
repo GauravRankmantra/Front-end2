@@ -8,12 +8,14 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const RightSidebar = () => {
   const [webUpdates, setWebUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const websiteUpdates = [
     {
       text: "Admin has added a new Album",
@@ -47,19 +49,19 @@ const RightSidebar = () => {
     {
       text: "Donate now",
       icon: <FaDollarSign />,
-      onClick: () => console.log("Donate clicked"),
+      onClick: () => navigate("/dashboard/donats"),
     },
     {
       text: "Access the radio",
       icon: <FaHeadphonesAlt />,
-      onClick: () => console.log("Radio clicked"),
+      onClick: () => console.log("Sponsor clicked"),
     },
     {
       text: "Become a sponsor",
       icon: <FaUser />,
-      onClick: () => console.log("Sponsor clicked"),
-    },
 
+      onClick: () => navigate("/dashboard/sponsor"),
+    },
   ];
 
   const fetchWebUpdates = useCallback(async () => {
@@ -90,8 +92,6 @@ const RightSidebar = () => {
   }, [fetchWebUpdates]);
 
   return (
-
-    
     <div className=" h-screen flex flex-col mt-2 bg-[#141834] font-josefin-m text-white z-10 shadow-lg py-4 px-2 space-y-6 overflow-y-auto">
       {/* Website Updates Section */}
       <div className="mb-4 h-[80%] overflow-scroll no-scrollbar ">

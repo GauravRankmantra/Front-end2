@@ -176,7 +176,7 @@ const Recently = ({ heading, link, showGrid }) => {
                           )}
                         </div>
                         {song.price > 0 && (
-                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full  px-4 py-1 rounded-full flex items-center justify-center gap-2 text-white text-sm font-medium shadow-lg transition-all z-40">
+                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full  px-4 py-1 rounded-full flex items-center justify-center gap-2 text-white text-sm font-medium shadow-lg transition-all z-50">
                             {user?.purchasedSongs?.includes(song._id) ? (
                               <div className="bg-green-600 px-3 py-1 rounded-full flex items-center gap-2">
                                 <svg
@@ -198,7 +198,7 @@ const Recently = ({ heading, link, showGrid }) => {
                             ) : (
                               <button
                                 onClick={() => handelBuyNowClick(song)}
-                                className="bg-cyan-500 shadow-lg hover:bg-cyan-600 px-3 py-1 rounded-full flex items-center gap-2 transition-colors"
+                                className="bg-cyan-500 cursor-pointer shadow-lg hover:bg-cyan-600 px-3 py-1 rounded-full flex items-center gap-2 transition-colors z-50"
                               >
                                 <img
                                   src={cart}

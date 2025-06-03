@@ -37,11 +37,9 @@ const Footer = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(`${apiUrl}api/v1/contact`, {
+      const response = await axios.post(`${apiUrl}api/v1/subscribe`, {
         name,
-        email,
-        phone: "1", // Optional for this form
-        message: "Subscribed for newsletter",
+        email
       });
 
       if (response.status === 201) {
@@ -49,7 +47,8 @@ const Footer = () => {
         setName("");
         setEmail("");
       } else {
-        toast.error("Failed to send message. Please try again.");
+        toast.error(response.data?.message);
+
       }
     } catch (error) {
       console.error("Error submitting form:", error);

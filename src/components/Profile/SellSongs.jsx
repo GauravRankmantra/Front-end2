@@ -688,7 +688,7 @@ const SellSongs = () => {
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="album"
                   className="block text-sm font-medium text-gray-700 mb-1"
@@ -725,7 +725,7 @@ const SellSongs = () => {
                     ))}
                   </select>
                 )}
-              </div>
+              </div> */}
 
               {/* Audio Low */}
               <div>

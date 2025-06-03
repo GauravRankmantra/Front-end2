@@ -56,13 +56,15 @@ import { setShowLoginPopup } from "./features/uiSlice";
 import VideoStore from "./components/VideoStore";
 import OdgRadio from "./components/OdgRadio";
 import Playlist from "./components/Profile/Playlist";
+import DonateUs from "./components/DonateUs";
+import BecomeSponsor from "./components/BecomeSponsor";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
   const showLoginPopup = useSelector((state) => state.ui.showLoginPopup);
   const loginPopupSong = useSelector((state) => state.ui.loginPopupSong);
 
-  console.log("user from app", user);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
@@ -112,16 +114,19 @@ const App = () => {
             <Route path="/featured-playlist" element={<FeaturedPlaylist />} />
             <Route path="/downloads" element={<Download />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/dashboard/donats" element={<DonateUs />} />
+            <Route path="/dashboard/sponsor" element={<BecomeSponsor />} />
           </Route>
           <Route element={<LayoutProfile />}>
             <Route
               path="/dashboard"
               element={user ? <Dashboard /> : <Navigate to="/login" />}
             />
-                        <Route
+            <Route
               path="/dashboard/playlist"
               element={user ? <Playlist /> : <Navigate to="/login" />}
             />
+
             <Route
               path="/profile"
               element={user ? <Profile /> : <Navigate to="/login" />}

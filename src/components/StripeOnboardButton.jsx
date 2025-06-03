@@ -26,7 +26,7 @@ const StripeOnboardButton = ({ user }) => {
       });
 
       const data = await response.json();
-      console.log("Dataaaa",data)
+      
 
       if (!response.ok) {
         throw new Error(data.error || 'Something went wrong');

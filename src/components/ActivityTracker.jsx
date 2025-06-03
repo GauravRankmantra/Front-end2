@@ -7,7 +7,7 @@ const ActivityTracker = ({ userId }) => {
   useEffect(() => {
     if (!userId) return;
 
-    console.log("ActivityTracker mounted for user:", userId);
+   
 
     let startTime = Date.now();
 
@@ -21,7 +21,7 @@ const ActivityTracker = ({ userId }) => {
           userId,
           minutesSpent,
         });
-        console.log("Activity sent:", { userId, minutesSpent });
+     
         startTime = Date.now(); // reset
       } catch (err) {
         console.error("Activity log failed", err);

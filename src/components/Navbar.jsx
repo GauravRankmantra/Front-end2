@@ -184,7 +184,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed font-josefin-sb   bg-[#1b2039] py-5 px-8 right-0 lg:left-14 top-0 z-50">
+      <div className="fixed font-josefin-sb   bg-[#1b2039] py-5 px-8 right-0 lg:left-16 top-0 z-[999]">
         <div className="flex justify-between   items-center">
           <div className="flex   items-center space-x-12 w-full lg:w-auto">
             {/* Search Box */}
@@ -232,6 +232,11 @@ const Navbar = () => {
             <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
               <NavLink to="/odg-radio" activeClassName="active">
                 ODG Radio
+              </NavLink>
+            </li>
+            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
+              <NavLink to="/dashboard/donats" activeClassName="active">
+                Donation
               </NavLink>
             </li>
           </ul>

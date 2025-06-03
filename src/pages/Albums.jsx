@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 const Albums = () => {
    const { t } = useTranslation();
   return (
-    <div className="bg-[#14182A]">
+    <div className="bg-[#14182A] ">
       <div className="mt-14 space-y-10">
         <AlbumCard
           heading={t("featuredAlbum")}

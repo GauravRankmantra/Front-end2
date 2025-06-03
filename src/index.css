@@ -190,14 +190,12 @@
 }
 
 .active {
-  font-weight: bold;
-  border-radius: 0.25rem;
-  background-color: #06b6d4 ;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding: 0.25rem;
- 
   text-decoration: underline;
+  text-decoration-color: #06b6d4; 
+  text-decoration-thickness: 1px;
+  text-decoration-style:double;
+  text-underline-offset: 4px;
+  
 }
 @layer base {
   * {
