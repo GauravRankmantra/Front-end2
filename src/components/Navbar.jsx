@@ -46,20 +46,21 @@ const Navbar = () => {
   const [lanOpen, setLanOpen] = useState(false);
 
   const languages = [
-    { code: "en", label: "English", icon: "fi-us" },
-    { code: "fr", label: "French", icon: "fi-fr" },
-    { code: "es", label: "Spanish", icon: "fi-es" },
-    { code: "pt", label: "Portuguese", icon: "fi-pt" },
-    { code: "hi", label: "Hindi", icon: "fi-in" },
-    { code: "ru", label: "Russian", icon: "fi-de" },
-    { code: "de", label: "German", icon: "fi-us" },
-    { code: "zh", label: "Chinese", icon: "fi-cn" },
+  { code: "en", label: "English", icon: "fi-us" },
+  { code: "fr", label: "French", icon: "fi-fr" },
+  { code: "es", label: "Spanish", icon: "fi-es" },
+  { code: "pt", label: "Portuguese", icon: "fi-pt" },
+  { code: "hi", label: "Hindi", icon: "fi-in" },
+  { code: "ru", label: "Russian", icon: "fi-ru" },
+  { code: "de", label: "German", icon: "fi-de" },
+  { code: "zh", label: "Chinese", icon: "fi-cn" },
   ];
 
   const { i18n } = useTranslation();
 
   const handleLanguageChange = (lng) => {
     i18n.changeLanguage(lng);
+    setLanOpen(false);
   };
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   useEffect(() => {
@@ -89,6 +90,7 @@ const Navbar = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const languageMenuRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const { query, results, loading, error } = useSelector(
     (state) => state.search
@@ -96,7 +98,9 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Use Redux dispatch
-
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   // Toggles Sidebar
   const toggleSidebar = () => {
     setOpenMenu(!openMenu);
@@ -105,6 +109,9 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setOpenMenu(false);
+      }
+      if (languageMenuRef.current && !languageMenuRef.current.contains(event.target)) {
+        setLanOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -184,11 +191,18 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed font-josefin-sb   bg-[#1b2039] py-5 px-8 right-0 lg:left-16 top-0 z-[999]">
+      <div className="fixed font-josefin-sb bg-[#1b2039] py-3 px-4 left-0 right-0 top-0 z-[999]">
         <div className="flex justify-between   items-center">
-          <div className="flex   items-center space-x-12 w-full lg:w-auto">
+          <div className="flex items-center space-x-0 sm:space-x-4 w-full lg:w-auto">
+            <div className="p-0 flex items-center hidden lg:block">
+              <img
+                src={logo}
+                alt="Logo"
+                className="h-14 w-20 rounded-full shadow-md object-center"
+              />
+            </div>
             {/* Search Box */}
-            <div className=" flex justify-start items-center w-full max-w-full sm:max-w-[300px]">
+            <div className="flex justify-start items-center w-full">
               <input
                 type="text"
                 className="form-control py-2 pl-3 pr-12 text-sm text-[#777] bg-white rounded-[5px] border-none w-full sm:w-[180px] lg:w-full"
@@ -212,30 +226,53 @@ const Navbar = () => {
               </span>
             </div> */}
           </div>
-          <ul className="hidden w-5/12  flex-shrink  lg:flex items-center font-josefin-b justify-center text-white  ">
-            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
-              {" "}
-              <NavLink to="/" activeClassName="active">
+          <ul className="hidden w-5/12 flex-shrink lg:flex items-center font-josefin-b justify-center text-white">
+            <li className="rounded py-0 px-1 w-full text-center">
+              <NavLink
+                to="/"
+                onClick={scrollToTop}
+                activeClassName="active"
+                className="block hover:bg-cyan-500 rounded py-2 px-1 w-full"
+              >
                 Home
               </NavLink>
             </li>
-            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
-              <NavLink to="/top_track" activeClassName="active">
+            <li className="rounded py-0 px-1 w-full text-center">
+              <NavLink
+                to="/top_track"
+                onClick={scrollToTop}
+                activeClassName="active"
+                className="block hover:bg-cyan-500 rounded py-2 px-1 w-full"
+              >
                 Music Store
               </NavLink>
             </li>
-            <li className="hover:bg-cyan-500 rounded py-0 p-1  w-full text-center">
-              <NavLink to="/video-store" activeClassName="active">
+            <li className="rounded py-0 px-1 w-full text-center">
+              <NavLink
+                to="/video-store"
+                onClick={scrollToTop}
+                activeClassName="active"
+                className="block hover:bg-cyan-500 rounded py-2 px-1 w-full"
+              >
                 Video Store
               </NavLink>
             </li>
-            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
-              <NavLink to="/odg-radio" activeClassName="active">
+            <li className="rounded py-0 px-1 w-full text-center">
+              <NavLink
+                to="/odg-radio"
+                onClick={scrollToTop}
+                activeClassName="active"
+                className="block hover:bg-cyan-500 rounded py-2 px-1 w-full"
+              >
                 ODG Radio
               </NavLink>
             </li>
-            <li className="hover:bg-cyan-500 rounded py-0 p-1 w-full text-center">
-              <NavLink to="/dashboard/donats" activeClassName="active">
+            <li className="rounded py-0 px-1 w-full text-center">
+              <NavLink
+                to="/dashboard/donats"
+                activeClassName="active"
+                className="block hover:bg-cyan-500 rounded py-2 px-1 w-full"
+              >
                 Donation
               </NavLink>
             </li>
@@ -250,7 +287,7 @@ const Navbar = () => {
                  
                 `}
               >
-                <TbMusicDollar className="w-6 h-6" />
+                <TbMusicDollar className="w-6 h-6 xl:translate-y-0 translate-y-2" />
                 <div className="flex flex-col items-start">
                   <span className="text-sm hidden xl:flex text-start font-semibold">
                     Sell Your Music{" "}
@@ -260,28 +297,29 @@ const Navbar = () => {
                   </span>
                 </div>
               </button>
-              <button
-                onClick={() => setLanOpen(!lanOpen)}
-                className="xl:border flex items-center justify-center gap-1 border-gray-700 xl:p-2 text-white rounded shadow"
-              >
-                <IoLanguageOutline className="w-6 h-6" />
-                <span className="hidden xl:flex">{t("language")}</span>
-              </button>
-
-              {/* <LanguageSelector /> */}
-              {lanOpen && (
-                <div className="absolute w-max mt-2 bg-white  rounded shadow z-10">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => handleLanguageChange(lang.code)}
-                      className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
-                    >
-                      <span class={`fi ${lang.icon} fis`}></span> {lang.label}
-                    </button>
-                  ))}
-                </div>
-              )}
+<div className="relative" ref={languageMenuRef}>
+  <button
+    className="flex flex-col xl:flex-row items-center gap-2 xl:border border-cyan-500/30 bg-transparent text-white p-2 rounded-md shadow-sm transition duration-200 ease-in-out hover:bg-cyan-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
+    onClick={() => setLanOpen((prev) => !prev)}
+  >
+    <IoLanguageOutline className="w-6 h-10" />
+    <span className="hidden xl:flex">{t("Language")}</span>
+  </button>
+  {lanOpen && (
+    <div className="absolute w-max mt-2 bg-white rounded shadow z-10">
+      {languages.map((lang) => (
+        <button
+          key={lang.code}
+          onClick={() => handleLanguageChange(lang.code)}
+          className="block px-4 py-2 hover:bg-gray-100 w-full text-left text-black"
+        >
+          <span className={`fi ${lang.icon} fis mr-2`}></span>
+          {lang.label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
             </div>
 
             {isAuthenticated ? (
@@ -382,7 +420,7 @@ const Navbar = () => {
           </div>
 
           {/* Sidebar Content */}
-          <div className="w-full  px-4 h-full bg-[#1b2039] flex font-josefin-sb flex-col items-start pt-10">
+          <div className="w-full px-4 h-full bg-[#1b2039] flex font-josefin-sb flex-col items-start pt-20">
             {/* Logo */}
             <div className="flex justify-center items-center w-full">
               <Link

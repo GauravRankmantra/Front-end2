@@ -16,8 +16,7 @@ import { RiArrowDownDoubleLine } from "react-icons/ri";
 import { VscClose } from "react-icons/vsc";
 
 import "../index.css";
-import { FaVolumeUp } from "react-icons/fa"; // Import icons
-
+import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import play from "../assets/svg/play.svg";
 import next from "../assets/svg/next.svg";
 import prev from "../assets/svg/prev.svg";
@@ -68,8 +67,9 @@ const MusicPlayer = () => {
   const [animate, setAnimate] = useState(false);
   const [collaps, setCollaps] = useState(false);
   const { t } = useTranslation();
-
+  const [previousVolume, setPreviousVolume] = useState(volume);
   const isMobile = useIsMobile();
+  const volumeRef = useRef(null);
 
   const user = useSelector((state) => state.user.user);
 
@@ -196,7 +196,25 @@ const MusicPlayer = () => {
       }
     }
   }, [isPlaying, volume]);
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        volumeRef.current &&
+        !volumeRef.current.contains(event.target)
+      ) {
+        setShowSlider(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+  useEffect(() => {
+    if (collaps) {
+      setShowSlider(false);
+    }
+  }, [collaps]);    
   useEffect(() => {
     if (currentSong) {
       if (audioRef.current.src !== currentSong.audioUrls.low) {
@@ -520,33 +538,67 @@ const MusicPlayer = () => {
           </div>
         </div>
 
-        <div className=" relative hidden md:w-52 md:flex items-center justify-center">
-          <FaVolumeUp
-            className={`${
-              isExpanded ? `hidden md:hidden` : `flex md:flex`
-            }text-white cursor-pointer w-5 h-5`}
-            onClick={toggleSlider}
-          />
-
-          <div
-            onClick={(e) => e.stopPropagation()}
-            onPointerDown={(e) => e.stopPropagation()}
-            className={`${
-              isExpanded ? `hidden md:hidden` : `flex md:flex`
-            } absolute right-0 hidden 
-            `}
-          >
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volume}
-              onPointerDown={(e) => e.stopPropagation()}
-              onChange={handleVolumeChange}
-              className=" md:w-16  cursor-pointer -rotate-90 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/80 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[7px] [&::-webkit-slider-thumb]:w-[15px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500"
-            />
-          </div>
-        </div>
+<div ref={volumeRef} className="relative hidden md:flex items-center justify-center w-32">
+  {volume > 0 ? (
+    <FaVolumeUp
+      className="text-white cursor-pointer w-5 h-5 hover:text-cyan-500 transition-colors duration-200"
+      onClick={(e) => {
+        e.stopPropagation();
+        if (showSlider) {
+          setPreviousVolume(volume); // Store current volume
+          setVolume(0); // Mute
+          if (audioRef.current) audioRef.current.volume = 0;
+        } else {
+          setShowSlider(true); // Open soundbar
+        }
+      }}
+    />
+  ) : (
+    <FaVolumeMute
+      className="text-white cursor-pointer w-5 h-5 hover:text-cyan-500 transition-colors duration-200"
+      onClick={(e) => {
+        e.stopPropagation();
+        if (showSlider) {
+          const restoreVolume = previousVolume || 50; // Restore previous volume or default to 50
+          setVolume(restoreVolume);
+          if (audioRef.current) audioRef.current.volume = restoreVolume / 100;
+        } else {
+          setShowSlider(true); // Open soundbar
+        }
+      }}
+    />
+  )}
+  {showSlider && (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 rounded-md shadow-lg p-3 flex items-center justify-center transition-opacity duration-200 ${
+        isDragging ? 'bg-gray-900/95' : 'bg-gray-900/70'
+      }`}
+    >
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={volume}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          setIsDragging(true);
+        }}
+        onPointerUp={(e) => {
+          e.stopPropagation();
+          setIsDragging(false);
+        }}
+        onChange={(e) => {
+          e.stopPropagation();
+          setVolume(e.target.value);
+          setPreviousVolume(e.target.value); // Update previous volume on change
+        }}
+        className="w-16 h-20 cursor-pointer appearance-none bg-transparent -rotate-90 [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-gray-600 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-500 [&::-webkit-slider-thumb]:hover:bg-cyan-400 transition-colors duration-200"
+      />
+    </div>
+  )}
+</div>
         <div className="lg:flex  space-x-3 hidden ">
           <div
             onClick={() => {

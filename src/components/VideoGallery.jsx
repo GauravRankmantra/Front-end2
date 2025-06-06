@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
 import axios from "axios";
-
+import { AiFillPlayCircle } from "react-icons/ai";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const VideoGallery = ({ videos }) => {
@@ -29,23 +29,32 @@ const VideoGallery = ({ videos }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {videos?.length > 0 ? (
           videos.map((video) => (
-            <div
-              key={video._id}
-              onClick={() => setSelectedVideo(video)}
-              className="cursor-pointer border border-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition"
-            >
-              <img
-                src={video.thumbnailUrl}
-                alt={video.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-3">
-                <h3 className="text-lg font-semibold truncate">{video.title}</h3>
-                <p className="text-sm text-gray-400">
-                  {video.views?.toLocaleString() || 0} views
-                </p>
-              </div>
-            </div>
+        <div
+          key={video._id}
+          onClick={() => setSelectedVideo(video)}
+          className="relative cursor-pointer border border-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
+        >
+          <img
+            src={video.thumbnailUrl}
+            alt={video.title}
+            className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
+          />
+          <div
+            className="p-4 absolute inset-0 bg-gradient-to-t from-cyan-500 via-cyan-500/70 to-transparent 
+                      translate-y-full group-hover:-translate-y-0 
+                      transition-transform duration-500 ease-in-out 
+                      flex items-end justify-center h-full"
+          >
+            <AiFillPlayCircle className="w-10 h-10 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            <h3 className="text-2xl font-bold text-white mb-2">{video.title}</h3>
+          </div>
+          <div className="p-3">
+            <h3 className="text-lg font-semibold truncate">{video.title}</h3>
+            <p className="text-sm text-gray-400">
+              {video.views?.toLocaleString() || 0} views
+            </p>
+          </div>
+        </div>
           ))
         ) : (
           <p className="text-center col-span-full">No videos available.</p>

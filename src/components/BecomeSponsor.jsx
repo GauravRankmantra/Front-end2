@@ -12,7 +12,7 @@ import bgVideo from "../assets/bg.mp4";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const stripePromise = loadStripe('pk_test_51RQRPEDACnPx6ZPLxkSewcdorCIx0neqNYHNOBK22HTcszeUUib8akvYuuFcxwOElgv6nqgzZ5yEPdNMcLaK0Bpp00sR8gtZ8I');
+const stripePromise = loadStripe('pk_test_KCqVsz425oziejiwnrrCEnzL');
 
 
 const CARD_ELEMENT_OPTIONS = {

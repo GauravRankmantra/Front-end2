@@ -5,6 +5,8 @@ import ShareModal from "../../modals/ShareModal";
 import PlaylistSelectionModal from "../../modals/PlaylistSelectionModal";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { TbMusicCheck } from "react-icons/tb";
+
 
 import {
   addSongToQueue,
@@ -37,7 +39,6 @@ const SongList = ({ songs, artist, type }) => {
   };
 
   const handleAddToFav = ({ songId }) => {
- 
     addLike({ songId, dispatch })
       .then((response) => {
         // Handle the successful response
@@ -93,18 +94,20 @@ const SongList = ({ songs, artist, type }) => {
   };
 
   return (
-    <div className="overflow-x-auto h-screen bg-gray-900 font-josefin-r">
+    <div className="overflow-x-auto min-h-[40rem] max-h-[60rem] no-scrollbar bg-gray-900 font-josefin-r">
       <table className="table-auto w-full text-left text-sm text-gray-400">
         <thead className="text-xs w-full uppercase text-gray-500">
           <tr>
             <th className="p-4 w-24 text-center">#</th>
-            <th className="p-4 min-h-28 ">Song Title</th>
-            <th className="p-4">Artist</th>
-            <th className="p-4">Duration</th>
-            <th className="p-4">Add To Fav.</th>
-            {type != "download" && <th className="p-4">Buy</th>}
+            <th className="p-4 min-w-[8.5rem] max-w-[9rem] truncate text-center">
+              Song Title
+            </th>
+            <th className="p-4 text-center">Artist</th>
+            <th className="p-4 text-center">Duration</th>
+            <th className="p-4 text-center">Like</th>
+            {type != "download" && <th className="p-4 text-center">Buy</th>}
 
-            <th className="p-4">More</th>
+            <th className="p-4 text-center">More</th>
           </tr>
         </thead>
         <tbody>
@@ -147,9 +150,9 @@ const SongList = ({ songs, artist, type }) => {
                   )}
                 </div>
               </td>
-              <td className="p-4">{song.title}</td>
+              <td className="p-4  flex justify-center">{song.title}</td>
               {type == "download" ? (
-                <td className="whitespace-nowrap">
+                <td className="whitespace-nowrap justify-center flex ">
                   {Array.isArray(song.artist) ? (
                     song.artist.map((artistObj, index) => (
                       <span
@@ -159,7 +162,7 @@ const SongList = ({ songs, artist, type }) => {
 
                           navigate(`/artist/${artistObj._id}`);
                         }}
-                        className="cursor-pointer hover:underline"
+                        className="cursor-pointer  hover:underline"
                       >
                         {artistObj.fullName}
                         {index !== song.artist.length - 1 && ", "}
@@ -172,11 +175,11 @@ const SongList = ({ songs, artist, type }) => {
                   )}
                 </td>
               ) : (
-                <td className="p-4">{artist}</td>
+                <td className="p-4 text-center">{artist}</td>
               )}
 
-              <td className="p-4">{song.duration}</td>
-              <td className="p-4 cursor-pointer">
+              <td className="p-4 text-center">{song.duration}</td>
+              <td className="p-4 cursor-pointer flex items-center justify-center">
                 {user?.likedSongs?.includes(song._id) ? (
                   <FaHeart className="w-5 h-5 hover:text-gray-500 text-red-500 transition-colors duration-300" />
                 ) : (
@@ -190,19 +193,27 @@ const SongList = ({ songs, artist, type }) => {
               </td>
               {type != "download" && (
                 <td>
-                  <button
-                    onClick={() => handelBuyNowClick(song)}
-                    className="px-2 py-1 rounded-lg bg-cyan-500 text-white "
-                  >
-                    Buy Now
-                  </button>
+                  {user.purchasedSongs?.includes(song._id) ? (
+                    <div className="flex justify-center items-center">
+                      <TbMusicCheck className="text-green-500"/>
+                    </div>
+                  ) : (
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => handelBuyNowClick(song)}
+                        className="px-2 py-1 min-w-[5rem] rounded-lg bg-cyan-500 text-white "
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  )}
                 </td>
               )}
 
               <td className="p-4">
-                <div className="ml-4 flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
+                <div className="ml-4 relative flex-shrink-0 block cursor-pointer lg:hidden xl:hidden 2xl:block">
                   {playing && playing._id === song._id && (
-                    <div className="absolute">
+                    <div className="absolute ">
                       {" "}
                       <SongAction
                         onClose={() => setPlayingSong(null)}

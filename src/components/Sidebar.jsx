@@ -30,7 +30,9 @@ const Sidebar = () => {
   const toggleSidebar = useCallback(() => {
     setOpenMenu((prevOpenMenu) => !prevOpenMenu);
   }, []);
-
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -76,7 +78,7 @@ const Sidebar = () => {
   return (
     <div
       ref={sidebarRef}
-      className={` fixed pt-5  font-josefin-m z-50 bg-[#1e233f] ${
+      className={` fixed pt-5 font-josefin-m z-50 bg-[#1e233f] top-[60px] ${
         openMenu ? "w-[200px]" : "w-[80px]"
       } transition-all duration-300 shadow-lg hidden lg:block`}
     >
@@ -94,24 +96,25 @@ const Sidebar = () => {
           openMenu ? "w-[200px]" : "w-[80px]"
         } h-screen  bg-[#1b2039]  flex flex-col object-cover items-center transition-all duration-300`}
       >
-        <div className="flex  justify-center  items-center ">
-          <Link to="/" className="w-full text-center">
+        {/* <div className="flex  justify-center  items-center ">
+          <Link to="/" onClick={scrollToTop} className="w-full text-center">
             <img
               src={logo}
               alt="logo"
               className="p-4 w-20 h-20 object-cover rounded-full"
             />
           </Link>
-        </div>
+        </div> */}
 
         <div
-          className={`mt-5 w-full     mb-[10px] overflow-y-auto max-h-screen no-scrollbar`}
+          className="mt-5 w-full mb-12 sm:mb-6 lg:mb-28 xl:mb-24 overflow-y-auto max-h-screen no-scrollbar"
         >
           <ul className={`${isAuthenticated ? "space-y-3" : "space-y-14 mt-10"} `}>
             {navItems.map((item, index) => (
               <li key={index}>
                 <NavLink
                   to={item.to}
+                  onClick={scrollToTop}
                   className={({ isActive }) =>
                     `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
                       isActive ? "bg-[#2cc8e5] text-white" : ""
@@ -148,6 +151,7 @@ const Sidebar = () => {
                 <li key={index}>
                   <NavLink
                     to={item.to}
+                    onClick={scrollToTop}
                     className={({ isActive }) =>
                       `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
                         isActive ? "bg-[#2cc8e5] text-white" : ""
@@ -184,6 +188,7 @@ const Sidebar = () => {
                 <li key={index}>
                   <NavLink
                     to={item.to}
+                    onClick={scrollToTop}
                     className={({ isActive }) =>
                       `flex items-center justify-center text-[#cdcdcd] text-sm py-2 px-4 w-full hover:bg-[#2cc8e5] hover:text-white relative group ${
                         isActive ? "bg-[#2cc8e5] text-white" : ""

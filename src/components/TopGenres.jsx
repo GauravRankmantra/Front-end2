@@ -33,7 +33,7 @@ const TopGenres = () => {
       </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-6">
         {genres.length === 0 ? (
           <p>Loading genres...</p>
         ) : (
@@ -47,7 +47,7 @@ const TopGenres = () => {
               }
               className={`
                 relative rounded-2xl group overflow-hidden shadow-lg cursor-pointer transition-all duration-300
-                ${index % 5 === 0 ? "lg:col-span-2 lg:row-span-2 " : "h-60"}
+                ${index === 0 || index === 1 ? "lg:col-span-3 h-72" : "lg:col-span-2 h-60"}
               `}
             >
               <img

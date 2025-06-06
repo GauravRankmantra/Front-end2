@@ -54,74 +54,80 @@ const Contact = () => {
   if (!contact) return <div className="text-center mt-10 text-gray-600">Loading...</div>;
 
   return (
-    <div className="bg-gradient-to-br  py-16">
+    <div className="bg-gradient-to-br py-16">
       <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <h2 className="text-4xl font-extrabold text-center text-cyan-500 mb-12">Contact Us</h2>
 
         <div className="grid md:grid-cols-2 gap-10">
           {/* Contact Info */}
-          <div className="bg-gray-700 shadow-xl rounded-2xl p-8 space-y-6">
-            <h3 className="text-2xl font-semibold text-gray-100 mb-6 flex items-center space-x-2">
+          <div className="bg-gray-700 shadow-xl rounded-2xl p-10 flex flex-col items-center space-y-8 border border-gray-600/30">
+            <h3 className="text-2xl font-semibold text-gray-100 flex items-center space-x-2">
               <FaInfoCircle className="text-indigo-500" />
               <span>Get in Touch</span>
             </h3>
 
-            <div className="space-y-4 text-gray-100">
-              <p className="flex items-center space-x-2">
-                <FaPhone className="text-green-500" />
-                <strong>Phone:</strong> {contact.phone}
+            <div className="space-y-6 text-gray-100 text-base font-medium w-full max-w-md">
+              <p className="flex items-center space-x-3">
+                <FaPhone className="text-green-500 w-5 h-5" />
+                <span><strong>Phone:</strong> {contact.phone}</span>
               </p>
-              <p className="flex items-center space-x-2">
-                <FaEnvelope className="text-yellow-500" />
-                <strong>Email:</strong> {contact.email}
+              <p className="flex items-center space-x-3">
+                <FaEnvelope className="text-yellow-500 w-5 h-5" />
+                <span><strong>Email:</strong> {contact.email}</span>
               </p>
-              <p className="flex items-center space-x-2">
-                <FaMapMarkerAlt className="text-red-500" />
-                <strong>Address:</strong> {contact.address}
+              <p className="flex items-center space-x-3">
+                <FaMapMarkerAlt className="text-red-500 w-5 h-5" />
+                <span><strong>Address:</strong> {contact.address}</span>
               </p>
 
               {contact.facebook && (
-                <p className="flex items-center space-x-2">
-                  <FaFacebook className="text-blue-600" />
-                  <strong>Facebook:</strong>{' '}
-                  <a
-                    href={contact.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800"
-                  >
-                    {contact.facebook}
-                  </a>
+                <p className="flex items-center space-x-3">
+                  <FaFacebook className="text-blue-600 w-5 h-5" />
+                  <span>
+                    <strong>Facebook:</strong>{' '}
+                    <a
+                      href={contact.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline hover:text-blue-800 transition-colors duration-200"
+                    >
+                      Visit our Facebook
+                    </a>
+                  </span>
                 </p>
               )}
 
               {contact.instagram && (
-                <p className="flex items-center space-x-2">
-                  <FaInstagram className="text-pink-500" />
-                  <strong>Instagram:</strong>{' '}
-                  <a
-                    href={contact.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-pink-500 underline hover:text-pink-700"
-                  >
-                    {contact.instagram}
-                  </a>
+                <p className="flex items-center space-x-3">
+                  <FaInstagram className="text-pink-500 w-5 h-5" />
+                  <span>
+                    <strong>Instagram:</strong>{' '}
+                    <a
+                      href={contact.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-pink-500 underline hover:text-pink-700 transition-colors duration-200"
+                    >
+                      Visit our Instagram
+                    </a>
+                  </span>
                 </p>
               )}
 
-              {contact.Twitter && (
-                <p className="flex items-center space-x-2">
-                  <FaTwitter className="text-blue-400" />
-                  <strong>Twitter/X:</strong>{' '}
-                  <a
-                    href={contact.Twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 underline hover:text-blue-600"
-                  >
-                    {contact.Twitter}
-                  </a>
+              {(contact.twitter || contact.Twitter) && (
+                <p className="flex items-center space-x-3">
+                  <FaTwitter className="text-blue-400 w-5 h-5" />
+                  <span>
+                    <strong>Twitter/X:</strong>{' '}
+                    <a
+                      href={contact.twitter || contact.Twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 underline hover:text-blue-600 transition-colors duration-200"
+                    >
+                      Visit our Twitter/X
+                    </a>
+                  </span>
                 </p>
               )}
             </div>
@@ -131,7 +137,7 @@ const Contact = () => {
           <div className="bg-gray-700 shadow-xl rounded-2xl p-8 space-y-6">
             <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center space-x-2">
               <FaEnvelope className="text-indigo-500" />
-              <span className='text-gray-100'>Send us a Message</span>
+              <span className="text-gray-100">Send us a Message</span>
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>

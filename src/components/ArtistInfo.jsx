@@ -119,15 +119,13 @@ const ArtistInfo = () => {
 
   return (
     <div className="shadow-2xl rounded-lg">
-      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
-        <div className="flex   flex-col   rounded-md py-2 shadow-2xl md:flex-row items-center">
+      <div className="bg-[#151d30] py-16  sm:px-6 lg:px-8  text-white w-full font-sans">
+         <div className="flex flex-col md:flex-row items-start md:items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
             <img
-              src={
-                artist.coverImage || "https://dummyimage.com/240x240/000/fff"
-              }
-              alt="Artist Cover"
-              className="object-cover w-full h-full rounded-lg"
+            className="object-cover w-full h-full"
+              src={artist.coverImage || "https://dummyimage.com/240x240/000/fff"}
+              alt="artist Cover"
             />
           </div>
 
@@ -209,7 +207,7 @@ const ArtistInfo = () => {
           </div> */}
         </div>
 
-        <div className="mt-20">
+        <div className=" mt-10 md:mt-20">
           {songs.length > 0 ? (
             <SongList songs={songs} artist={artist.fullName} />
           ) : (

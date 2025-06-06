@@ -60,9 +60,10 @@ const Message = () => {
             Support Chat
           </h1>
         </div>
-        <button className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-2 md:px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+        <div className="bg-white text-cyan-500 font-semibold md:py-2 text-sm py-1 px-2 md:px-4 rounded-full select-none cursor-default">
           Chat With Admin
-        </button>
+        </div>
+
       </div>
 
       <div className="flex h-[calc(100vh-160px)] bg-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-800">
@@ -96,11 +97,6 @@ const Message = () => {
                     >
                       {msg.text}
                     </div>
-                    {isUser && (
-                      <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                        U
-                      </div>
-                    )}
                   </div>
                 );
               })

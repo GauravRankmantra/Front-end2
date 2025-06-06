@@ -63,12 +63,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-b font-josefin-r from-gray-900 mt-20 via-gray-800 to-gray-600 text-gray-400 py-12 lg:px-36 px-6 z-40">
-      <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-b font-josefin-r from-gray-900 mt-20 via-gray-800 to-gray-600 text-gray-400 py-4 lg:px-36 px-6 z-40">
+      <div className="max-w-screen-xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {/* Logo & Description */}
         <div>
           <img src={logo} className="w-28 rounded-xl h-24 shadow-2xl mb-1" alt="Logo" />
-          <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
+          <h3 className="footer-title relative text-cyan-400 text-xl mb-4">
             Odg Music
           </h3>
           <p className="text-white leading-6">{footerIn?.mainHeading}</p>
@@ -76,7 +76,7 @@ const Footer = () => {
 
         {/* Useful Links */}
         <div>
-          <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
+          <h3 className="footer-title relative text-cyan-400 text-xl mb-4">
             {t("usefulLinks")}
           </h3>
           <ul className="text-gray-100  space-y-4">
@@ -98,7 +98,7 @@ const Footer = () => {
 
         {/* Subscribe */}
         <div>
-          <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
+          <h3 className="footer-title relative text-cyan-400 text-xl mb-4">
             {t("footerSubscribeH")}
           </h3>
           <p className="text-gray-300 mb-4">  {footerIn?.subscribe}</p>
@@ -131,7 +131,7 @@ const Footer = () => {
 
         {/* Contact & Social */}
         <div>
-          <h3 className="footer-title relative text-cyan-400 text-xl mb-2">
+          <h3 className="footer-title relative text-cyan-400 text-xl mb-4">
             {t("contactUs")}
           </h3>
           <p className="text-gray-300">
@@ -148,25 +148,33 @@ const Footer = () => {
           <div className="flex space-x-3">
             <a
               href={contact?.facebook}
-              className="bg-cyan-500 p-2 w-10 h-10 rounded"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-cyan-500 hover:bg-cyan-600 transition-colors duration-300 p-2 w-10 h-10 rounded"
             >
               <FontAwesomeIcon icon={faFacebookF} className="text-white" />
             </a>
             <a
               href={contact?.instagram}
-              className="bg-cyan-500 p-2 w-10 h-10 rounded"
+              target="_blank"
+              rel="noopener noreferrer"              
+              className="bg-cyan-500 hover:bg-cyan-600 transition-colors duration-300 p-2 w-10 h-10 rounded"
             >
               <FontAwesomeIcon icon={faLinkedinIn} className="text-white" />
             </a>
             <a
               href={contact?.twitter}
-              className="bg-cyan-500 p-2 w-10 h-10 rounded"
+              target="_blank"
+              rel="noopener noreferrer"              
+              className="bg-cyan-500 hover:bg-cyan-600 transition-colors duration-300 p-2 w-10 h-10 rounded"
             >
               <FontAwesomeIcon icon={faTwitter} className="text-white" />
             </a>
             <a
               href={contact?.googleplus}
-              className="bg-cyan-500 p-2 w-10 h-10 rounded"
+              target="_blank"
+              rel="noopener noreferrer"              
+              className="bg-cyan-500 hover:bg-cyan-600 transition-colors duration-300 p-2 w-10 h-10 rounded"
             >
               <FontAwesomeIcon icon={faGooglePlusG} className="text-white" />
             </a>

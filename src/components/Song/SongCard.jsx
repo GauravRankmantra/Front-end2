@@ -99,8 +99,8 @@ const Recently = ({ heading, link, showGrid }) => {
 
   return (
     <>
-      <div className="relative mx-2  sm:mx-10 lg:mx-10">
-        <div className="w-full mb-6 flex justify-between items-center">
+      <div className="relative sm:mx-10 lg:mx-10">
+        <div className="w-full mb-3 flex justify-between items-center">
           <h1 className="text-lg pb-2 relative inline-block text-capitalize text-[#3bc8e7]">
             {heading}
             <div className="absolute bottom-0 w-[100px] h-[2px] bg-gradient-to-r rounded-s-2xl from-[#3bc8e7] to-transparent"></div>
@@ -216,7 +216,7 @@ const Recently = ({ heading, link, showGrid }) => {
                       </div>
 
                       <div className="text-left mt-4">
-                        <h1 className="text-[14px] mb-[5px]">
+                        <h1 className="text-[14px] mb-[5px] truncate w-[100px]">
                           <button
                             onClick={() => navigate(`/song/${song._id}`)}
                             className="text-white hover:text-[#3bc8e7]"
@@ -224,7 +224,8 @@ const Recently = ({ heading, link, showGrid }) => {
                             {song.title}
                           </button>
                         </h1>
-                        <p className="text-[#dedede] text-[12px]">
+
+                        <p className="text-gray-400 text-[12px]">
                           {Array.isArray(song?.artist)
                             ? song.artist.map((artist, index) => (
                                 <span key={index}>

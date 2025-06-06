@@ -101,38 +101,49 @@ const Home = () => {
 
   return (
     <>
-      <div className="pt-6 lg:pt-16  bg-[#14182A] scroll-smooth ">
-        <div className="">
-          <div className="flex flex-wrap justify-center lg:justify-start">
-            <div className="w-full sm:w-[90%] lg:w-[511px] mx-auto text-center lg:text-left">
-              <div className="">
-                <img
-                  src={data?.coverImage}
-                  alt="Record Breaking Albums"
-                  className="w-full h-auto"
-                />
+<div className="pt-6 lg:pt-16 bg-[#14182A] scroll-smooth">
+  <div className="">
+    <div className="flex flex-wrap justify-center lg:justify-start">
+      {!data ? (
+        <div className="w-full sm:w-[90%] lg:w-full mx-auto text-center lg:text-left">
+          <div className="flex flex-col lg:flex-row">
+            <div className="w-full lg:w-[511px]">
+              <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[511px] bg-gray-700 animate-pulse rounded-md"></div>
+            </div>
+            <div className="w-full lg:w-[calc(100%-511px)] mt-0 lg:mt-0 px-4 lg:px-30">
+              <div className="ms_banner_text pt-8 sm:pt-16 lg:pt-32 text-center lg:text-left">
+                <div className="h-10 sm:h-12 lg:h-14 bg-gray-700 animate-pulse rounded w-3/4 mx-auto lg:mx-0 mb-4"></div>
+                <div className="h-10 sm:h-12 lg:h-14 bg-gray-700 animate-pulse rounded w-1/2 mx-auto lg:mx-0 mb-4"></div>
+                <div className="h-20 bg-gray-700 animate-pulse rounded w-full mx-auto lg:mx-0 my-4"></div>
+                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0">
+                  <div className="h-10 bg-gray-700 animate-pulse rounded-lg w-full sm:w-32 mx-auto lg:mx-0"></div>
+                  <div className="h-10 bg-gray-700 animate-pulse rounded-lg w-full sm:w-32 mx-auto lg:mx-0"></div>
+                </div>
               </div>
             </div>
-
-            <div className="w-full sm:w-[90%] lg:w-[calc(100%-511px)] mt-0 lg:mt-0 px-4 lg:px-30">
+          </div>
+        </div>
+      ) : (
+        <div className="w-full sm:w-[90%] lg:w-full mx-auto text-center lg:text-left">
+          <div className="flex flex-col lg:flex-row">
+            <div className="w-full lg:w-[511px]">
+              <img
+                src={data.coverImage}
+                alt="Record Breaking Albums"
+                className="w-full h-auto object-cover rounded-md"
+              />
+            </div>
+            <div className="w-full lg:w-[calc(100%-511px)] mt-0 lg:mt-0 px-4 lg:px-30">
               <div className="ms_banner_text pt-8 sm:pt-16 lg:pt-32 text-center lg:text-left">
-                {data && (
-                  <>
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-josefin-b text-white">
-                      {data.heading.split(" ").slice(0, 2).join(" ")}
-                    </h1>
-                    <h1 className="text-2xl sm:text-4xl lg:text-5xl font-josefin-b text-[#3bc8e7]">
-                      {data.heading.split(" ").slice(2).join(" ")}
-                    </h1>
-                  </>
-                )}
-
-                {data && (
-                  <p className="text-gray-300 my-4 leading-8 text-sm sm:text-base lg:text-md">
-                    {data.subHeading}
-                  </p>
-                )}
-
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-josefin-b text-white">
+                  {data.heading.split(" ").slice(0, 2).join(" ")}
+                </h1>
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-josefin-b text-[#3bc8e7]">
+                  {data.heading.split(" ").slice(2).join(" ")}
+                </h1>
+                <p className="text-gray-300 my-4 leading-8 text-sm sm:text-base lg:text-md">
+                  {data.subHeading}
+                </p>
                 <div className="ms_banner_btn flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0">
                   <button
                     onClick={() => navigate("/albums")}
@@ -151,14 +162,11 @@ const Home = () => {
             </div>
           </div>
         </div>
+      )}
+    </div>
+  </div>
+</div>
 
-        <div className="my-4">
-          <SongCard
-            heading={t("top15Songs")}
-            link={`${apiUrl}api/v1/song/top15`}
-          />
-        </div>
-      </div>
 
       <div className="my-4">
         <WeeklyTop15

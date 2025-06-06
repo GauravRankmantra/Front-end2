@@ -12,11 +12,13 @@ import {
   addSongToQueueWithAuth,
 } from "../features/musicSlice";
 import Loading from "../components/Loading";
+import { FaSpinner } from "react-icons/fa6";
 
 const Purchase = () => {
   const [search] = useSearchParams();
   const [songInfo, setSongInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -69,12 +71,12 @@ const Purchase = () => {
   }, [id]);
 
   const handleBuyNow = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51RQRPEDACnPx6ZPLxkSewcdorCIx0neqNYHNOBK22HTcszeUUib8akvYuuFcxwOElgv6nqgzZ5yEPdNMcLaK0Bpp00sR8gtZ8I"
-    );
+    setBtnLoading(true);
+    const stripe = await loadStripe("pk_test_KCqVsz425oziejiwnrrCEnzL");
 
     if (!stripe) {
       console.error("Stripe failed to load");
+      setBtnLoading(false);
       return;
     }
     // https://dashboard.stripe.com/test/connect/onboarding
@@ -122,12 +124,12 @@ const Purchase = () => {
   };
 
   const handleBuyNow2 = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51RQRPEDACnPx6ZPLxkSewcdorCIx0neqNYHNOBK22HTcszeUUib8akvYuuFcxwOElgv6nqgzZ5yEPdNMcLaK0Bpp00sR8gtZ8I"
-    );
+    setBtnLoading(true);
+    const stripe = await loadStripe("pk_test_KCqVsz425oziejiwnrrCEnzL");
 
     if (!stripe) {
       console.error("Stripe failed to load");
+      setBtnLoading(false);
       return;
     }
 
@@ -163,14 +165,13 @@ const Purchase = () => {
     }
   };
 
+   //-> enable this when artist payment is done by admin stripe dashbord(enable connect functionality) 
   const handelBuy = () => {
-    if (songInfo?.artist[0]?.admin) {
+    // if (songInfo?.artist[0]?.admin) {
       handleBuyNow2();
-   
-    } else {
-      handleBuyNow();
-   
-    }
+    // } else {
+    //   handleBuyNow();
+    // }
   };
 
   if (!isAuthenticated)
@@ -188,7 +189,11 @@ const Purchase = () => {
       </div>
     );
   if (loading) {
-    return <div><Loading/></div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
@@ -280,9 +285,13 @@ const Purchase = () => {
             songInfo?.artist[0]?.admin ? (
               <button
                 onClick={handelBuy}
-                className="mt-6 w-full bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-xl text-lg transition-all"
+                className="mt-6 w-full flex items-center justify-center bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-xl text-lg transition-all"
               >
-                Buy Now
+                {!btnloading ? (
+                  <span>Buy Now</span>
+                ) : (
+                  <FaSpinner className="animate-spin" />
+                )}
               </button>
             ) : (
               <h1>

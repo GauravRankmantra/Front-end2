@@ -232,7 +232,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen font-josefin-r">
         <div className="container mx-auto px-4 py-8">
           <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
             <div className="flex items-center space-x-3">
@@ -241,7 +241,10 @@ const Profile = () => {
                 My Profile
               </h1>
             </div>
-            <button onClick={()=>navigate("/")} className="bg-white text-cyan-500 font-semibold py-2 px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+            <button
+              onClick={() => navigate("/")}
+              className="bg-white text-cyan-500 font-semibold py-2 px-4 rounded-full hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50 transition duration-300 ease-in-out"
+            >
               Explore Music
             </button>
           </div>
@@ -407,7 +410,9 @@ const Profile = () => {
           <div className="bg-[#1c223b] p-6 rounded-lg shadow-lg mb-8">
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-2xl font-semibold text-cyan-400">
-                {t("Your Socal Links")}
+                {userInfo.instagram || userInfo.facebook || userInfo.twitter
+                  ? `   Your Socal Links`
+                  : `Add you social links`}
               </h2>
               {!isEditingInfoSocial ? (
                 <button

@@ -58,6 +58,7 @@ import OdgRadio from "./components/OdgRadio";
 import Playlist from "./components/Profile/Playlist";
 import DonateUs from "./components/DonateUs";
 import BecomeSponsor from "./components/BecomeSponsor";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -104,6 +105,7 @@ const App = () => {
             <Route path="/sell-songs" element={<SellSongLanding />} />
             <Route path="purchased" element={<Purchase />} />
             <Route path="/terms-and-conditions" element={<Terms />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
 
             <Route path="/video-store" element={<VideoStore />} />
 

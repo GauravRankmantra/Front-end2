@@ -142,10 +142,11 @@ const AlbumInfo = () => {
 
   return (
     <div className="shadow-2xl overflow-hidden font-josefin-r rounded-lg">
-      <div className="bg-[#151d30] py-16 px-4 sm:px-6 lg:px-8  text-white w-full font-sans">
-        <div className="flex flex-col md:flex-row items-center">
+      <div className="bg-[#151d30] py-16 px-1 sm:px-6 lg:px-8  text-white w-full font-sans">
+        <div className="flex flex-col md:flex-row items-start md:items-center">
           <div className="w-60 h-60 bg-gray-300 flex justify-center items-center rounded-lg mb-4 md:mb-0">
             <img
+            className="object-cover w-full h-full"
               src={album.coverImage || "https://dummyimage.com/240x240/000/fff"}
               alt="Album Cover"
             />
@@ -168,7 +169,7 @@ const AlbumInfo = () => {
             </p>
             
 
-            <div className="mt-4 flex justify-center  items-center  flex-row gap-4">
+            <div className="mt-4 flex md:justify-center  md:items-center  flex-row gap-4">
               <div className="flex space-x-2">
                 <button
                   disabled={disableBtn}
@@ -207,46 +208,13 @@ const AlbumInfo = () => {
               </svg>
             </button> */}
 
-                {menu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg py-2">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                    >
-                      Add To Favourites
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                    >
-                      Add To Queue
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                    >
-                      Download Now
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                    >
-                      Add To Playlist
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
-                    >
-                      Share
-                    </a>
-                  </div>
-                )}
+
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-20">
+        <div className="mt-10 md:mt-20">
           {songs && songs.length > 0 ? (
             <SongList songs={songs} artist={artist} />
           ) : (
