@@ -169,6 +169,13 @@ const Home = () => {
 
 
       <div className="my-4">
+        <SongCard
+          heading={t("Top 15")}
+          link={`${apiUrl}api/v1/song/top15`}
+        />
+      </div>
+
+      <div className="my-4">
         <WeeklyTop15
           heading={t("weeklyTop15")}
           link={`${apiUrl}api/v1/song/weeklyTop15`}

@@ -126,7 +126,7 @@ const WeeklyTop15 = ({ link, heading }) => {
                       </div>
 
                       {/* Song Cover + Info */}
-                      <div className="flex items-center gap-4 flex-grow min-w-0">
+                      <div className="flex items-center gap-4 flex-grow min-w-0 w-12 md:w-40">
                         {/* Cover Image */}
                         <div className="relative  w-16 h-16 shrink-0 rounded-lg overflow-hidden">
                           <div className="absolute inset-0 translate-y-36 group-hover:translate-y-0 z-40 bg-gradient-to-t from-cyan-500 to-transparent flex-shrink-0 w-[120px]  sm:w-[150px] md:w-[190px] transition-all duration-500"></div>
@@ -210,12 +210,12 @@ const WeeklyTop15 = ({ link, heading }) => {
                       </div>
 
                       {/* Duration */}
-                      <div className="text-xs text-gray-400 hidden sm:block">
+                      {/* <div className="text-xs text-gray-400 hidden sm:block">
                         {song.duration}
-                      </div>
+                      </div> */}
 
                       {/* Action Menu */}
-                      <div className="relative justify-center items-center space-y-2 flex  flex-col  shrink-0">
+                      <div className="relative mr-4 flex-shrink  justify-center items-center space-y-2 flex  flex-col ">
                         <button
                           onClick={() => handleMenuToggle(song)}
                           className="text-gray-400  hover:text-white transition"

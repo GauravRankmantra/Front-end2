@@ -34,6 +34,7 @@ import topTracks from "../assets/svg/topTracks.svg";
 import album from "../assets/svg/album.svg";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import GoogleTranslate from "./GoogleTranslate";
 
 import { IoDiamondOutline, IoLanguageOutline } from "react-icons/io5";
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -46,14 +47,14 @@ const Navbar = () => {
   const [lanOpen, setLanOpen] = useState(false);
 
   const languages = [
-  { code: "en", label: "English", icon: "fi-us" },
-  { code: "fr", label: "French", icon: "fi-fr" },
-  { code: "es", label: "Spanish", icon: "fi-es" },
-  { code: "pt", label: "Portuguese", icon: "fi-pt" },
-  { code: "hi", label: "Hindi", icon: "fi-in" },
-  { code: "ru", label: "Russian", icon: "fi-ru" },
-  { code: "de", label: "German", icon: "fi-de" },
-  { code: "zh", label: "Chinese", icon: "fi-cn" },
+    { code: "en", label: "English", icon: "fi-us" },
+    { code: "fr", label: "French", icon: "fi-fr" },
+    { code: "es", label: "Spanish", icon: "fi-es" },
+    { code: "pt", label: "Portuguese", icon: "fi-pt" },
+    { code: "hi", label: "Hindi", icon: "fi-in" },
+    { code: "ru", label: "Russian", icon: "fi-ru" },
+    { code: "de", label: "German", icon: "fi-de" },
+    { code: "zh", label: "Chinese", icon: "fi-cn" },
   ];
 
   const { i18n } = useTranslation();
@@ -110,7 +111,10 @@ const Navbar = () => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setOpenMenu(false);
       }
-      if (languageMenuRef.current && !languageMenuRef.current.contains(event.target)) {
+      if (
+        languageMenuRef.current &&
+        !languageMenuRef.current.contains(event.target)
+      ) {
         setLanOpen(false);
       }
     };
@@ -297,7 +301,7 @@ const Navbar = () => {
                   </span>
                 </div>
               </button>
-<div className="relative" ref={languageMenuRef}>
+              {/* <div className="relative" ref={languageMenuRef}>
   <button
     className="flex flex-col xl:flex-row items-center gap-2 xl:border border-cyan-500/30 bg-transparent text-white p-2 rounded-md shadow-sm transition duration-200 ease-in-out hover:bg-cyan-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
     onClick={() => setLanOpen((prev) => !prev)}
@@ -319,16 +323,18 @@ const Navbar = () => {
       ))}
     </div>
   )}
-</div>
+</div> */}
+
+              <GoogleTranslate />
             </div>
 
             {isAuthenticated ? (
-              <Link
-                to="/dashboard"
+              <a
+                href="/dashboard"
                 className="ms_btn bg-[#3bc8e7] text-white text-center py-[8px] px-[20px] rounded-[20px] transition-all duration-400 ease-in-out hover:shadow-lg"
               >
                 {t("profile")}
-              </Link>
+              </a>
             ) : (
               <div className="hidden lg:flex space-x-4">
                 <Link

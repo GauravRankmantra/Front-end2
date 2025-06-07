@@ -191,11 +191,10 @@
 
 .active {
   text-decoration: underline;
-  text-decoration-color: #06b6d4; 
+  text-decoration-color: #06b6d4;
   text-decoration-thickness: 1px;
-  text-decoration-style:double;
+  text-decoration-style: double;
   text-underline-offset: 4px;
-  
 }
 @layer base {
   * {
@@ -218,4 +217,59 @@
 }
 .animate-modalEnter {
   animation: modalEnter 0.2s ease-in-out forwards;
+}
+
+#google_translate_element {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 50px; /* adjust as needed */
+  width: max-content;
+}
+
+#goog-gt-tt {
+  opacity: 0;
+}
+.goog-te-gadget {
+  font-family: "Inter", sans-serif !important;
+  font-size: 14px;
+  color: #028f91 !important;
+}
+
+.goog-te-combo {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  appearance: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.VIpgJd-ZVi9od-LgbsSe {
+  visibility: hidden;
+}
+.VIpgJd-ZVi9od-ORHb-KE6vqe {
+  visibility: hidden;
+  top: -10rem;
+  width: 0px;
+}
+
+.goog-te-combo:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  opacity: 0;
+  z-index: -100 !important;
+  width: 1px;
+  height: 1px !important;
+  top: -10rem;
+}
+.VIpgJd-ZVi9od-ORHb {
+  visibility: hidden;
+}
+.VIpgJd-ZVi9od-l4eHX-hSRGPd {
+  visibility: hidden;
 }
