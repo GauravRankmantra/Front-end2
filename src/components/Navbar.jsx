@@ -46,16 +46,7 @@ const Navbar = () => {
   const { t } = useTranslation();
   const [lanOpen, setLanOpen] = useState(false);
 
-  const languages = [
-    { code: "en", label: "English", icon: "fi-us" },
-    { code: "fr", label: "French", icon: "fi-fr" },
-    { code: "es", label: "Spanish", icon: "fi-es" },
-    { code: "pt", label: "Portuguese", icon: "fi-pt" },
-    { code: "hi", label: "Hindi", icon: "fi-in" },
-    { code: "ru", label: "Russian", icon: "fi-ru" },
-    { code: "de", label: "German", icon: "fi-de" },
-    { code: "zh", label: "Chinese", icon: "fi-cn" },
-  ];
+
 
   const { i18n } = useTranslation();
 
@@ -63,6 +54,7 @@ const Navbar = () => {
     i18n.changeLanguage(lng);
     setLanOpen(false);
   };
+  
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   useEffect(() => {
     const fetchData = async () => {
@@ -125,6 +117,14 @@ const Navbar = () => {
   }, []);
   const closeSidebar = () => {
     setOpenMenu(false);
+  };
+
+  const handleChangeLanguage = (langCode) => {
+    const select = document.querySelector(".goog-te-combo");
+    if (select) {
+      select.value = langCode;
+      select.dispatchEvent(new Event("change"));
+    }
   };
 
   const formatDate = (dateString) => {
@@ -195,10 +195,10 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="fixed font-josefin-sb bg-[#1b2039] py-3 px-4 left-0 right-0 top-0 z-[999]">
+      <div className="fixed font-josefin-sb bg-[#1b2039]  py-3 px-4 left-0 right-0 top-0 z-[999]">
         <div className="flex justify-between   items-center">
           <div className="flex items-center space-x-0 sm:space-x-4 w-full lg:w-auto">
-            <div className="p-0 flex items-center hidden lg:block">
+            <div className="p-0  items-center hidden lg:block">
               <img
                 src={logo}
                 alt="Logo"
@@ -230,7 +230,7 @@ const Navbar = () => {
               </span>
             </div> */}
           </div>
-          <ul className="hidden w-5/12 flex-shrink lg:flex items-center font-josefin-b justify-center text-white">
+          <ul className="hidden  w-5/12 flex-shrink lg:flex items-center font-josefin-b justify-center text-white">
             <li className="rounded py-0 px-1 w-full text-center">
               <NavLink
                 to="/"
@@ -326,6 +326,7 @@ const Navbar = () => {
 </div> */}
 
               <GoogleTranslate />
+              
             </div>
 
             {isAuthenticated ? (
@@ -413,7 +414,7 @@ const Navbar = () => {
       {openMenu && (
         <div
           ref={sidebarRef}
-          className={`fixed top-0 bottom-0 z-50 w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
+          className={`fixed top-0 bottom-0 z-[998] w-[200px] transition-transform duration-300 shadow-xl bg-[#1b2039] ${
             openMenu ? "translate-x-0" : "-translate-x-full"
           } lg:hidden`}
         >
@@ -443,7 +444,7 @@ const Navbar = () => {
             </div>
 
             {/* Sidebar Links */}
-            <div className="w-full mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
+            <div className="w-full  mt-[50px] mb-[70px] overflow-y-auto max-h-screen no-scrollbar">
               <ul
                 className={`${isAuthenticated ? "space-y-3" : "space-y-10"} `}
               >

@@ -228,6 +228,7 @@
 }
 
 #goog-gt-tt {
+  visibility: hidden !important;
   opacity: 0;
 }
 .goog-te-gadget {
