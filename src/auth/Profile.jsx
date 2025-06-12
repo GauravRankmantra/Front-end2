@@ -33,6 +33,7 @@ const Profile = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [newPasswordError, setNewPasswordError] = useState(false); // For validation feedback
 
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [isEditingInfoSocial, setIsEditingInfoSocial] = useState(false);
@@ -41,12 +42,18 @@ const Profile = () => {
     email: "",
     phoneNumber: "",
     address: "",
+    facebook: "",
+    instagram: "",
+    twitter: "",
   });
   const [originalInfo, setOriginalInfo] = useState({
     fullName: "",
     email: "",
     phoneNumber: "",
     address: "",
+    facebook: "",
+    instagram: "",
+    twitter: "",
   });
   const [isInfoChanged, setIsInfoChanged] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,17 +126,27 @@ const Profile = () => {
       setLogoutLoading(false);
     }
   };
+
   const handleSubmitPasswordChange = (e) => {
     e.preventDefault();
+
+    // Reset validation error
+    setNewPasswordError(false);
+
+    // Validation checks
     if (!oldPassword || !newPassword) {
-      toast.error("Enter Passwords ");
+      toast.error("Please enter both passwords.");
       return;
     }
     if (oldPassword === newPassword) {
-      toast.error("Old password & New password ");
+      toast.error("Old password and new password cannot be the same.");
       return;
     }
-    s;
+    if (newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters long.");
+      setNewPasswordError(true);
+      return;
+    }
 
     handlePasswordChange(newPassword, oldPassword);
   };
@@ -170,20 +187,25 @@ const Profile = () => {
   const handleInfoChange = (event) => {
     const { name, value } = event.target;
     setEditingInfo((prev) => ({ ...prev, [name]: value }));
-    setIsInfoChanged(
-      originalInfo.fullName !== editingInfo.fullName ||
-        originalInfo.email !== editingInfo.email ||
-        originalInfo.phoneNumber !== editingInfo.phoneNumber ||
-        originalInfo.address !== editingInfo.address ||
-        originalInfo.instagram !== editingInfo.instagram ||
-        originalInfo.facebook !== editingInfo.facebook ||
-        originalInfo.twitter !== editingInfo.twitter
-    );
+    
+    // Update isInfoChanged to properly compare fields, including when a field is cleared
+    setIsInfoChanged(() => {
+      const updatedInfo = { ...editingInfo, [name]: value }; // Reflect the latest change
+      return (
+        (originalInfo.fullName || "") !== (updatedInfo.fullName || "") ||
+        (originalInfo.email || "") !== (updatedInfo.email || "") ||
+        (originalInfo.phoneNumber || "") !== (updatedInfo.phoneNumber || "") ||
+        (originalInfo.address || "") !== (updatedInfo.address || "") ||
+        (originalInfo.facebook || "") !== (updatedInfo.facebook || "") ||
+        (originalInfo.instagram || "") !== (updatedInfo.instagram || "") ||
+        (originalInfo.twitter || "") !== (updatedInfo.twitter || "")
+      );
+    });
   };
-
   const handleEditInfo = () => {
     setIsEditingInfo(true);
   };
+
   const handleEditInfoSocial = () => {
     setIsEditingInfoSocial(true);
   };
@@ -200,8 +222,8 @@ const Profile = () => {
       if (res.status === 200) {
         dispatch(setUser(res.data.data));
         toast.success("Profile information updated successfully!");
-        // dispatch(logoutUser(res.data.data));
         setIsEditingInfo(false);
+        setIsEditingInfoSocial(false);
         setIsInfoChanged(false);
         setOriginalInfo(editingInfo);
       } else {
@@ -226,13 +248,21 @@ const Profile = () => {
     setIsInfoChanged(false);
   };
 
+  const handleSocialLinkClick = (link, platform) => {
+    if (!link || link.trim() === "") {
+      toast.error(`No ${platform} link provided for this account.`);
+      return;
+    }
+    window.open(link, "_blank");
+  };
+
   if (!userInfo) {
-    return <p className="text-5xl text-center">Loading...</p>;
+    return <p className="text-5xl text-center text-white">Loading...</p>;
   }
 
   return (
     <>
-      <div className="min-h-screen font-josefin-r">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
             <div className="flex items-center space-x-3">
@@ -313,9 +343,9 @@ const Profile = () => {
                 <div>
                   <label
                     htmlFor="fullName"
-                    className="text-cyan-400 block mb-1"
+                    className="text-cyan-400 block mb-1 text-base"
                   >
-                    {t("yourName")} *
+                    {t("Your Name")} *
                   </label>
                   <input
                     type="text"
@@ -323,12 +353,15 @@ const Profile = () => {
                     name="fullName"
                     value={editingInfo.fullName}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="text-cyan-400 block mb-1">
-                    {t("yourEmail")} *
+                  <label
+                    htmlFor="email"
+                    className="text-cyan-400 block mb-1 text-base"
+                  >
+                    {t("Your Email")} *
                   </label>
                   <input
                     type="email"
@@ -336,16 +369,16 @@ const Profile = () => {
                     name="email"
                     value={editingInfo.email}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     disabled
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="phoneNumber"
-                    className="text-cyan-400 block mb-1"
+                    className="text-cyan-400 block mb-1 text-base"
                   >
-                    {t("phoneNumber")}
+                    {t("Phone Number")}
                   </label>
                   <input
                     type="text"
@@ -353,12 +386,15 @@ const Profile = () => {
                     name="phoneNumber"
                     value={editingInfo.phoneNumber}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="address" className="text-cyan-400 block mb-1">
-                    {t("address")}
+                  <label
+                    htmlFor="address"
+                    className="text-cyan-400 block mb-1 text-base"
+                  >
+                    {t("Address")}
                   </label>
                   <input
                     type="text"
@@ -366,40 +402,46 @@ const Profile = () => {
                     name="address"
                     value={editingInfo.address}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-x-3">
-                  <span className="font-semibold text-white">
-                    {t("yourName")}:{" "}
+                  <span className="font-semibold text-white text-base">
+                    {t("Your Name")}:{" "}
                   </span>
-                  <span className="text-gray-300">{userInfo.fullName}</span>
+                  <span className="text-gray-300 text-base">
+                    {userInfo.fullName}
+                  </span>
                 </div>
                 <div className="space-x-3">
-                  <span className="font-semibold text-white">
-                    {t("yourEmail")}:{" "}
+                  <span className="font-semibold text-white text-base">
+                    {t("Your Email")}:{" "}
                   </span>
-                  <span className="text-gray-300">{userInfo.email}</span>
+                  <span className="text-gray-300 text-base">
+                    {userInfo.email}
+                  </span>
                 </div>
                 {userInfo.phoneNumber && (
                   <div className="space-x-3">
-                    <span className="font-semibold text-white">
-                      {t("phoneNumber")}:{" "}
+                    <span className="font-semibold text-white text-base">
+                      {t("Phone Number")}:{" "}
                     </span>
-                    <span className="text-gray-300">
+                    <span className="text-gray-300 text-base">
                       {userInfo.phoneNumber}
                     </span>
                   </div>
                 )}
                 {userInfo.address && (
                   <div className="space-x-3">
-                    <span className="font-semibold text-white">
-                      {t("address")}:{" "}
+                    <span className="font-semibold text-white text-base">
+                      {t("Address")}:{" "}
                     </span>
-                    <span className="text-gray-300">{userInfo.address}</span>
+                    <span className="text-gray-300 text-base">
+                      {userInfo.address}
+                    </span>
                   </div>
                 )}
               </div>
@@ -410,9 +452,7 @@ const Profile = () => {
           <div className="bg-[#1c223b] p-6 rounded-lg shadow-lg mb-8">
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-2xl font-semibold text-cyan-400">
-                {userInfo.instagram || userInfo.facebook || userInfo.twitter
-                  ? `   Your Socal Links`
-                  : `Add you social links`}
+                {t("Your Social Links")}
               </h2>
               {!isEditingInfoSocial ? (
                 <button
@@ -471,10 +511,10 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="Facebook"
-                    className="text-cyan-400 block mb-1"
+                    htmlFor="facebook"
+                    className="text-cyan-400 block mb-1 text-base"
                   >
-                    {t("Facebook Link")} *
+                    {t("Facebook Link")}
                   </label>
                   <input
                     type="text"
@@ -482,27 +522,32 @@ const Profile = () => {
                     name="facebook"
                     value={editingInfo.facebook}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    placeholder="https://facebook.com/yourprofile"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="instagram"
-                    className="text-cyan-400 block mb-1"
+                    className="text-cyan-400 block mb-1 text-base"
                   >
-                    {t("Instagram Link")} *
+                    {t("Instagram Link")}
                   </label>
                   <input
-                    type="instagram"
+                    type="text"
                     id="instagram"
                     name="instagram"
                     value={editingInfo.instagram}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    placeholder="https://instagram.com/yourprofile"
                   />
                 </div>
                 <div>
-                  <label htmlFor="twitter" className="text-cyan-400 block mb-1">
+                  <label
+                    htmlFor="twitter"
+                    className="text-cyan-400 block mb-1 text-base"
+                  >
                     {t("Twitter Link")}
                   </label>
                   <input
@@ -511,26 +556,54 @@ const Profile = () => {
                     name="twitter"
                     value={editingInfo.twitter}
                     onChange={handleInfoChange}
-                    className="w-full p-2 mt-1 bg-gray-50 text-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full p-2 mt-1 bg-gray-700 text-white rounded border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    placeholder="https://twitter.com/yourprofile"
                   />
                 </div>
               </div>
             ) : (
               <div className="flex space-x-4">
                 <div>
-                  <a href={userInfo.facebook} target="_blank">
-                    <FaFacebook className="text-white text-4xl" />
-                  </a>
+                  <button
+                    onClick={() =>
+                      handleSocialLinkClick(userInfo.facebook, "Facebook")
+                    }
+                    className={
+                      userInfo.facebook && userInfo.facebook.trim() !== ""
+                        ? "text-white"
+                        : "text-gray-500 cursor-not-allowed"
+                    }
+                  >
+                    <FaFacebook className="text-4xl" />
+                  </button>
                 </div>
                 <div>
-                  <a href={userInfo.instagram} target="_blank">
-                    <RiInstagramFill className="text-white text-4xl" />
-                  </a>
+                  <button
+                    onClick={() =>
+                      handleSocialLinkClick(userInfo.instagram, "Instagram")
+                    }
+                    className={
+                      userInfo.instagram && userInfo.instagram.trim() !== ""
+                        ? "text-white"
+                        : "text-gray-500 cursor-not-allowed"
+                    }
+                  >
+                    <RiInstagramFill className="text-4xl" />
+                  </button>
                 </div>
                 <div>
-                  <a href={userInfo.twitter} target="_blank">
-                    <FaSquareXTwitter className="text-white text-4xl" />
-                  </a>
+                  <button
+                    onClick={() =>
+                      handleSocialLinkClick(userInfo.twitter, "Twitter")
+                    }
+                    className={
+                      userInfo.twitter && userInfo.twitter.trim() !== ""
+                        ? "text-white"
+                        : "text-gray-500 cursor-not-allowed"
+                    }
+                  >
+                    <FaSquareXTwitter className="text-4xl" />
+                  </button>
                 </div>
               </div>
             )}
@@ -539,109 +612,82 @@ const Profile = () => {
           {/* Change Password Section */}
           <div className="bg-[#1c223b] p-6 rounded-lg shadow-lg mb-8">
             <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
-              {t("changePassword")}
+              {t("Change Password")}
             </h2>
             <button
               onClick={() => setPassModel(true)}
               className="bg-cyan-500 text-white py-2 px-6 rounded-3xl hover:bg-cyan-600 transition duration-200"
             >
-              {t("changePassword")}
+              {t("Change Password")}
             </button>
           </div>
-          {/* Change Password Section */}
-          <div className=" flex items-center px-6 space-x-4 rounded-lg shadow-lg mb-4">
+
+          {/* Account Section */}
+          <div className="flex items-center px-6 space-x-4 rounded-lg shadow-lg mb-4">
             <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
               {t("Account")}
             </h2>
             <h1 className="font-semibold text-sm text-cyan-100 mb-4">
-              <span className="text-lg">Member Since : </span>
-              {userInfo?.createdAt &&
-                new Date(userInfo.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+              <span className="text-lg font-semibold">Member Since: </span>
+              <span className="text-lg font-semibold">
+                {userInfo?.createdAt &&
+                  new Date(userInfo.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+              </span>
             </h1>
           </div>
-          {/* Static Information Sections */}
-          {/* <div className="grid grid-cols-1 gap-8">
-            <div className="bg-[#1c223b] space-y-2 p-6 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
-                {t("Membership And Billing")}
-              </h2>
-              <p className="text-gray-300">
-                {t("Membership Status")}:{" "}
-                <span className="text-yellow-500">Premium</span>
-              </p>
-              <p className="text-gray-300">
-                {t("Billing Cycle")}:{" "}
-                <span className="text-white">Monthly</span>
-              </p>
-              <p className="text-gray-300">
-                {t("Next Billing Date")}:{" "}
-                <span className="text-white">2024-08-15</span>
-              </p>
-            </div>
-            <div className="bg-[#1c223b] space-y-2 p-6 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-semibold text-cyan-400 mb-4">
-                {t("Package Details")}
-              </h2>
-              <p className="text-gray-300">
-                {t("Package Name")}:{" "}
-                <span className=" text-yellow-500">Premium</span>
-              </p>
-              <p className="text-gray-300">
-                {t("Features")}:
-                <ul className="list-disc list-inside text-white">
-                  <li>{t("Unlimited Lisitening")}</li>
-                  <li>{t("50 Downloads")}</li>
-                  <li>{t("100 Uplodes")}</li>
-                </ul>
-              </p>
-            </div>
-          </div> */}
         </div>
       </div>
 
       {/* Change Password Modal */}
       {passModel && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-800 text-white rounded-lg shadow-lg sm:max-w-[425px] w-full">
-            <div className="p-4 border-b border-gray-700">
-              <h2 className="text-xl font-semibold text-cyan-400">
-                {t("changePassword")}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-in-out"
+          role="dialog"
+          aria-labelledby="change-password-title"
+          aria-modal="true"
+        >
+          <div className="bg-gray-800 text-white rounded-lg shadow-lg sm:max-w-[425px] w-full transform transition-all duration-300 ease-in-out scale-100">
+            <div className="p-6 border-b border-gray-700">
+              <h2
+                id="change-password-title"
+                className="text-xl font-semibold text-cyan-400"
+              >
+                {t("Change Password")}
               </h2>
-              <p className="text-gray-300">{t("enterCurrentAndNewPassword")}</p>
             </div>
-            <form
-              className="space-y-4 p-4"
-              onSubmit={handleSubmitPasswordChange}
-            >
+            <form className="space-y-6 p-6" onSubmit={handleSubmitPasswordChange}>
               <div>
                 <label
                   htmlFor="oldPassword"
-                  className="block text-sm font-medium text-cyan-400 mb-1"
+                  className="block text-sm font-medium text-cyan-400 mb-2"
                 >
-                  {t("currentPassword")}
+                  {t("Current Password")}
                 </label>
                 <div className="relative">
                   <input
                     type={showOldPassword ? "text" : "password"}
                     id="oldPassword"
-                    placeholder={t("enterCurrentPassword")}
+                    placeholder={t("Enter Current Password")}
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 bg-gray-700 text-white"
+                    className="block w-full rounded-lg border-gray-600 bg-gray-700 text-white p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200"
+                    required
+                    aria-describedby="oldPassword-error"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-400"
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200"
                     onClick={() => setShowOldPassword(!showOldPassword)}
+                    aria-label={showOldPassword ? t("Hide Password") : t("Show Password")}
                   >
                     {showOldPassword ? (
-                      <FaEye className="h-5 w-5" aria-hidden="true" />
+                      <FaEye className="h-5 w-5" />
                     ) : (
-                      <FaEyeSlash className="h-5 w-5" aria-hidden="true" />
+                      <FaEyeSlash className="h-5 w-5" />
                     )}
                   </button>
                 </div>
@@ -649,49 +695,85 @@ const Profile = () => {
               <div>
                 <label
                   htmlFor="newPassword"
-                  className="block text-sm font-medium text-cyan-400 mb-1"
+                  className="block text-sm font-medium text-cyan-400 mb-2"
                 >
-                  {t("newPassword")}
+                  {t("New Password")}
                 </label>
                 <div className="relative">
                   <input
                     type={showNewPassword ? "text" : "password"}
                     id="newPassword"
-                    placeholder={t("enterNewPassword")}
+                    placeholder={t("Enter New Password")}
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 bg-gray-700 text-white"
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                      setNewPasswordError(false);
+                    }}
+                    className={`block w-full rounded-lg border-gray-600 bg-gray-700 text-white p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200 ${
+                      newPasswordError ? "border-red-500" : ""
+                    }`}
+                    required
+                    aria-describedby="newPassword-error"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-400"
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200"
                     onClick={() => setShowNewPassword(!showNewPassword)}
+                    aria-label={showNewPassword ? t("Hide Password") : t("Show Password")}
                   >
                     {showNewPassword ? (
-                      <FaEye className="h-5 w-5" aria-hidden="true" />
+                      <FaEye className="h-5 w-5" />
                     ) : (
-                      <FaEyeSlash className="h-5 w-5" aria-hidden="true" />
+                      <FaEyeSlash className="h-5 w-5" />
                     )}
                   </button>
                 </div>
+                {newPasswordError && (
+                  <p id="newPassword-error" className="text-red-500 text-sm mt-2">
+                    {t("New Password Min Length")}
+                  </p>
+                )}
               </div>
-              <div className="mt-6">
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setPassModel(false)}
+                  className="py-2 px-4 rounded-lg text-gray-300 bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-200"
+                >
+                  {t("Close")}
+                </button>
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 rounded-md shadow-sm text-white bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="py-2 px-4 rounded-lg text-white bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-colors duration-200"
+                  disabled={isSubmitting}
                 >
-                  {t("submit")}
+                  {isSubmitting ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white inline-block"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    t("Submit")
+                  )}
                 </button>
               </div>
             </form>
-            <div className="p-4 border-t border-gray-700">
-              <button
-                onClick={() => setPassModel(false)}
-                className="text-gray-400 hover:text-white transition-colors duration-200 float-right"
-              >
-                {t("close")}
-              </button>
-            </div>
           </div>
         </div>
       )}
