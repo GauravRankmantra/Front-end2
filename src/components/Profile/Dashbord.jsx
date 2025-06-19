@@ -61,6 +61,24 @@ const Dashboard = () => {
       dispatch(setShowLoginPopup(true));
     }
   };
+  const CustomBarTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    const value = payload[0].value;
+    if (value <= 1) return null;
+    return (
+      <div
+        style={{
+          backgroundColor: "#2c2f4c",
+          border: "1px solid #444",
+          padding: 8,
+          color: "#fff",
+        }}
+      >
+        <p style={{ margin: 0, fontSize: "0.85em" }}>{label}</p>
+        <p style={{ margin: 0, fontWeight: "bold" }}>{`${value} min`}</p>
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +116,6 @@ const Dashboard = () => {
         });
 
         setPurchasedSongs(res.data.songs);
-      
       } catch (error) {
         if (
           error.response &&
@@ -167,8 +184,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50"];
-
+  const COLORS = ["#22d3ee", "#0891b2", "#2dd4bf", "#164e63"];
   return (
     <div className="md:px-4 px-2  py-6 text-white">
       <div className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-4 px-8 rounded-lg shadow-md mb-6 flex justify-between items-center">
@@ -442,25 +458,27 @@ const Dashboard = () => {
           {/* Charts Section */}
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Top Genres Pie Chart */}
-            {info.topGenre && info.topGenre.length > 0 && (
+            {info.topGenre?.length > 0 && (
               <div className="bg-[#1b2039] rounded-xl p-6 shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Top Genres</h2>
+                <h2 className="text-lg font-semibold mb-4 text-white">
+                  Top Genres
+                </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
                       data={info.topGenre
-                        .filter((g) => g.genre) // remove null genres
-                        .map((g) => ({
-                          name: g.genre.name,
-                          value: g.plays,
-                        }))}
+                        .filter((g) => g.genre)
+                        .map((g) => ({ name: g.genre.name, value: g.plays }))}
                       cx="50%"
                       cy="50%"
                       outerRadius={100}
-                      fill="#8884d8"
                       dataKey="value"
+                      fill="#22d3ee"
+                      labelLine={false}
                       label={({ name, percent }) =>
-                        `${name} (${(percent * 100).toFixed(0)}%)`
+                        percent === 1
+                          ? null
+                          : `${name} (${(percent * 100).toFixed(0)}%)`
                       }
                     >
                       {info.topGenre
@@ -477,8 +495,9 @@ const Dashboard = () => {
                       contentStyle={{
                         backgroundColor: "#1f2937",
                         border: "none",
-                        color: "#fff",
                       }}
+                      labelStyle={{ color: "#fff" }}
+                      itemStyle={{ color: "#fff" }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -486,7 +505,7 @@ const Dashboard = () => {
             )}
 
             {/* Weekly Listening Activity Bar Chart */}
-            {weeklyStats && weeklyStats.length > 0 && (
+            {weeklyStats?.length > 0 && (
               <div className="bg-[#1b2039] rounded-xl p-6 shadow-lg">
                 <h2 className="text-lg font-semibold mb-4 text-white">
                   Weekly Activity
@@ -506,17 +525,8 @@ const Dashboard = () => {
                       tick={{ fill: "#fff" }}
                     />
                     <YAxis stroke="#ccc" tick={{ fill: "#fff" }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#2c2f4c",
-                        borderColor: "#444",
-                        color: "#fff",
-                      }}
-                      labelStyle={{ color: "#fff" }}
-                      itemStyle={{ color: "#fff" }}
-                      formatter={(value) => [`${value} min`, "Minutes"]}
-                    />
-                    <Bar dataKey="minutes" fill="#8884d8" barSize={30} />
+                    <Tooltip cursor={false} content={<CustomBarTooltip />} />
+                    <Bar dataKey="minutes" fill="#22d3ee" barSize={30} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

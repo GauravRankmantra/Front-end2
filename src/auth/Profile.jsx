@@ -57,7 +57,9 @@ const Profile = () => {
   });
   const [isInfoChanged, setIsInfoChanged] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [hasPassword, setHasPassword] = useState(null);
+  const [passwordCheckLoading, setPasswordCheckLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
   useEffect(() => {
     dispatch(checkAuth());
   }, []);
@@ -82,7 +84,6 @@ const Profile = () => {
     };
     fetchData();
   }, []);
-
   useEffect(() => {
     if (userInfo) {
       setOriginalInfo({
@@ -127,58 +128,93 @@ const Profile = () => {
     }
   };
 
-  const handleSubmitPasswordChange = (e) => {
-    e.preventDefault();
-
-    // Reset validation error
-    setNewPasswordError(false);
-
-    // Validation checks
-    if (!oldPassword || !newPassword) {
-      toast.error("Please enter both passwords.");
-      return;
+  const handleOpenPasswordModal = async () => {
+    setPasswordCheckLoading(true);
+    try {
+      const res = await axios.get(`${apiUrl}api/v1/user/checkPassword`, { withCredentials: true });
+      setHasPassword(res.data.hasPassword);
+      setPassModel(true);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setNewPasswordError(false);
+    } catch (error) {
+      setHasPassword(null);
+      toast.error('Error checking password status');
+    } finally {
+      setPasswordCheckLoading(false);
     }
-    if (oldPassword === newPassword) {
-      toast.error("Old password and new password cannot be the same.");
-      return;
-    }
-    if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters long.");
-      setNewPasswordError(true);
-      return;
-    }
-
-    handlePasswordChange(newPassword, oldPassword);
   };
 
-  const handlePasswordChange = async (newPassword, oldPassword) => {
+  const handleSubmitPasswordChange = async (e) => {
+    e.preventDefault();
+    setNewPasswordError(false);
+
+    if (hasPassword === false) {
+      // Create password
+      if (!newPassword || !confirmPassword) {
+        toast.error("Please enter and confirm your password.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
+      if (newPassword.length < 6) {
+        toast.error("Password must be at least 6 characters long");
+        setNewPasswordError(true);
+        return;
+      }
+      setIsSubmitting(true);
+      const res = await handlePasswordChange({ newPassword, confirmPassword });
+      if (res && res.status === 200) {
+        setHasPassword(true);
+        setNewPassword('');
+        setConfirmPassword('');
+        setPassModel(false);
+        toast.success("Password set successfully!");
+      }
+      setIsSubmitting(false);
+    } else if (hasPassword === true) {
+      // Change password
+      if (!oldPassword || !newPassword) {
+        toast.error("Please enter both current and new passwords.");
+        return;
+      }
+      if (oldPassword === newPassword) {
+        toast.error("Old and new passwords cannot be the same.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        toast.error("New password must be at least 6 characters long.");
+        setNewPasswordError(true);
+        return;
+      }
+      setIsSubmitting(true);
+      const res = await handlePasswordChange({ oldPassword, newPassword });
+      if (res && res.status === 200) {
+        setOldPassword('');
+        setNewPassword('');
+        setPassModel(false);
+        toast.success("Password changed successfully!");
+      }
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePasswordChange = async (payload) => {
     try {
       const res = await axios.post(
         `${apiUrl}api/v1/user/changepass`,
-        {
-          newPassword,
-          oldPassword,
-        },
+        payload,
         { withCredentials: true }
       );
-
-      if (res.status === 200) {
-        toast.success("Password changed successfully!");
-        setOldPassword("");
-        setNewPassword("");
-        setPassModel(false);
-        return res;
-      } else {
-        toast.error("Failed to change password. Please try again.");
-        return res;
-      }
+      return res;
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message || "Server error occurred.");
-      } else if (error.request) {
-        toast.error("Network error. Please check your connection.");
       } else {
-        toast.error("An unexpected error occurred.");
+        toast.error("Network error. Please check your connection.");
       }
       return null;
     }
@@ -615,10 +651,17 @@ const Profile = () => {
               {t("Change Password")}
             </h2>
             <button
-              onClick={() => setPassModel(true)}
+              onClick={handleOpenPasswordModal}
               className="bg-cyan-500 text-white py-2 px-6 rounded-3xl hover:bg-cyan-600 transition duration-200"
+              disabled={passwordCheckLoading}
             >
-              {t("Change Password")}
+              {passwordCheckLoading
+                ? t("Loading...")
+                : hasPassword === null
+                ? t("Edit Password")
+                : hasPassword
+                ? t("Change Password")
+                : t("Set Password")}
             </button>
           </div>
 
@@ -656,47 +699,39 @@ const Profile = () => {
                 id="change-password-title"
                 className="text-xl font-semibold text-cyan-400"
               >
-                {t("Change Password")}
+                {hasPassword === false ? t("Set Password") : t("Change Password")}
               </h2>
             </div>
             <form className="space-y-6 p-6" onSubmit={handleSubmitPasswordChange}>
-              <div>
-                <label
-                  htmlFor="oldPassword"
-                  className="block text-sm font-medium text-cyan-400 mb-2"
-                >
-                  {t("Current Password")}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showOldPassword ? "text" : "password"}
-                    id="oldPassword"
-                    placeholder={t("Enter Current Password")}
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    className="block w-full rounded-lg border-gray-600 bg-gray-700 text-white p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200"
-                    required
-                    aria-describedby="oldPassword-error"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200"
-                    onClick={() => setShowOldPassword(!showOldPassword)}
-                    aria-label={showOldPassword ? t("Hide Password") : t("Show Password")}
-                  >
-                    {showOldPassword ? (
-                      <FaEye className="h-5 w-5" />
-                    ) : (
-                      <FaEyeSlash className="h-5 w-5" />
-                    )}
-                  </button>
+              {hasPassword && (
+                <div>
+                  <label htmlFor="oldPassword" className="block text-sm font-medium text-cyan-400 mb-2">
+                    {t("Current Password")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showOldPassword ? "text" : "password"}
+                      id="oldPassword"
+                      placeholder={t("Enter Current Password")}
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      className="block w-full rounded-lg border-gray-600 bg-gray-700 text-white p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200"
+                      required
+                      aria-describedby="oldPassword-error"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-200"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      aria-label={showOldPassword ? t("Hide Password") : t("Show Password")}
+                    >
+                      {showOldPassword ? <FaEye className="h-5 w-5" /> : <FaEyeSlash className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
               <div>
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-medium text-cyan-400 mb-2"
-                >
+                <label htmlFor="newPassword" className="block text-sm font-medium text-cyan-400 mb-2">
                   {t("New Password")}
                 </label>
                 <div className="relative">
@@ -721,11 +756,7 @@ const Profile = () => {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                     aria-label={showNewPassword ? t("Hide Password") : t("Show Password")}
                   >
-                    {showNewPassword ? (
-                      <FaEye className="h-5 w-5" />
-                    ) : (
-                      <FaEyeSlash className="h-5 w-5" />
-                    )}
+                    {showNewPassword ? <FaEye className="h-5 w-5" /> : <FaEyeSlash className="h-5 w-5" />}
                   </button>
                 </div>
                 {newPasswordError && (
@@ -734,6 +765,24 @@ const Profile = () => {
                   </p>
                 )}
               </div>
+              {hasPassword === false && (
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-cyan-400 mb-2">
+                    {t("Confirm New Password")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      placeholder={t("Confirm New Password")}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="block w-full rounded-lg border-gray-600 bg-gray-700 text-white p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors duration-200"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
@@ -768,9 +817,7 @@ const Profile = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                  ) : (
-                    t("Submit")
-                  )}
+                  ) : hasPassword === false ? t("Set Password") : t("Change Password")}
                 </button>
               </div>
             </form>
