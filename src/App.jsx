@@ -59,6 +59,7 @@ import Playlist from "./components/Profile/Playlist";
 import DonateUs from "./components/DonateUs";
 import BecomeSponsor from "./components/BecomeSponsor";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -106,6 +107,7 @@ const App = () => {
             <Route path="purchased" element={<Purchase />} />
             <Route path="/terms-and-conditions" element={<Terms />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/purchase-success" element={<PurchaseSuccess />} />
 
             <Route path="/video-store" element={<VideoStore />} />
 
