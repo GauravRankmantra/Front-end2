@@ -18,11 +18,22 @@ const GoogleTranslate = () => {
   const [lanOpen, setLanOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Get stored language preference or default to French
+  const getStoredLanguage = () => {
+    return localStorage.getItem("preferredLanguage") || "fr";
+  };
+
+  // Store language preference in localStorage
+  const storeLanguage = (langCode) => {
+    localStorage.setItem("preferredLanguage", langCode);
+  };
+
   const changeLanguage = (langCode) => {
     const select = document.querySelector(".goog-te-combo");
     if (select) {
       select.value = langCode;
       select.dispatchEvent(new Event("change"));
+      storeLanguage(langCode); // Store the new preference
       setLanOpen(false); // Close dropdown after selection
     }
   };
@@ -31,7 +42,8 @@ const GoogleTranslate = () => {
     const interval = setInterval(() => {
       const select = document.querySelector(".goog-te-combo");
       if (select) {
-        select.value = "fr"; // default to French
+        const preferredLanguage = getStoredLanguage();
+        select.value = preferredLanguage;
         select.dispatchEvent(new Event("change"));
         clearInterval(interval);
       }
